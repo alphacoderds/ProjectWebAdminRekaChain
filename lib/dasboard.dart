@@ -2,6 +2,7 @@ import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
+// import 'package:RekaChain/menuadmin.dart';
 import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
@@ -163,6 +164,7 @@ class _DashboardState extends State<Dashboard> {
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
           _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildListTile('Menu Admin', Icons.admin_panel_settings, 8, 35),
         ],
       ),
     );
@@ -197,9 +199,15 @@ class _DashboardState extends State<Dashboard> {
                 builder: (context) => AfterSales(),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
+          // else if (index == 8) {
+          //   Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => //MenuAdmin(),
+          //     ),
+          //   );
+          // }
         }
       },
     );
