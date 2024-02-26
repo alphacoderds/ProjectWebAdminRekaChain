@@ -2,7 +2,7 @@ import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
-// import 'package:RekaChain/menuadmin.dart';
+import 'package:RekaChain/menuadmin.dart';
 import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
@@ -163,8 +163,8 @@ class _DashboardState extends State<Dashboard> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
+          _buildAdminMenu(),
           _buildListTile('Logout', Icons.logout, 7, 35),
-          _buildListTile('Menu Admin', Icons.admin_panel_settings, 8, 35),
         ],
       ),
     );
@@ -199,15 +199,14 @@ class _DashboardState extends State<Dashboard> {
                 builder: (context) => AfterSales(),
               ),
             );
+          } else if (index == 8) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MenuAdmin(),
+              ),
+            );
           }
-          // else if (index == 8) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => //MenuAdmin(),
-          //     ),
-          //   );
-          // }
         }
       },
     );
@@ -286,6 +285,28 @@ class _DashboardState extends State<Dashboard> {
           }
         }
       },
+    );
+  }
+
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile(
+            'Tambah Project', Icons.subdirectory_arrow_right, 9, 35),
+        _buildSubListTile(
+            'Tambah User', Icons.subdirectory_arrow_right, 10, 35),
+      ],
     );
   }
 
