@@ -113,7 +113,7 @@ class _NotifikasiState extends State<Notifikasi> {
   Widget _buildDrawer() {
     return Drawer(
       backgroundColor: Color.fromARGB(255, 244, 249, 255),
-      child: Column(
+      child: ListView(
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
@@ -171,8 +171,6 @@ class _NotifikasiState extends State<Notifikasi> {
                 builder: (context) => AfterSales(),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -212,6 +210,7 @@ class _NotifikasiState extends State<Notifikasi> {
       leading: Icon(
         icon,
         size: size.toDouble(),
+        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
         if (index == 9) {

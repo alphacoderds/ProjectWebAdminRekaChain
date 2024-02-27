@@ -2,7 +2,6 @@ import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
-//import 'package:RekaChain/menuadmin.dart';
 import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
@@ -109,25 +108,31 @@ class _DashboardState extends State<Dashboard> {
                 body: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildChartContainer('Nama Pt 1 - Kode Lot'),
-                        SizedBox(width: 20),
-                        _buildChartContainer('Nama Pt 2 - Kode Lot'),
-                      ],
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildChartContainer('Nama Pt 1 - Kode Lot'),
+                          SizedBox(width: 20),
+                          _buildChartContainer('Nama Pt 2 - Kode Lot'),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildChartContainer('Nama Pt 3 - Kode Lot'),
-                        SizedBox(width: 20),
-                        _buildChartContainer('Nama Pt 4 - Kode Lot'),
-                        SizedBox(
-                          width: 20,
-                        ),
-                      ],
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildChartContainer('Nama Pt 3 - Kode Lot'),
+                          SizedBox(width: 20),
+                          _buildChartContainer('Nama Pt 4 - Kode Lot'),
+                          SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -202,14 +207,6 @@ class _DashboardState extends State<Dashboard> {
               ),
             );
           }
-          // else if (index == 8) {
-          //   Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => MenuAdmin(),
-          //     ),
-          //   );
-          // }
         }
       },
     );
