@@ -129,7 +129,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   Widget _buildDrawer() {
     return Drawer(
       backgroundColor: Color.fromARGB(255, 244, 249, 255),
-      child: Column(
+      child: ListView(
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
@@ -151,7 +151,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildAdminMenu(),
+          _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
     );
@@ -166,7 +167,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -186,22 +187,6 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                 builder: (context) => AfterSales(),
               ),
             );
-              } else if (index == 9) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TambahProject(),
-              ),
-            );
-          } else if (index == 10) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TambahStaff(),
-              ),
-            );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -244,7 +229,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -278,9 +263,43 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                 builder: (context) => InputDokumen(),
               ),
             );
+          } else if (index == 7) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahProject(),
+              ),
+            );
+          } else if (index == 8) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahStaff(),
+              ),
+            );
           }
         }
       },
+    );
+  }
+
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+      ],
     );
   }
 
