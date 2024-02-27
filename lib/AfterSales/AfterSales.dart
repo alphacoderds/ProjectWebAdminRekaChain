@@ -391,6 +391,28 @@ class _AfterSalesState extends State<AfterSales> {
     );
   }
 
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile(
+            'Tambah Project', Icons.subdirectory_arrow_right, 9, 35),
+        _buildSubListTile(
+            'Tambah User', Icons.subdirectory_arrow_right, 10, 35),
+      ],
+    );
+  }
+
   void _showLogoutDialog() {
     showDialog(
       context: context,

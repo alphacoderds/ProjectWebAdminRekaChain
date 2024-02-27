@@ -7,6 +7,8 @@ import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
+import 'package:RekaChain/tambahproject.dart';
+import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -182,6 +184,20 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
               context,
               MaterialPageRoute(
                 builder: (context) => AfterSales(),
+              ),
+            );
+              } else if (index == 9) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahProject(),
+              ),
+            );
+          } else if (index == 10) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahStaff(),
               ),
             );
           } else {
