@@ -6,6 +6,7 @@ import 'package:RekaChain/login.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
+import 'package:RekaChain/subnotifikasi.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
@@ -323,7 +324,7 @@ class _NotifikasiState extends State<Notifikasi> {
 Widget _ListView() {
   return ListView.separated(
     itemBuilder: (context, index) {
-      return ListViewItem(index);
+      return ListViewItem(context, index);
     },
     separatorBuilder: (context, index) {
       return Divider(height: 0);
@@ -332,25 +333,35 @@ Widget _ListView() {
   );
 }
 
-Widget ListViewItem(int index) {
-  return Container(
-    margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        prefixIcon(),
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.only(left: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                message(index),
-              ],
+Widget ListViewItem(BuildContext context, int index) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Subnotifikasi(),
+        ),
+      );
+    },
+    child: Container(
+      margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          prefixIcon(),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  message(index),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }

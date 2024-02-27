@@ -289,7 +289,7 @@ class _ViewUploadState extends State<ViewUpload> {
                 )),
                 DataCell(
                   IconButton(
-                    icon: Icon(Icons.download),
+                    icon: Icon(Icons.file_download_outlined),
                     onPressed: () {
                       setState(() {
                         isViewVisible = !isViewVisible;
@@ -321,7 +321,7 @@ class _ViewUploadState extends State<ViewUpload> {
                 )),
                 DataCell(
                   IconButton(
-                    icon: Icon(Icons.download),
+                    icon: Icon(Icons.file_download_outlined),
                     onPressed: () {
                       setState(() {
                         isViewVisible = !isViewVisible;

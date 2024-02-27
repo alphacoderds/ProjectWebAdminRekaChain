@@ -77,8 +77,8 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                           ),
                           IconButton(
                             icon: Icon(
-                              Icons.download,
-                              size: 39,
+                              Icons.file_download_outlined,
+                              size: 33,
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
                             onPressed: () {},
@@ -86,7 +86,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                           IconButton(
                             icon: Icon(
                               Icons.notifications_active,
-                              size: 35,
+                              size: 33,
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
                             onPressed: () {
@@ -100,7 +100,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                           IconButton(
                             icon: Icon(
                               Icons.account_circle_rounded,
-                              size: 38,
+                              size: 35,
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
                             onPressed: () {
@@ -124,8 +124,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                       border: Border.all(color: Colors.black),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    child:
-                        isViewVisible ? _buildViewTable() : _buildMainTable(),
+                    child: _buildMainTable(),
                   ),
                 ),
               ),
@@ -282,33 +281,6 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildViewTable() {
-    return DataTable(
-      columnSpacing: 0,
-      horizontalMargin: 100,
-      columns: [
-        DataColumn(label: Text('Nama Produk')),
-        DataColumn(label: Text('Kode QR')),
-        DataColumn(label: Text('Proses')),
-        DataColumn(label: Text('Tanggal Mulai')),
-        DataColumn(label: Text('Tanggal Selesai')),
-        DataColumn(label: Text('Personil')),
-        DataColumn(label: Text('Keterangan')),
-      ],
-      rows: [
-        DataRow(cells: [
-          DataCell(Text('1')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-        ]),
-      ],
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
@@ -11,6 +13,8 @@ import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewupload.dart';
 import 'package:flutter/material.dart';
 
+import 'package:file_picker/file_picker.dart';
+
 class InputDokumen extends StatefulWidget {
   const InputDokumen({super.key});
 
@@ -21,6 +25,18 @@ class InputDokumen extends StatefulWidget {
 class _InputDokumenState extends State<InputDokumen> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+
+  List<File> uploadFiles = [];
+
+  Future<void> _uploadDocument() async {
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
+    if (result != null) {
+      print('Path File: ${result.files.single.path}');
+    } else {
+      print('Pengguna membatalkan memilih file');
+    }
+  }
 
   int _selectedIndex = 0;
   List<String> dropdownItems = [
@@ -90,7 +106,7 @@ class _InputDokumenState extends State<InputDokumen> {
                                     );
                                   },
                                   child: Text(
-                                    'Uploads',
+                                    'View',
                                     style:
                                         TextStyle(fontWeight: FontWeight.bold),
                                   ),
@@ -266,7 +282,9 @@ class _InputDokumenState extends State<InputDokumen> {
                                             Icons.add,
                                             size: 35,
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            _uploadDocument();
+                                          },
                                         ),
                                       ],
                                     ),
