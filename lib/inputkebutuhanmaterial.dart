@@ -8,6 +8,8 @@ import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
+import 'package:RekaChain/tambahproject.dart';
+import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewikm.dart';
 import 'package:RekaChain/viewupload.dart';
 import 'package:flutter/gestures.dart';
@@ -27,7 +29,8 @@ class _InputMaterialState extends State<InputMaterial> {
   List<File> uploadFiles = [];
 
   Future<void> _uploadDocument() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(allowMultiple: true);
+    FilePickerResult? result =
+        await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
       print('Path File: ${result.files.single.path}');
     } else {
@@ -386,7 +389,8 @@ class _InputMaterialState extends State<InputMaterial> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildAdminMenu(),
+          _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
     );
@@ -401,7 +405,7 @@ class _InputMaterialState extends State<InputMaterial> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -421,8 +425,6 @@ class _InputMaterialState extends State<InputMaterial> {
                 builder: (context) => AfterSales(),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -462,9 +464,10 @@ class _InputMaterialState extends State<InputMaterial> {
       leading: Icon(
         icon,
         size: size.toDouble(),
+        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -498,9 +501,43 @@ class _InputMaterialState extends State<InputMaterial> {
                 builder: (context) => InputDokumen(),
               ),
             );
+          } else if (index == 7) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahProject(),
+              ),
+            );
+          } else if (index == 8) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahStaff(),
+              ),
+            );
           }
         }
       },
+    );
+  }
+
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+      ],
     );
   }
 

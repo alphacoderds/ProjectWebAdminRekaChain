@@ -3,11 +3,14 @@ import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/editprofile.dart';
 import 'package:RekaChain/inputdokumen.dart';
+import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
 import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
+import 'package:RekaChain/tambahproject.dart';
+import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewikm.dart';
 import 'package:RekaChain/viewupload.dart';
 import 'package:flutter/gestures.dart';
@@ -207,7 +210,8 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildAdminMenu(),
+          _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
     );
@@ -222,7 +226,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -242,8 +246,6 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                 builder: (context) => AfterSales(),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -283,9 +285,10 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
       leading: Icon(
         icon,
         size: size.toDouble(),
+        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -309,7 +312,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => PesanNotifikasi(),
+                builder: (context) => InputMaterial(),
               ),
             );
           } else if (index == 5) {
@@ -319,10 +322,43 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                 builder: (context) => InputDokumen(),
               ),
             );
-            Navigator.pop(context);
+          } else if (index == 7) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahProject(),
+              ),
+            );
+          } else if (index == 8) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahStaff(),
+              ),
+            );
           }
         }
       },
+    );
+  }
+
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+      ],
     );
   }
 
