@@ -12,6 +12,7 @@ import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/reportsttpp.dart';
+import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewikm.dart';
 import 'package:RekaChain/viewperencanaan.dart';
 import 'package:flutter/material.dart';
@@ -26,12 +27,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Notifikasi(),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: TambahStaff());
   }
 }
