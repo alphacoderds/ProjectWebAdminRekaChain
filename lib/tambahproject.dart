@@ -4,16 +4,14 @@ import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/editprofile.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/listproject.dart';
 import 'package:RekaChain/login.dart';
 import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahstaff.dart';
-import 'package:RekaChain/viewikm.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
 
 class TambahProject extends StatefulWidget {
   const TambahProject({super.key});
@@ -25,17 +23,9 @@ class TambahProject extends StatefulWidget {
 class _TambahProjectState extends State<TambahProject> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-  List<File> uploadFiles = [];
 
-  Future<void> _uploadDocument() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (result != null) {
-      print('Path File: ${result.files.single.path}');
-    } else {
-      print('Pengguna membatalkan pemilih file');
-    }
-  }
+  late TextEditingController nmprojectController;
+  late TextEditingController kdprojectController;
 
   int _selectedIndex = 0;
   List<String> dropdownItems1 = [
@@ -53,6 +43,13 @@ class _TambahProjectState extends State<TambahProject> {
   String? selectedValue2;
 
   @override
+  void initState() {
+    super.initState();
+    nmprojectController = TextEditingController();
+    kdprojectController = TextEditingController();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -60,7 +57,7 @@ class _TambahProjectState extends State<TambahProject> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => const InputMaterial(),
+              builder: (context) => const TambahProject(),
             );
           default:
             return null;
@@ -108,7 +105,7 @@ class _TambahProjectState extends State<TambahProject> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Notifikasi()),
+                                      builder: (context) => ListProject()),
                                 );
                               },
                             ),
@@ -180,11 +177,6 @@ class _TambahProjectState extends State<TambahProject> {
   }
 
   Widget _buildMainTable() {
-    TextEditingController namaProjectController =
-        TextEditingController(text: selectedValue1);
-    TextEditingController kodeProjectController =
-        TextEditingController(text: selectedValue2);
-
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
@@ -226,7 +218,7 @@ class _TambahProjectState extends State<TambahProject> {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: TextFormField(
-                                      controller: namaProjectController,
+                                      controller: nmprojectController,
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
                                         contentPadding: EdgeInsets.all(8),
@@ -257,7 +249,7 @@ class _TambahProjectState extends State<TambahProject> {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: TextFormField(
-                                      controller: kodeProjectController,
+                                      controller: kdprojectController,
                                       decoration: InputDecoration(
                                         border: InputBorder.none,
                                         contentPadding: EdgeInsets.all(8),
