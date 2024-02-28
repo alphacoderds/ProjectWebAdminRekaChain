@@ -78,7 +78,7 @@ class _Cetak1State extends State<Cetak1> {
                           ),
                           IconButton(
                             icon: Icon(
-                              Icons.download,
+                              Icons.file_download_outlined,
                               size: 33,
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
@@ -112,9 +112,7 @@ class _Cetak1State extends State<Cetak1> {
                                     builder: (context) => Profile()),
                               );
                             },
-                            padding: EdgeInsets.only(
-                                right:
-                                    16.0), // Sesuaikan dengan jarak yang diinginkan
+                            padding: EdgeInsets.only(right: 16.0),
                           ),
                         ],
                       ),
@@ -178,8 +176,7 @@ class _Cetak1State extends State<Cetak1> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          primary:
-                              Color.fromARGB(255, 1, 46, 76), // Warna biru tua
+                          primary: Color.fromARGB(255, 1, 46, 76),
                         ),
                         child: Text('Cetak QR Code',
                             style: TextStyle(color: Colors.white)),
@@ -198,30 +195,6 @@ class _Cetak1State extends State<Cetak1> {
                           );
                         },
                         child: Text('Back'),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 20,
-                      right: 20,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailP(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(
-                              255, 1, 46, 76), // Background color
-                        ),
-                        child: Text(
-                          'Back',
-                          style: TextStyle(
-                              color: Color.fromARGB(
-                                  255, 226, 228, 231)), // Text color
-                        ),
                       ),
                     ),
                   ],
