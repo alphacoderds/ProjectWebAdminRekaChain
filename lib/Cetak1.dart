@@ -194,7 +194,14 @@ class _Cetak1State extends State<Cetak1> {
                             ),
                           );
                         },
-                        child: Text('Back'),
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 1, 46, 76),
+                        ),
+                        child: Text(
+                          'Back',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 226, 228, 231)),
+                        ),
                       ),
                     ),
                   ],
