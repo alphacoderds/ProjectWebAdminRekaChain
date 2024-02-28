@@ -7,6 +7,8 @@ import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
+import 'package:RekaChain/tambahproject.dart';
+import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 
 class ViewUpload extends StatefulWidget {
@@ -285,45 +287,10 @@ class _ViewUploadState extends State<ViewUpload> {
                   alignment: Alignment.center,
                   child: Text('Pdf 1'),
                 )),
-                DataCell(Text("18/01/04")),
-                DataCell(
-                  Center(
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.visibility),
-                          onPressed: () {
-                            setState(() {
-                              isViewVisible = !isViewVisible;
-                            });
-                          },
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.file_download_outlined),
-                          onPressed: () {
-                            setState(() {
-                              isViewVisible = !isViewVisible;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ]),
-              DataRow(cells: [
                 DataCell(Container(
                   alignment: Alignment.center,
-                  child: Text('2'),
+                  child: Text('28/02/2024'),
                 )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-                DataCell(Text("18/02/04")),
                 DataCell(
                   Center(
                     child: Row(
@@ -384,7 +351,8 @@ class _ViewUploadState extends State<ViewUpload> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildAdminMenu(),
+          _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
     );
@@ -399,7 +367,7 @@ class _ViewUploadState extends State<ViewUpload> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -419,8 +387,6 @@ class _ViewUploadState extends State<ViewUpload> {
                 builder: (context) => AfterSales(),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -460,9 +426,10 @@ class _ViewUploadState extends State<ViewUpload> {
       leading: Icon(
         icon,
         size: size.toDouble(),
+        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -496,9 +463,43 @@ class _ViewUploadState extends State<ViewUpload> {
                 builder: (context) => InputDokumen(),
               ),
             );
+          } else if (index == 7) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahProject(),
+              ),
+            );
+          } else if (index == 8) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahStaff(),
+              ),
+            );
           }
         }
       },
+    );
+  }
+
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+      ],
     );
   }
 
