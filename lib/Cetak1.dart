@@ -1,4 +1,6 @@
 import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/DetailViewPerencanaan.dart';
+import 'package:RekaChain/cetak.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
@@ -168,7 +170,12 @@ class _Cetak1State extends State<Cetak1> {
                       right: 150,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle your print QR code action her
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Cetak(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           primary:
@@ -183,7 +190,12 @@ class _Cetak1State extends State<Cetak1> {
                       right: 20,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle your back button action here
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailP(),
+                            ),
+                          );
                         },
                         child: Text('Back'),
                       ),
@@ -193,7 +205,12 @@ class _Cetak1State extends State<Cetak1> {
                       right: 20,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle your back button action here
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailP(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           primary: Color.fromARGB(
@@ -490,8 +507,4 @@ class _Cetak1State extends State<Cetak1> {
       },
     );
   }
-}
-
-void main() {
-  runApp(Cetak1());
 }

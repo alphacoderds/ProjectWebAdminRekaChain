@@ -8,6 +8,7 @@ import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
+import 'package:RekaChain/viewperencanaan.dart';
 import 'package:flutter/material.dart';
 
 class Perencanaan extends StatefulWidget {
@@ -33,41 +34,33 @@ class _PerencanaanState extends State<Perencanaan> {
   String? selectedValueKategori;
 
   List<DataRow> rowsData = [];
-  late List<String?> selectedValuesAlurProses;
-  late List<String?> selectedValuesKategori;
 
 //===========================================================Widget Tambah Table Alur===========================================================//
   void addRow() {
     setState(() {
-      if (rowsData.isEmpty) {
-        rowsData = [];
-      }
-
       rowsData.add(DataRow(cells: [
         DataCell(DropdownButton<String>(
           alignment: Alignment.center,
           hint: Text('--Pilih Alur Proses--', style: TextStyle(fontSize: 15)),
-          value: null,
+          value: selectedValueAlurProses,
           borderRadius: BorderRadius.circular(5),
           focusColor: Colors.white,
           items: dropdownItemsAlurProses.map((String value) {
             return DropdownMenuItem<String>(value: value, child: Text(value));
           }).toList(),
-          onChanged: (newValue) =>
-              onAlurProsesChanged(newValue, rowsData.length - 1),
+          onChanged: onAlurProsesChanged,
           dropdownColor: Colors.white,
         )),
         DataCell(DropdownButton<String>(
           alignment: Alignment.center,
           hint: Text('--Pilih Kategori--', style: TextStyle(fontSize: 15)),
-          value: null,
+          value: selectedValueKategori,
           borderRadius: BorderRadius.circular(5),
           focusColor: Colors.white,
           items: dropdownItemsKategori.map((String value) {
             return DropdownMenuItem<String>(value: value, child: Text(value));
           }).toList(),
-          onChanged: (newValue) =>
-              onKategoriChanged(newValue, rowsData.length - 1),
+          onChanged: onKategoriChanged,
           dropdownColor: Colors.white,
         )),
         DataCell(Container(
@@ -85,29 +78,30 @@ class _PerencanaanState extends State<Perencanaan> {
           ),
         )),
       ]));
-      selectedValuesAlurProses.add(null);
-      selectedValuesKategori.add(null);
     });
   }
 
-  @override
   void initState() {
     super.initState();
-    selectedValuesAlurProses = List.filled(rowsData.length, null);
-    selectedValuesKategori = List.filled(rowsData.length, null);
+    // Tambahkan satu baris awal
+    rowsData.add(DataRow(cells: [
+      DataCell(Text('Alur Proses')),
+      DataCell(Text('Kategori')),
+      DataCell(Text('Detail/Keterangan')),
+    ]));
   }
 
   // Fungsi untuk memperbarui nilai dropdown Alur Proses
-  void onAlurProsesChanged(String? newValue, int index) {
+  void onAlurProsesChanged(String? newValue) {
     setState(() {
-      selectedValuesAlurProses[index] = newValue;
+      selectedValueAlurProses = newValue;
     });
   }
 
 // Fungsi untuk memperbarui nilai dropdown Kategori
-  void onKategoriChanged(String? newValue, int index) {
+  void onKategoriChanged(String? newValue) {
     setState(() {
-      selectedValuesKategori[index] = newValue;
+      selectedValueKategori = newValue;
     });
   }
 
@@ -167,7 +161,14 @@ class _PerencanaanState extends State<Perencanaan> {
                             child: Row(
                               children: [
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Vperencanaan(),
+                                      ),
+                                    );
+                                  },
                                   child: Text(
                                     'View',
                                     style:
@@ -266,12 +267,15 @@ class _PerencanaanState extends State<Perencanaan> {
                                                       fontSize: 15),
                                                 ),
                                                 Container(
+                                                  width: 225,
                                                   height: 40,
                                                   decoration: BoxDecoration(
-                                                      border: Border.all(),
+                                                      border: Border.all(
+                                                          color:
+                                                              Colors.black54),
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                              5)),
+                                                              3)),
                                                   child: DropdownButton<String>(
                                                     alignment: Alignment.center,
                                                     hint: Text(
@@ -279,6 +283,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                                         style: TextStyle(
                                                             fontSize: 15)),
                                                     value: selectedValue,
+                                                    underline: SizedBox(),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             5),
@@ -312,21 +317,28 @@ class _PerencanaanState extends State<Perencanaan> {
                                                           FontWeight.w600,
                                                       fontSize: 15),
                                                 ),
-                                                Container(
+                                                SizedBox(
+                                                  width: 220,
                                                   height: 40,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 7),
-                                                  width: 225,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5)),
                                                   child: TextField(
-                                                    decoration:
-                                                        InputDecoration(),
+                                                    decoration: InputDecoration(
+                                                        contentPadding:
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        2,
+                                                                    vertical:
+                                                                        2),
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1))),
                                                   ),
-                                                )
+                                                ),
                                               ],
                                             ),
                                             SizedBox(height: 120),
@@ -341,21 +353,28 @@ class _PerencanaanState extends State<Perencanaan> {
                                                           FontWeight.w600,
                                                       fontSize: 15),
                                                 ),
-                                                Container(
-                                                  height: 40,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 15),
+                                                SizedBox(
                                                   width: 150,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
+                                                  height: 40,
                                                   child: TextField(
-                                                    decoration:
-                                                        InputDecoration(),
+                                                    decoration: InputDecoration(
+                                                        contentPadding:
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        15,
+                                                                    vertical:
+                                                                        2),
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1))),
                                                   ),
-                                                )
+                                                ),
                                               ],
                                             ),
                                             SizedBox(height: 30),
@@ -370,26 +389,39 @@ class _PerencanaanState extends State<Perencanaan> {
                                                           FontWeight.w600,
                                                       fontSize: 15),
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   height: 40,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 15),
                                                   width: 150,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
                                                   child: TextField(
-                                                    textAlign: TextAlign.center,
-                                                    controller:
-                                                        tglMulaicontroller,
-                                                    readOnly: true,
-                                                    onTap: () {
-                                                      _selectDate(
-                                                          tglMulaicontroller);
-                                                    },
-                                                  ),
+                                                      textAlignVertical:
+                                                          TextAlignVertical
+                                                              .center,
+                                                      textAlign: TextAlign
+                                                          .center,
+                                                      controller:
+                                                          tglSelesaicontroller,
+                                                      readOnly: true,
+                                                      onTap: () {
+                                                        _selectDate(
+                                                            tglMulaicontroller);
+                                                      },
+                                                      decoration: InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          15,
+                                                                      vertical:
+                                                                          2),
+                                                          border: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20),
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                      width:
+                                                                          1)))),
                                                 )
                                               ],
                                             )
@@ -411,21 +443,28 @@ class _PerencanaanState extends State<Perencanaan> {
                                                           FontWeight.w600,
                                                       fontSize: 15),
                                                 ),
-                                                Container(
+                                                SizedBox(
+                                                  width: 220,
                                                   height: 40,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 7),
-                                                  width: 225,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5)),
                                                   child: TextField(
-                                                    decoration:
-                                                        InputDecoration(),
+                                                    decoration: InputDecoration(
+                                                        contentPadding:
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        2,
+                                                                    vertical:
+                                                                        2),
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1))),
                                                   ),
-                                                )
+                                                ),
                                               ],
                                             ),
                                             SizedBox(height: 40),
@@ -440,21 +479,28 @@ class _PerencanaanState extends State<Perencanaan> {
                                                           FontWeight.w600,
                                                       fontSize: 15),
                                                 ),
-                                                Container(
+                                                SizedBox(
+                                                  width: 220,
                                                   height: 40,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 7),
-                                                  width: 225,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5)),
                                                   child: TextField(
-                                                    decoration:
-                                                        InputDecoration(),
+                                                    decoration: InputDecoration(
+                                                        contentPadding:
+                                                            EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        2,
+                                                                    vertical:
+                                                                        2),
+                                                        border: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1))),
                                                   ),
-                                                )
+                                                ),
                                               ],
                                             ),
                                             SizedBox(height: 30),
@@ -476,7 +522,9 @@ class _PerencanaanState extends State<Perencanaan> {
                                                             horizontal: 15),
                                                     width: 150,
                                                     decoration: BoxDecoration(
-                                                        border: Border.all(),
+                                                        border: Border.all(
+                                                            color:
+                                                                Colors.black45),
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(20)),
@@ -495,20 +543,27 @@ class _PerencanaanState extends State<Perencanaan> {
                                                           FontWeight.w600,
                                                       fontSize: 15),
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   height: 40,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 15),
                                                   width: 150,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
                                                   child: TextField(
-                                                    decoration:
-                                                        InputDecoration(),
-                                                  ),
+                                                      decoration: InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          15,
+                                                                      vertical:
+                                                                          2),
+                                                          border: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20),
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                      width:
+                                                                          1)))),
                                                 )
                                               ],
                                             ),
@@ -524,26 +579,39 @@ class _PerencanaanState extends State<Perencanaan> {
                                                           FontWeight.w600,
                                                       fontSize: 15),
                                                 ),
-                                                Container(
+                                                SizedBox(
                                                   height: 40,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 15),
                                                   width: 150,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
                                                   child: TextField(
-                                                    textAlign: TextAlign.center,
-                                                    controller:
-                                                        tglSelesaicontroller,
-                                                    readOnly: true,
-                                                    onTap: () {
-                                                      _selectDate(
-                                                          tglSelesaicontroller);
-                                                    },
-                                                  ),
+                                                      textAlignVertical:
+                                                          TextAlignVertical
+                                                              .center,
+                                                      textAlign: TextAlign
+                                                          .center,
+                                                      controller:
+                                                          tglSelesaicontroller,
+                                                      readOnly: true,
+                                                      onTap: () {
+                                                        _selectDate(
+                                                            tglSelesaicontroller);
+                                                      },
+                                                      decoration: InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          15,
+                                                                      vertical:
+                                                                          2),
+                                                          border: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20),
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                      width:
+                                                                          1)))),
                                                 )
                                               ],
                                             )
@@ -590,7 +658,9 @@ class _PerencanaanState extends State<Perencanaan> {
                                     ),
                                     SizedBox(width: 20),
                                     ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        _showFinishDialog();
+                                      },
                                       child: Text(
                                         'Simpan',
                                       ),
@@ -674,7 +744,7 @@ class _PerencanaanState extends State<Perencanaan> {
                 ),
               ),
             ],
-            rows: List.generate(rowsData.length, (index) {
+            rows: rowsData.map((DataRow row) {
               return DataRow(cells: [
                 DataCell(DropdownButton<String>(
                   alignment: Alignment.center,
@@ -682,7 +752,7 @@ class _PerencanaanState extends State<Perencanaan> {
                     '--Pilih Alur Proses--',
                     style: TextStyle(fontSize: 15),
                   ),
-                  value: selectedValuesAlurProses[index],
+                  value: selectedValueAlurProses,
                   borderRadius: BorderRadius.circular(5),
                   focusColor: Colors.white,
                   items: dropdownItemsAlurProses.map((String value) {
@@ -691,7 +761,7 @@ class _PerencanaanState extends State<Perencanaan> {
                       child: Text(value),
                     );
                   }).toList(),
-                  onChanged: (newValue) => onAlurProsesChanged(newValue, index),
+                  onChanged: onAlurProsesChanged,
                   dropdownColor: Colors.white,
                 )),
                 DataCell(DropdownButton<String>(
@@ -700,7 +770,7 @@ class _PerencanaanState extends State<Perencanaan> {
                     '--Pilih Kategori--',
                     style: TextStyle(fontSize: 15),
                   ),
-                  value: selectedValuesKategori[index],
+                  value: selectedValueKategori,
                   borderRadius: BorderRadius.circular(5),
                   focusColor: Colors.white,
                   items: dropdownItemsKategori.map((String value) {
@@ -709,7 +779,7 @@ class _PerencanaanState extends State<Perencanaan> {
                       child: Text(value),
                     );
                   }).toList(),
-                  onChanged: (newValue) => onKategoriChanged(newValue, index),
+                  onChanged: onKategoriChanged,
                   dropdownColor: Colors.white,
                 )),
                 DataCell(Container(
@@ -733,119 +803,6 @@ class _PerencanaanState extends State<Perencanaan> {
       ),
     );
   }
-
-  // [
-  //   DataRow(cells: [
-  //     DataCell(
-  //       DropdownButton<String>(
-  //         alignment: Alignment.center,
-  //         hint: Text('--Pilih Alur Proses--',
-  //             style: TextStyle(fontSize: 15)),
-  //         value: selectedValueAlurProses,
-  //         borderRadius: BorderRadius.circular(5),
-  //         focusColor: Colors.white,
-  //         items: dropdownItemsAlurProses.map((String value) {
-  //           return DropdownMenuItem<String>(
-  //               value: value, child: Text(value));
-  //         }).toList(),
-  //         onChanged: (newValue) {
-  //           onAlurProsesChanged;
-  //         },
-  //         dropdownColor: Colors.white,
-  //       ),
-  //     ),
-  //     DataCell(
-  //       DropdownButton<String>(
-  //         alignment: Alignment.center,
-  //         hint: Text('--Pilih Kategori--',
-  //             style: TextStyle(fontSize: 15)),
-  //         value: selectedValueKategori,
-  //         borderRadius: BorderRadius.circular(5),
-  //         focusColor: Colors.white,
-  //         items: dropdownItemsKategori.map((String value) {
-  //           return DropdownMenuItem<String>(
-  //               value: value, child: Text(value));
-  //         }).toList(),
-  //         onChanged: (newValue) {
-  //           onKategoriChanged;
-  //         },
-  //         dropdownColor: Colors.white,
-  //       ),
-  //     ),
-  //     DataCell(Container(
-  //       height: 100,
-  //       width: 300,
-  //       child: TextField(
-  //         maxLines: 5,
-  //         decoration: InputDecoration(
-  //           border: InputBorder.none,
-  //           contentPadding: EdgeInsets.symmetric(
-  //               vertical: screenHeight * 0.005,
-  //               horizontal: screenWidth * 0.005),
-  //         ),
-  //       ),
-  //     )),
-  //   ]),
-  //   DataRow(cells: [
-  //     DataCell(
-  //       DropdownButton<String>(
-  //         alignment: Alignment.center,
-  //         hint: Text('--Pilih Alur Proses--',
-  //             style: TextStyle(fontSize: 15)),
-  //         value: selectedValueAlurProses,
-  //         borderRadius: BorderRadius.circular(5),
-  //         focusColor: Colors.white,
-  //         items: dropdownItemsAlurProses.map((String value) {
-  //           return DropdownMenuItem<String>(
-  //               value: value, child: Text(value));
-  //         }).toList(),
-  //         onChanged: (newValue) {
-  //           setState(() {
-  //             selectedValueAlurProses = newValue;
-  //           });
-  //         },
-  //         dropdownColor: Colors.white,
-  //       ),
-  //     ),
-  //     DataCell(
-  //       DropdownButton<String>(
-  //         alignment: Alignment.center,
-  //         hint: Text('--Pilih Kategori--',
-  //             style: TextStyle(fontSize: 15)),
-  //         value: selectedValueKategori,
-  //         borderRadius: BorderRadius.circular(5),
-  //         focusColor: Colors.white,
-  //         items: dropdownItemsKategori.map((String value) {
-  //           return DropdownMenuItem<String>(
-  //               value: value, child: Text(value));
-  //         }).toList(),
-  //         onChanged: (newValue) {
-  //           setState(() {
-  //             selectedValueKategori = newValue;
-  //           });
-  //         },
-  //         dropdownColor: Colors.white,
-  //       ),
-  //     ),
-  //     DataCell(Container(
-  //       height: 100,
-  //       width: 300,
-  //       // decoration: BoxDecoration(
-  //       //   border:
-  //       //       Border.all(color: Color.fromARGB(255, 177, 177, 177)),
-  //       // ),
-  //       child: TextField(
-  //         maxLines: 5,
-  //         decoration: InputDecoration(
-  //           border: InputBorder.none,
-  //           contentPadding: EdgeInsets.symmetric(
-  //               vertical: screenHeight * 0.005,
-  //               horizontal: screenWidth * 0.005),
-  //         ),
-  //       ),
-  //     )),
-  //   ]),
-  // ],
 
   Widget _buildViewTable() {
     return DataTable(
@@ -1046,6 +1003,38 @@ class _PerencanaanState extends State<Perencanaan> {
         _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
         _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
       ],
+    );
+  }
+
+  void _showFinishDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin simpan data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Vperencanaan()),
+                );
+              },
+              child: Text("Ya", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
     );
   }
 
