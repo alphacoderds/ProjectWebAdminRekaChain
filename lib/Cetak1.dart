@@ -1,4 +1,6 @@
 import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/DetailViewPerencanaan.dart';
+import 'package:RekaChain/cetak.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
@@ -63,34 +65,7 @@ class _Cetak1State extends State<Cetak1> {
                     padding: EdgeInsets.only(left: screenHeight * 0.02),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 300,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                          ),
-                          child: DropdownButton<String>(
-                            alignment: Alignment.center,
-                            hint: Text('--Pilih Nama/Kode Project--'),
-                            value: selectedValue,
-                            borderRadius: BorderRadius.circular(5),
-                            items: dropdownItems.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedValue = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
+                      children: [],
                     ),
                   ),
                   actions: [
@@ -154,20 +129,36 @@ class _Cetak1State extends State<Cetak1> {
                             EdgeInsets.symmetric(vertical: screenHeight * 0.01),
                         child: Column(
                           children: [
-                            SizedBox(
-                              height: 10,
-                            ),
                             Center(
                               child: Container(
                                 width: screenWidth * 0.63,
-                                height: screenHeight * 0.70,
+                                height: screenHeight * 0.80,
                                 padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                 margin: EdgeInsets.all(16.0),
                                 decoration: BoxDecoration(
                                   border: Border.all(color: Colors.black),
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
-                                child: _buildMainTable(),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      padding:
+                                          EdgeInsets.fromLTRB(30, 10, 30, 10),
+                                      decoration: BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.black45))),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'PT. Nugroho Jasa',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                    Container(child: _buildMainTable()),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -179,9 +170,19 @@ class _Cetak1State extends State<Cetak1> {
                       right: 150,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle your back button action here
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Cetak(),
+                            ),
+                          );
                         },
-                        child: Text('Cetak QR Code'),
+                        style: ElevatedButton.styleFrom(
+                          primary:
+                              Color.fromARGB(255, 1, 46, 76), // Warna biru tua
+                        ),
+                        child: Text('Cetak QR Code',
+                            style: TextStyle(color: Colors.white)),
                       ),
                     ),
                     Positioned(
@@ -189,7 +190,12 @@ class _Cetak1State extends State<Cetak1> {
                       right: 20,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle your back button action here
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailP(),
+                            ),
+                          );
                         },
                         child: Text('Back'),
                       ),
@@ -199,7 +205,12 @@ class _Cetak1State extends State<Cetak1> {
                       right: 20,
                       child: ElevatedButton(
                         onPressed: () {
-                          // Handle your back button action here
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailP(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           primary: Color.fromARGB(
@@ -274,9 +285,12 @@ class _Cetak1State extends State<Cetak1> {
             ],
             rows: [
               DataRow(cells: [
-                DataCell(Text('')),
-                DataCell(Text('')),
-                DataCell(Text('')),
+                DataCell(Text('xxxxxx xxx xxxx')),
+                DataCell(Text('xxxxxxxxxxxxxx')),
+                DataCell(Icon(
+                  Icons.qr_code_2,
+                  size: 50,
+                )),
               ]),
             ],
           ),
@@ -493,8 +507,4 @@ class _Cetak1State extends State<Cetak1> {
       },
     );
   }
-}
-
-void main() {
-  runApp(Cetak1());
 }

@@ -86,6 +86,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                               alignment: Alignment.center,
                               hint: Text('--Pilih Nama/Kode Project--'),
                               value: selectedValue,
+                              underline: SizedBox(),
                               borderRadius: BorderRadius.circular(5),
                               items: dropdownItems.map((String value) {
                                 return DropdownMenuItem<String>(
@@ -113,7 +114,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                             ),
                             IconButton(
                               icon: Icon(
-                                Icons.download,
+                                Icons.file_download_outlined,
                                 size: 33,
                                 color: Color.fromARGB(255, 255, 255, 255),
                               ),
@@ -153,29 +154,60 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                       )
                     ],
                   ),
-                  body: Container(
+                  body: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
                     child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: screenHeight * 0.01),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Center(
-                            child: Container(
-                              width: screenWidth * 0.63,
-                              height: screenHeight * 0.70,
+                      padding: EdgeInsets.symmetric(
+                          vertical: screenHeight * 0.05,
+                          horizontal: screenWidth * 0.08),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Container(
                               padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                               margin: EdgeInsets.all(50.0),
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
-                                borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(color: Colors.black),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Column(
+                                children: [
+                                  Container(child: _buildMainTable()),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                          top: BorderSide(
+                                              color: Colors.black45)),
+                                    ),
+                                    height: screenHeight * 0.3,
+                                    padding: EdgeInsets.fromLTRB(30, 30, 0, 10),
+                                    alignment: Alignment.topLeft,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Saran :',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          SizedBox(
+                                            height: 20,
+                                          ),
+                                          Text(
+                                            'Untuk membuat border container hanya ada pada bagian atas (top) saja, Anda dapat menggunakan properti border pada widget Container. Properti ini memungkinkan Anda untuk menentukan gaya, warna, dan ketebalan border. Dalam hal ini, Anda dapat menggunakan Border dengan mengatur top saja, sedangkan sisanya dibiarkan null atau tidak diatur.',
+                                            maxLines: 8,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              child: _buildMainTable(),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -199,15 +231,15 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
-            columnSpacing: 100.0,
-            horizontalMargin: 70.0,
+            columnSpacing: 150.0,
+            horizontalMargin: 50.0,
             columns: [
               DataColumn(
                 label: Container(
                   padding: EdgeInsets.symmetric(horizontal: 1.0),
                   child: Text(
-                    'No',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    'No.',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
@@ -218,18 +250,10 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                     children: [
                       Text(
                         'Detail Kerusakan',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ],
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    'Item',
-                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -239,8 +263,26 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                   child: Row(
                     children: [
                       Text(
+                        'Item',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
                         'Keterangan',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
@@ -249,10 +291,22 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
             ],
             rows: [
               DataRow(cells: [
-                DataCell(Text('1')),
-                DataCell(Text('AA21 1/24')),
-                DataCell(Text('13-02-2024')),
-                DataCell(Text('13-02-2024')),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('1'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('abcd'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('abcd'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('abcd'),
+                )),
               ]),
             ],
           ),

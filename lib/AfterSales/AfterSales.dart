@@ -74,6 +74,7 @@ class _AfterSalesState extends State<AfterSales> {
                             alignment: Alignment.center,
                             hint: Text('--Pilih Nama/Kode Project--'),
                             value: selectedValue,
+                            underline: SizedBox(),
                             borderRadius: BorderRadius.circular(5),
                             items: dropdownItems.map((String value) {
                               return DropdownMenuItem<String>(
@@ -225,20 +226,34 @@ class _AfterSalesState extends State<AfterSales> {
             ],
             rows: [
               DataRow(cells: [
-                DataCell(Text('1')),
-                DataCell(Text('PT. Nugraha Jasa')),
-                DataCell(Text('AA21 1/24')),
-                DataCell(Text('13-02-2024')),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('1'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('abcd'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('abcd'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('abcd'),
+                )),
                 DataCell(
-                  IconButton(
-                    icon: Icon(Icons.visibility),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ViewAfterSales()),
-                      );
-                    },
+                  Center(
+                    child: IconButton(
+                      icon: Icon(Icons.visibility),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ViewAfterSales()),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ]),

@@ -1,8 +1,10 @@
 import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/DetailViewPerencanaan.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
+import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
@@ -77,7 +79,7 @@ class _VperencanaanState extends State<Vperencanaan> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Vperencanaan()),
+                                    builder: (context) => Notifikasi()),
                               );
                             },
                           ),
@@ -323,7 +325,7 @@ class _VperencanaanState extends State<Vperencanaan> {
 Widget _ListView() {
   return ListView.separated(
     itemBuilder: (context, index) {
-      return ListViewItem(index);
+      return ListViewItem(context, index);
     },
     separatorBuilder: (context, index) {
       return Divider(height: 0);
@@ -332,7 +334,7 @@ Widget _ListView() {
   );
 }
 
-Widget ListViewItem(int index) {
+Widget ListViewItem(BuildContext context, int index) {
   return Container(
     margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
     child: Row(
@@ -344,7 +346,7 @@ Widget ListViewItem(int index) {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                message(index),
+                message(context, index),
               ],
             ),
           ),
@@ -354,7 +356,7 @@ Widget ListViewItem(int index) {
   );
 }
 
-Widget message(int index) {
+Widget message(BuildContext context, int index) {
   double textsize = 14;
   return Container(
     child: Column(
@@ -381,7 +383,10 @@ Widget message(int index) {
             IconButton(
               icon: Icon(Icons.visibility),
               onPressed: () {
-                // Add your edit logic here
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DetailP()),
+                );
               },
             ),
             IconButton(

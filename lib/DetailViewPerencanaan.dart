@@ -1,4 +1,5 @@
 import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/cetak1.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
@@ -471,7 +472,14 @@ class _DetailPState extends State<DetailP> {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Cetak1(),
+                                          ),
+                                        );
+                                      },
                                       child: Text(
                                         'Cetak',
                                       ),

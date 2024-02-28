@@ -3,36 +3,41 @@ import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
+import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
-import 'package:RekaChain/subnotifikasi.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 
-class Notifikasi extends StatefulWidget {
+class ListProject extends StatefulWidget {
   @override
-  State<Notifikasi> createState() => _NotifikasiState();
+  State<ListProject> createState() => _ListProjectState();
 }
 
-class _NotifikasiState extends State<Notifikasi> {
+class _ListProjectState extends State<ListProject> {
   int _selectedIndex = 0;
-  late double screenWidth;
-  late double screenHeight;
+  bool isViewVisible = false;
+  late double screenWidth = MediaQuery.of(context).size.width;
+  late double screenHeight = MediaQuery.of(context).size.height;
+
+  List<String> dropdownItems = [
+    '--Pilih Nama/Kode Project--',
+    'R22-PT. Nugraha Jasa',
+    'PT. INDAH JAYA'
+  ];
+  String? selectedValue;
 
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Notifikasi(),
+              builder: (context) => ListProject(),
             );
           default:
             return null;
@@ -49,14 +54,44 @@ class _NotifikasiState extends State<Notifikasi> {
                   backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                   toolbarHeight: 65,
                   title: Padding(
-                    padding: EdgeInsets.only(left: screenHeight * 0.02),
-                    child: Text(
-                      'Notifications',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Donegal One',
-                        color: Colors.white,
+                    padding: EdgeInsets.only(left: screenHeight * 0.02, top: 2),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            width: 250,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Cari',
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                        ],
                       ),
                     ),
                   ),
@@ -101,12 +136,160 @@ class _NotifikasiState extends State<Notifikasi> {
                     )
                   ],
                 ),
-                body: _ListView(),
+                body: Center(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    margin: EdgeInsets.all(50.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: _buildMainTable(),
+                  ),
+                ),
               ),
             ),
           ],
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      ),
+    );
+  }
+
+  Widget _buildMainTable() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height - 50,
+        ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            columnSpacing: 200.0,
+            horizontalMargin: 50.0,
+            columns: [
+              DataColumn(
+                label: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    'No.',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Kode Project',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Nama Project',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            rows: [
+              DataRow(cells: [
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('1'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('R-22'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('PT. Nugraha Jasa'),
+                )),
+                DataCell(
+                  Center(
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {},
+                        ),
+                        SizedBox(width: 10),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ]),
+              DataRow(cells: [
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('2'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('R-23'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('PT.INKA'),
+                )),
+                DataCell(
+                  Center(
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {},
+                        ),
+                        SizedBox(width: 10),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () {},
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ]),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -296,7 +479,7 @@ class _NotifikasiState extends State<Notifikasi> {
           title: Text("Logout", style: TextStyle(color: Colors.white)),
           content: Text("Apakah Anda yakin ingin logout?",
               style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(255, 6, 37, 55),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
           actions: [
             TextButton(
               onPressed: () {
@@ -319,115 +502,4 @@ class _NotifikasiState extends State<Notifikasi> {
       },
     );
   }
-}
-
-Widget _ListView() {
-  return ListView.separated(
-    itemBuilder: (context, index) {
-      return ListViewItem(context, index);
-    },
-    separatorBuilder: (context, index) {
-      return Divider(height: 0);
-    },
-    itemCount: 15,
-  );
-}
-
-Widget ListViewItem(BuildContext context, int index) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Subnotifikasi(),
-        ),
-      );
-    },
-    child: Container(
-      margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          prefixIcon(),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  message(index),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
-}
-
-Widget prefixIcon() {
-  return Container(
-    height: 80,
-    width: 60,
-    margin: EdgeInsets.only(left: 4),
-    padding: EdgeInsets.all(10),
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      color: Colors.grey.shade300,
-    ),
-    child: Icon(
-      Icons.notifications,
-      size: 35,
-      color: Color.fromARGB(255, 6, 37, 55),
-    ),
-  );
-}
-
-Widget message(int index) {
-  double textsize = 14;
-  return Container(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-          'Panel ${index + 1}',
-          style: TextStyle(
-            fontSize: 17,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                '23-2-2024',
-                style: TextStyle(
-                  fontSize: 12,
-                ),
-              ),
-              SizedBox(
-                width: 7,
-              ),
-              Text(
-                '07:00 AM',
-                style: TextStyle(
-                  fontSize: 12,
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
 }

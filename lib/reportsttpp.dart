@@ -10,6 +10,7 @@ import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
+import 'package:RekaChain/viewreportsttpp.dart';
 import 'package:flutter/material.dart';
 
 class ReportSTTPP extends StatefulWidget {
@@ -100,7 +101,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                           IconButton(
                             icon: Icon(
                               Icons.notifications_active,
-                              size: 35,
+                              size: 33,
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
                             onPressed: () {
@@ -114,7 +115,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                           IconButton(
                             icon: Icon(
                               Icons.account_circle_rounded,
-                              size: 38,
+                              size: 35,
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
                             onPressed: () {
@@ -138,8 +139,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                       border: Border.all(color: Colors.black),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
-                    child:
-                        isViewVisible ? _buildViewTable() : _buildMainTable(),
+                    child: _buildMainTable(),
                   ),
                 ),
               ),
@@ -238,9 +238,11 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                     child: IconButton(
                       icon: Icon(Icons.visibility),
                       onPressed: () {
-                        setState(() {
-                          isViewVisible = !isViewVisible;
-                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ViewReportSTTPP()),
+                        );
                       },
                     ),
                   ),
@@ -264,9 +266,11 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                     child: IconButton(
                       icon: Icon(Icons.visibility),
                       onPressed: () {
-                        setState(() {
-                          isViewVisible = !isViewVisible;
-                        });
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ViewReportSTTPP()),
+                        );
                       },
                     ),
                   ),
