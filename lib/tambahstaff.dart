@@ -1,20 +1,16 @@
 import 'dart:html';
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
-import 'package:RekaChain/editprofile.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/liststaff.dart';
 import 'package:RekaChain/login.dart';
 import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
-import 'package:RekaChain/viewikm.dart';
-import 'package:RekaChain/viewupload.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
 
 class TambahStaff extends StatefulWidget {
   const TambahStaff({super.key});
@@ -73,7 +69,7 @@ class _TambahStaffState extends State<TambahStaff> {
                     title: Padding(
                       padding: EdgeInsets.only(left: screenHeight * 0.01),
                       child: Text(
-                        'Input Kebutuhan Material',
+                        'Data Staff',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -90,28 +86,19 @@ class _TambahStaffState extends State<TambahStaff> {
                             SizedBox(
                               width: screenWidth * 0.005,
                             ),
-                            ElevatedButton(
+                            IconButton(
+                              icon: Icon(
+                                Icons.list,
+                                size: 38,
+                                color: Color.fromARGB(255, 255, 255, 255),
+                              ),
                               onPressed: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Viewkm()),
+                                      builder: (context) => ListStaff()),
                                 );
                               },
-                              child: Text(
-                                'View',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                backgroundColor:
-                                    Color.fromARGB(255, 89, 100, 122),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 3),
-                              ),
                             ),
                             IconButton(
                               icon: Icon(
@@ -176,7 +163,7 @@ class _TambahStaffState extends State<TambahStaff> {
             Container(
               alignment: Alignment.center,
               width: screenWidth * 0.7,
-              height: screenHeight * 0.86,
+              height: screenHeight * 0.9,
               decoration: BoxDecoration(
                 border: Border.all(),
                 borderRadius: BorderRadius.circular(10),
@@ -480,7 +467,9 @@ class _TambahStaffState extends State<TambahStaff> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _showFinishDialog();
+                  },
                   child: Text(
                     'Simpan',
                   ),
@@ -699,7 +688,7 @@ class _TambahStaffState extends State<TambahStaff> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const InputDokumen()),
+                  MaterialPageRoute(builder: (context) => ListStaff()),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),

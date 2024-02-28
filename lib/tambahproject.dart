@@ -1,7 +1,6 @@
 import 'dart:html';
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
-import 'package:RekaChain/editprofile.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/listproject.dart';
@@ -78,7 +77,7 @@ class _TambahProjectState extends State<TambahProject> {
                     title: Padding(
                       padding: EdgeInsets.only(left: screenHeight * 0.01),
                       child: Text(
-                        'Tambah Project',
+                        'Data Project',
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -477,7 +476,7 @@ class _TambahProjectState extends State<TambahProject> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const InputDokumen()),
+                  MaterialPageRoute(builder: (context) => ListProject()),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
