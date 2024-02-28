@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
             scrollDirection: Axis.horizontal,
             child: Row(children: [
               SizedBox(
-                width: screenWidth * 0.005,
+                width: screenWidth * 0.001,
               ),
               Image.asset(
                 'assets/images/gudang.png',
@@ -87,10 +87,7 @@ class _LoginPageState extends State<LoginPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: screenHeight * 0.15,
-                    width: screenWidth * 0.30,
-                  ),
+                  SizedBox(height: screenHeight * 0.20),
                   Image.asset(
                     'assets/images/logoREKA.png',
                     width: screenWidth * 0.2,
@@ -128,9 +125,9 @@ class _LoginPageState extends State<LoginPage> {
                     textAlign: TextAlign.left,
                   ),
                   SizedBox(height: screenHeight * 0.005),
-                  _inputField("Password", passwordController,
+                  _inputFieldPassword("Password", passwordController,
                       isPassword: true, backgroundColor: Colors.white),
-                  SizedBox(height: screenHeight * 0.005),
+                  SizedBox(height: screenHeight * 0.03),
                   _loginBtn(),
                   Expanded(child: Container())
                 ],
@@ -165,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
             hintText: hintText,
             hintStyle: TextStyle(
               color: const Color.fromARGB(255, 73, 72, 72),
-              fontSize: hintTextSize * screenWidth / 1050,
+              fontSize: hintTextSize * screenWidth / 1200,
             ),
             fillColor: backgroundColor,
             filled: true,
@@ -193,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
             hintText: hintText,
             hintStyle: TextStyle(
               color: const Color.fromARGB(255, 73, 72, 72),
-              fontSize: hintTextSize * screenWidth / 1050,
+              fontSize: hintTextSize * screenWidth / 1200,
             ),
             fillColor: backgroundColor,
             filled: true,
@@ -241,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
         height: screenHeight * 0.05,
         child: Center(
           child: Text(
-            "Sign In",
+            "LOGIN",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: screenHeight * 0.021,
