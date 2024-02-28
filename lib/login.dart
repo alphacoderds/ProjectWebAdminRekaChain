@@ -68,66 +68,69 @@ class _LoginPageState extends State<LoginPage> {
               alignment: Alignment.centerLeft,
             ),
           ),
-          Row(children: [
-            SizedBox(
-              width: screenWidth * 0.08,
-            ),
-            Image.asset(
-              'assets/images/gudang.png',
-              width: screenWidth * 0.4,
-            ),
-            SizedBox(
-              width: screenWidth * 0.08,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(height: screenHeight * 0.15),
-                Image.asset(
-                  'assets/images/logoREKA.png',
-                  width: screenWidth * 0.2,
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                Text(
-                  "REKA CHAIN",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: screenHeight * 0.03,
-                    fontWeight: FontWeight.bold,
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: [
+              SizedBox(
+                width: screenWidth * 0.08,
+              ),
+              Image.asset(
+                'assets/images/gudang.png',
+                width: screenWidth * 0.4,
+              ),
+              SizedBox(
+                width: screenWidth * 0.08,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: screenHeight * 0.15),
+                  Image.asset(
+                    'assets/images/logoREKA.png',
+                    width: screenWidth * 0.2,
                   ),
-                ),
-                Text(
-                  "PT. REKAINDO GLOBAL JASA",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: screenHeight * 0.03,
-                    fontWeight: FontWeight.bold,
+                  SizedBox(height: screenHeight * 0.02),
+                  Text(
+                    "REKA CHAIN",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: screenHeight * 0.03,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(height: screenHeight * 0.07),
-                Text(
-                  "Username :",
-                  style: TextStyle(fontSize: screenHeight * 0.023),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(height: screenHeight * 0.005),
-                _inputField("Username", nipController,
-                    backgroundColor: Colors.white),
-                SizedBox(height: screenHeight * 0.005),
-                Text(
-                  "Password :",
-                  style: TextStyle(fontSize: screenHeight * 0.023),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(height: screenHeight * 0.005),
-                _inputField("Password", passwordController,
-                    isPassword: true, backgroundColor: Colors.white),
-                SizedBox(height: screenHeight * 0.005),
-                _loginBtn(),
-                Expanded(child: Container())
-              ],
-            ),
-          ]),
+                  Text(
+                    "PT. REKAINDO GLOBAL JASA",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: screenHeight * 0.03,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: screenHeight * 0.07),
+                  Text(
+                    "Username :",
+                    style: TextStyle(fontSize: screenHeight * 0.023),
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(height: screenHeight * 0.005),
+                  _inputField("Username", nipController,
+                      backgroundColor: Colors.white),
+                  SizedBox(height: screenHeight * 0.005),
+                  Text(
+                    "Password :",
+                    style: TextStyle(fontSize: screenHeight * 0.023),
+                    textAlign: TextAlign.left,
+                  ),
+                  SizedBox(height: screenHeight * 0.005),
+                  _inputField("Password", passwordController,
+                      isPassword: true, backgroundColor: Colors.white),
+                  SizedBox(height: screenHeight * 0.005),
+                  _loginBtn(),
+                  Expanded(child: Container())
+                ],
+              ),
+            ]),
+          ),
           Positioned(
             bottom: -screenHeight * 0.001,
             left: 0,

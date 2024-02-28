@@ -3,11 +3,13 @@ import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/editprofile.dart';
 import 'package:RekaChain/inputdokumen.dart';
+import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
 import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
+import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/viewikm.dart';
 import 'package:RekaChain/viewupload.dart';
 import 'package:flutter/gestures.dart';
@@ -26,30 +28,21 @@ class _TambahStaffState extends State<TambahStaff> {
   late double screenHeight = MediaQuery.of(context).size.height;
   List<File> uploadFiles = [];
 
-  Future<void> _uploadDocument() async {
-    FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
-    if (result != null) {
-      print('Path File: ${result.files.single.path}');
-    } else {
-      print('Pengguna membatalkan pemilih file');
-    }
-  }
-
   int _selectedIndex = 0;
-  List<String> dropdownItems1 = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue1;
+  List<String> dropdownItemsJabatan = ['Jabatan 1', 'Jabatan 2'];
+  String? selectedValueJabatan;
 
-  List<String> dropdownItems2 = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue2;
+  List<String> dropdownItemsDepartemen = ['Departemen 1', 'Departemen 2'];
+  String? selectedValueDepartemen;
+
+  List<String> dropdownItemsUnitKerja = ['Unit Kerja 1', 'Unit Kerja 2'];
+  String? selectedValueUNitKerja;
+
+  List<String> dropdownItemsDivisi = ['Divisi 1', 'Divisi 2'];
+  String? selectedValueDivisi;
+
+  List<String> dropdownItemsStatus = ['Aktif', 'Tidak Aktif'];
+  String? selectedValueStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -153,34 +146,19 @@ class _TambahStaffState extends State<TambahStaff> {
                       )
                     ],
                   ),
-                  body: Center(
-                    child: _buildMainTable(),
+                  body: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          _buildMainTable(),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
             ],
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(right: 0.01, bottom: 8),
-          child: SizedBox(
-            width: 100.0,
-            height: 40.0,
-            child: ElevatedButton(
-              onPressed: () {
-                _showFinishDialog();
-              },
-              style: ElevatedButton.styleFrom(
-                primary: const Color.fromRGBO(43, 56, 86, 1),
-              ),
-              child: Text(
-                'Simpan',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
           ),
         ),
       ),
@@ -189,120 +167,334 @@ class _TambahStaffState extends State<TambahStaff> {
 
   Widget _buildMainTable() {
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: screenHeight * 0.04),
-          child: Row(
-            children: [
-              Center(
-                child: Container(
-                  width: screenWidth * 0.70,
-                  height: screenHeight * 0.77,
-                  decoration: BoxDecoration(
-                    border: Border.all(),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: screenHeight * 0.02,
-                      horizontal: screenWidth * 0.02,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
+      scrollDirection: Axis.vertical,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            vertical: screenHeight * 0.05, horizontal: screenWidth * 0.02),
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              width: screenWidth * 0.7,
+              height: screenHeight * 0.86,
+              decoration: BoxDecoration(
+                border: Border.all(),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: screenHeight * 0.05,
+                  horizontal: screenWidth * 0.02,
+                ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _textfieldStaff('Kode Staff'),
+                          SizedBox(height: 20),
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Kode Staff ',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      child: DropdownButton<String>(
-                                        alignment: Alignment.center,
-                                        hint: Text('--Pilih Nama Project--'),
-                                        underline: SizedBox(),
-                                        value: selectedValue1,
-                                        borderRadius: BorderRadius.circular(5),
-                                        items:
-                                            dropdownItems1.map((String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Text(value),
-                                          );
-                                        }).toList(),
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            selectedValue1 = newValue;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              Text(
+                                'Jabatan',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
                               ),
-                              SizedBox(height: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Upload',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                    ),
+                              Container(
+                                height: 50,
+                                width: 400,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black54),
+                                    borderRadius: BorderRadius.circular(3)),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: DropdownButton<String>(
+                                    alignment: Alignment.center,
+                                    hint: Text('--Pilih Jabatan--'),
+                                    underline: SizedBox(),
+                                    value: selectedValueJabatan,
+                                    items: dropdownItemsJabatan
+                                        .map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        selectedValueJabatan = newValue;
+                                      });
+                                    },
+                                    focusColor: Colors.white,
                                   ),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 7),
-                                    width: 430,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(width: 8),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.add,
-                                            size: 35,
-                                          ),
-                                          onPressed: () {
-                                            _uploadDocument();
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
+                          SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Departemen',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Container(
+                                height: 50,
+                                width: 400,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black54),
+                                    borderRadius: BorderRadius.circular(3)),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: DropdownButton<String>(
+                                    alignment: Alignment.center,
+                                    hint: Text('--Pilih Departemen--'),
+                                    underline: SizedBox(),
+                                    value: selectedValueDepartemen,
+                                    items: dropdownItemsDepartemen
+                                        .map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        selectedValueDepartemen = newValue;
+                                      });
+                                    },
+                                    focusColor: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          _textfieldStaff('E-mail'),
+                          SizedBox(height: 20),
+                          _textfieldStaff('Username/NIP'),
+                          SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Konfirmasi Password',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 15),
+                              ),
+                              SizedBox(
+                                width: 400,
+                                height: 50,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 2, vertical: 2),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(3),
+                                          borderSide: BorderSide(width: 1))),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                        ],
+                      ),
+                      SizedBox(width: screenWidth * 0.05),
+                      Column(
+                        children: [
+                          _textfieldStaff('Nama Lengkap'),
+                          SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Unit Kerja',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Container(
+                                height: 50,
+                                width: 400,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black54),
+                                    borderRadius: BorderRadius.circular(3)),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: DropdownButton<String>(
+                                    alignment: Alignment.center,
+                                    hint: Text('--Pilih Unit Kerja--'),
+                                    underline: SizedBox(),
+                                    value: selectedValueUNitKerja,
+                                    items: dropdownItemsUnitKerja
+                                        .map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        selectedValueUNitKerja = newValue;
+                                      });
+                                    },
+                                    focusColor: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Divisi',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Container(
+                                height: 50,
+                                width: 400,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black54),
+                                    borderRadius: BorderRadius.circular(3)),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: DropdownButton<String>(
+                                    alignment: Alignment.center,
+                                    hint: Text('--Pilih Divisi--'),
+                                    underline: SizedBox(),
+                                    value: selectedValueDivisi,
+                                    items:
+                                        dropdownItemsDivisi.map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        selectedValueDivisi = newValue;
+                                      });
+                                    },
+                                    focusColor: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          _textfieldStaff('Nomor Telepon'),
+                          SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Konfirmasi Password',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 15),
+                              ),
+                              SizedBox(
+                                width: 400,
+                                height: 50,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 2, vertical: 2),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(3),
+                                          borderSide: BorderSide(width: 1))),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Status',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Container(
+                                height: 50,
+                                width: 400,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.black54),
+                                    borderRadius: BorderRadius.circular(3)),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: DropdownButton<String>(
+                                    alignment: Alignment.center,
+                                    hint: Text('--Pilih Status--'),
+                                    underline: SizedBox(),
+                                    value: selectedValueStatus,
+                                    items:
+                                        dropdownItemsStatus.map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        selectedValueStatus = newValue;
+                                      });
+                                    },
+                                    focusColor: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text(
+                    'Simpan',
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -333,6 +525,7 @@ class _TambahStaffState extends State<TambahStaff> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
+          _buildAdminMenu(),
           _buildListTile('Logout', Icons.logout, 7, 35),
         ],
       ),
@@ -411,7 +604,7 @@ class _TambahStaffState extends State<TambahStaff> {
         size: size.toDouble(),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -435,7 +628,7 @@ class _TambahStaffState extends State<TambahStaff> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => InputMaterial(),
               ),
             );
           } else if (index == 5) {
@@ -445,9 +638,43 @@ class _TambahStaffState extends State<TambahStaff> {
                 builder: (context) => InputDokumen(),
               ),
             );
+          } else if (index == 7) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahProject(),
+              ),
+            );
+          } else if (index == 8) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahStaff(),
+              ),
+            );
           }
         }
       },
+    );
+  }
+
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+      ],
     );
   }
 
@@ -512,6 +739,30 @@ class _TambahStaffState extends State<TambahStaff> {
           ],
         );
       },
+    );
+  }
+
+  Widget _textfieldStaff(String informasiStaff) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          informasiStaff,
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+        ),
+        SizedBox(
+          width: 400,
+          height: 50,
+          child: TextField(
+            decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(3),
+                    borderSide: BorderSide(width: 1))),
+          ),
+        ),
+      ],
     );
   }
 }
