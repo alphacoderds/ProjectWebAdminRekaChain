@@ -482,6 +482,9 @@ class _TambahStaffState extends State<TambahStaff> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  width: screenWidth * 0.03,
+                )
               ],
             ),
           ],
