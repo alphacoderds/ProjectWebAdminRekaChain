@@ -622,13 +622,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                     SizedBox(width: 20),
                                     ElevatedButton(
                                       onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                Vperencanaan(),
-                                          ),
-                                        );
+                                        _showFinishDialog();
                                       },
                                       child: Text(
                                         'Simpan',
@@ -937,6 +931,38 @@ class _PerencanaanState extends State<Perencanaan> {
             Navigator.pop(context);
           }
         }
+      },
+    );
+  }
+
+  void _showFinishDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin simpan data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Vperencanaan()),
+                );
+              },
+              child: Text("Ya", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
       },
     );
   }
