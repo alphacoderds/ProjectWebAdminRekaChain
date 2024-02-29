@@ -135,14 +135,9 @@ class _ListProjectState extends State<ListProject> {
                     )
                   ],
                 ),
-                body: Center(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    margin: EdgeInsets.all(50.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
                     child: _buildMainTable(),
                   ),
                 ),
@@ -156,145 +151,162 @@ class _ListProjectState extends State<ListProject> {
   }
 
   Widget _buildMainTable() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 50,
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+    return Container(
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 50,
+          ),
           child: DataTable(
-            columnSpacing: 100.0,
+            columnSpacing: 200.0,
             horizontalMargin: 50.0,
             columns: [
               DataColumn(
-                label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                label: Center(
                   child: Text(
-                    'No.',
+                    'No',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
               DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Kode Project',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ],
+                label: Center(
+                  child: Text(
+                    'Kode Project',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
               DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Nama Project',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ],
+                label: Center(
+                  child: Text(
+                    'Nama Project',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
               DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Aksi',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
+                label: Center(
+                  child: Text(
+                    'Aksi',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
             ],
             rows: [
               DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('1'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('R-22'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                      'PT. Nugraha Jasa Amanah Terpercaya Insyaallah Berkah'),
-                )),
                 DataCell(
-                  Center(
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TambahProject()),
-                            );
-                          },
-                        ),
-                        SizedBox(width: 10),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {},
-                        ),
-                      ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('1'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('R-22'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'PT. Nugraha Jasa Amanah Terpercaya Insyaallah Berkah',
+                      ),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Center(
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TambahProject(),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(width: 10),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ]),
               DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('R-23'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('PT.INKA'),
-                )),
                 DataCell(
-                  Center(
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TambahProject()),
-                            );
-                          },
-                        ),
-                        SizedBox(width: 10),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {},
-                        ),
-                      ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('2'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('R-23'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('PT.INKA'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Center(
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.edit),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TambahProject(),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(width: 10),
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {},
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

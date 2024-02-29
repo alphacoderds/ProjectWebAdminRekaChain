@@ -173,14 +173,9 @@ class _ViewkmState extends State<Viewkm> {
                     )
                   ],
                 ),
-                body: Center(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    margin: EdgeInsets.all(50.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
                     child: _buildMainTable(),
                   ),
                 ),
@@ -218,127 +213,134 @@ class _ViewkmState extends State<Viewkm> {
   }
 
   Widget _buildMainTable() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 50,
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 70.0,
-            horizontalMargin: 70.0,
-            columns: [
-              DataColumn(
-                label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    'No.',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    return Container(
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 50,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columnSpacing: 200.0,
+              horizontalMargin: 50.0,
+              columns: [
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'No',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'Kode Material',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Kode Material',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'Deskripsi',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Deskripsi',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'SpecTech/Material',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'SpecTech/Material',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'QTY',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'QTY',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'Unit',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Unit',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-            ],
-            rows: [
-              DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('1'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 1'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-              ]),
-              DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-              ]),
-            ],
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                ]),
+              ],
+            ),
           ),
         ),
       ),

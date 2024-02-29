@@ -165,14 +165,9 @@ class _ViewUploadState extends State<ViewUpload> {
                     )
                   ],
                 ),
-                body: Center(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    margin: EdgeInsets.all(50.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
                     child: _buildMainTable(),
                   ),
                 ),
@@ -210,111 +205,105 @@ class _ViewUploadState extends State<ViewUpload> {
   }
 
   Widget _buildMainTable() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 50,
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
+    return Container(
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 50,
+          ),
           child: DataTable(
             columnSpacing: 200.0,
-            horizontalMargin: 50.0,
+            horizontalMargin: 150.0,
             columns: [
               DataColumn(
-                label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                label: Center(
                   child: Text(
-                    'No.',
+                    'No',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
               DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Nama Dokumen',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ],
+                label: Center(
+                  child: Text(
+                    'Nama Dokumen',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
               DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Tanggal Upload',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ],
+                label: Center(
+                  child: Text(
+                    'Tanggal Upload',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
               DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Aksi',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ],
+                label: Center(
+                  child: Text(
+                    'Aksi',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
             ],
             rows: [
               DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('1'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 1'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('28/02/2024'),
-                )),
                 DataCell(
-                  Center(
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.visibility),
-                          onPressed: () {
-                            setState(() {
-                              isViewVisible = !isViewVisible;
-                            });
-                          },
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.file_download_outlined),
-                          onPressed: () {
-                            setState(() {
-                              isViewVisible = !isViewVisible;
-                            });
-                          },
-                        ),
-                      ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('1'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('Pdf 1'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('28/02/2024'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Center(
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.visibility),
+                            onPressed: () {
+                              setState(() {
+                                isViewVisible = !isViewVisible;
+                              });
+                            },
+                          ),
+                          SizedBox(width: 10),
+                          IconButton(
+                            icon: Icon(Icons.file_download_outlined),
+                            onPressed: () {
+                              setState(() {
+                                isViewVisible = !isViewVisible;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

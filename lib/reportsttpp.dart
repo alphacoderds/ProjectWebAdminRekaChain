@@ -131,14 +131,9 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                     )
                   ],
                 ),
-                body: Center(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    margin: EdgeInsets.all(50.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
                     child: _buildMainTable(),
                   ),
                 ),
@@ -152,161 +147,113 @@ class _ReportSTTPState extends State<ReportSTTPP> {
   }
 
   Widget _buildMainTable() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 50,
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 200.0,
-            horizontalMargin: 50.0,
-            columns: [
-              DataColumn(
-                label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    'No.',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    return Container(
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 50,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columnSpacing: 200.0,
+              horizontalMargin: 200.0,
+              columns: [
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'No',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Nama Project',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Nama Project',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Kode Lot',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'View',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Kode Lot',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'View',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Center(
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.visibility),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ViewReportSTTPP()),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            rows: [
-              DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('1'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Project 1'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('AA21 1/24'),
-                )),
-                DataCell(
-                  Center(
-                    child: IconButton(
-                      icon: Icon(Icons.visibility),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ViewReportSTTPP()),
-                        );
-                      },
                     ),
                   ),
-                ),
-              ]),
-              DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Project 2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('AA22 1/26'),
-                )),
-                DataCell(
-                  Center(
-                    child: IconButton(
-                      icon: Icon(Icons.visibility),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ViewReportSTTPP()),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ]),
-            ],
+                ]),
+              ],
+            ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildViewTable() {
-    return DataTable(
-      columnSpacing: 0,
-      horizontalMargin: 100,
-      columns: [
-        DataColumn(label: Text('No')),
-        DataColumn(label: Text('Nama Project')),
-        DataColumn(label: Text('Kode Lot')),
-        DataColumn(label: Text('View')),
-      ],
-      rows: [
-        DataRow(cells: [
-          DataCell(Text('1')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-        ]),
-        DataRow(cells: [
-          DataCell(Text('2')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-        ]),
-      ],
     );
   }
 

@@ -116,14 +116,9 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                     )
                   ],
                 ),
-                body: Center(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    margin: EdgeInsets.all(50.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
                     child: _buildMainTable(),
                   ),
                 ),
@@ -137,147 +132,152 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
   }
 
   Widget _buildMainTable() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 50,
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 30.0,
-            horizontalMargin: 20.0,
-            columns: [
-              DataColumn(
-                label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    'Nama Produk',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    return Container(
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 50,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columnSpacing: 200.0,
+              horizontalMargin: 50.0,
+              columns: [
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Nama Produk',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
                   ),
                 ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Kode QR',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Kode QR',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Proses',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Tanggal Mulai',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Tanggal Selesai',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Personil',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Keterangan',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Proses',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Tanggal Mulai',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Tanggal Selesai',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Personil',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Keterangan',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ],
-            rows: [
-              DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Panel'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Gambar QR'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Proses PPC'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('21-2-2024'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('22-2-2024'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Budi'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Proses'),
-                )),
-              ]),
-            ],
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                ]),
+              ],
+            ),
           ),
         ),
       ),
