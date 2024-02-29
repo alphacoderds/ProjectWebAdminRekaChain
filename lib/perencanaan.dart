@@ -1,4 +1,3 @@
-import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
@@ -6,8 +5,6 @@ import 'package:RekaChain/login.dart';
 import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
-import 'package:RekaChain/tambahproject.dart';
-import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewperencanaan.dart';
 import 'package:flutter/material.dart';
 
@@ -33,62 +30,27 @@ class _PerencanaanState extends State<Perencanaan> {
   late List<String> dropdownItemsKategori;
   String? selectedValueKategori;
 
-  List<DataRow> rowsData = [];
+  List<TableRowData> rowsData = [];
 
 //===========================================================Widget Tambah Table Alur===========================================================//
   void addRow() {
     setState(() {
-      rowsData.add(DataRow(cells: [
-        DataCell(DropdownButton<String>(
-          alignment: Alignment.center,
-          hint: Text('--Pilih Alur Proses--', style: TextStyle(fontSize: 15)),
-          value: selectedValueAlurProses,
-          borderRadius: BorderRadius.circular(5),
-          focusColor: Colors.white,
-          items: dropdownItemsAlurProses.map((String value) {
-            return DropdownMenuItem<String>(value: value, child: Text(value));
-          }).toList(),
-          onChanged: onAlurProsesChanged,
-          dropdownColor: Colors.white,
-        )),
-        DataCell(DropdownButton<String>(
-          alignment: Alignment.center,
-          hint: Text('--Pilih Kategori--', style: TextStyle(fontSize: 15)),
-          value: selectedValueKategori,
-          borderRadius: BorderRadius.circular(5),
-          focusColor: Colors.white,
-          items: dropdownItemsKategori.map((String value) {
-            return DropdownMenuItem<String>(value: value, child: Text(value));
-          }).toList(),
-          onChanged: onKategoriChanged,
-          dropdownColor: Colors.white,
-        )),
-        DataCell(Container(
-          height: 100,
-          width: 300,
-          child: TextField(
-            maxLines: 5,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(
-                vertical: screenHeight * 0.005,
-                horizontal: screenWidth * 0.005,
-              ),
-            ),
-          ),
-        )),
-      ]));
+      rowsData.add(TableRowData(
+        selectedAlurProses: null,
+        selectedKategori: null,
+        detail: '',
+      ));
     });
   }
 
   void initState() {
     super.initState();
     // Tambahkan satu baris awal
-    rowsData.add(DataRow(cells: [
-      DataCell(Text('Alur Proses')),
-      DataCell(Text('Kategori')),
-      DataCell(Text('Detail/Keterangan')),
-    ]));
+    rowsData.add(TableRowData(
+      selectedAlurProses: null,
+      selectedKategori: null,
+      detail: '',
+    ));
   }
 
   // Fungsi untuk memperbarui nilai dropdown Alur Proses
@@ -326,7 +288,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                                             EdgeInsets
                                                                 .symmetric(
                                                                     horizontal:
-                                                                        2,
+                                                                        10,
                                                                     vertical:
                                                                         2),
                                                         border: OutlineInputBorder(
@@ -399,7 +361,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                                       textAlign: TextAlign
                                                           .center,
                                                       controller:
-                                                          tglSelesaicontroller,
+                                                          tglMulaicontroller,
                                                       readOnly: true,
                                                       onTap: () {
                                                         _selectDate(
@@ -452,7 +414,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                                             EdgeInsets
                                                                 .symmetric(
                                                                     horizontal:
-                                                                        2,
+                                                                        10,
                                                                     vertical:
                                                                         2),
                                                         border: OutlineInputBorder(
@@ -488,7 +450,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                                             EdgeInsets
                                                                 .symmetric(
                                                                     horizontal:
-                                                                        2,
+                                                                        10,
                                                                     vertical:
                                                                         2),
                                                         border: OutlineInputBorder(
@@ -627,6 +589,7 @@ class _PerencanaanState extends State<Perencanaan> {
 
                               SizedBox(width: 40),
                               Container(
+                                alignment: Alignment.center,
                                 width: screenWidth * 0.6,
                                 padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                 margin: EdgeInsets.all(50.0),
@@ -659,7 +622,13 @@ class _PerencanaanState extends State<Perencanaan> {
                                     SizedBox(width: 20),
                                     ElevatedButton(
                                       onPressed: () {
-                                        _showFinishDialog();
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                Vperencanaan(),
+                                          ),
+                                        );
                                       },
                                       child: Text(
                                         'Simpan',
@@ -713,7 +682,7 @@ class _PerencanaanState extends State<Perencanaan> {
           scrollDirection: Axis.horizontal,
           child: DataTable(
             columnSpacing: 100.0,
-            horizontalMargin: 60.0,
+            horizontalMargin: 30.0,
             columns: [
               DataColumn(
                 label: Padding(
@@ -721,6 +690,7 @@ class _PerencanaanState extends State<Perencanaan> {
                   child: Text(
                     'Alur Proses',
                     style: TextStyle(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
@@ -740,60 +710,58 @@ class _PerencanaanState extends State<Perencanaan> {
                   child: Text(
                     'Detail/Keterangan',
                     style: TextStyle(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
             ],
-            rows: rowsData.map((DataRow row) {
+            rows: rowsData.map((TableRowData rowData) {
               return DataRow(cells: [
                 DataCell(DropdownButton<String>(
-                  alignment: Alignment.center,
-                  hint: Text(
-                    '--Pilih Alur Proses--',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  value: selectedValueAlurProses,
-                  borderRadius: BorderRadius.circular(5),
-                  focusColor: Colors.white,
+                  value: rowData.selectedAlurProses,
+                  hint: Text('--Pilih Alur Proses--'),
                   items: dropdownItemsAlurProses.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
                     );
                   }).toList(),
-                  onChanged: onAlurProsesChanged,
-                  dropdownColor: Colors.white,
+                  onChanged: (newValue) {
+                    setState(() {
+                      rowData.selectedAlurProses = newValue;
+                    });
+                  },
+                  focusColor: Colors.white,
                 )),
                 DataCell(DropdownButton<String>(
-                  alignment: Alignment.center,
-                  hint: Text(
-                    '--Pilih Kategori--',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  value: selectedValueKategori,
-                  borderRadius: BorderRadius.circular(5),
-                  focusColor: Colors.white,
+                  value: rowData.selectedKategori,
+                  hint: Text('--Pilih Kategori--'),
                   items: dropdownItemsKategori.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),
                     );
                   }).toList(),
-                  onChanged: onKategoriChanged,
-                  dropdownColor: Colors.white,
+                  onChanged: (newValue) {
+                    setState(() {
+                      rowData.selectedKategori = newValue;
+                    });
+                  },
+                  focusColor: Colors.white,
                 )),
                 DataCell(Container(
                   height: 100,
                   width: 300,
                   child: TextField(
-                    maxLines: 5,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.005,
-                        horizontal: screenWidth * 0.005,
-                      ),
                     ),
+                    maxLines: 5,
+                    onChanged: (newValue) {
+                      setState(() {
+                        rowData.detail = newValue;
+                      });
+                    },
                   ),
                 )),
               ]);
@@ -854,8 +822,7 @@ class _PerencanaanState extends State<Perencanaan> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Logout', Icons.logout, 7, 35),
         ],
       ),
     );
@@ -865,12 +832,12 @@ class _PerencanaanState extends State<Perencanaan> {
     return ListTile(
       title: Text(title),
       leading: Icon(
+        color: Color.fromARGB(255, 6, 37, 55),
         icon,
         size: size.toDouble(),
-        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 7) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -883,13 +850,15 @@ class _PerencanaanState extends State<Perencanaan> {
                 builder: (context) => Dashboard(),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => Perencanaan(),
               ),
             );
+          } else {
+            Navigator.pop(context);
           }
         }
       },
@@ -929,10 +898,9 @@ class _PerencanaanState extends State<Perencanaan> {
       leading: Icon(
         icon,
         size: size.toDouble(),
-        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 7) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -966,74 +934,9 @@ class _PerencanaanState extends State<Perencanaan> {
                 builder: (context) => InputDokumen(),
               ),
             );
-          } else if (index == 7) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TambahProject(),
-              ),
-            );
-          } else if (index == 8) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TambahStaff(),
-              ),
-            );
+            Navigator.pop(context);
           }
         }
-      },
-    );
-  }
-
-  Widget _buildAdminMenu() {
-    return ExpansionTile(
-      title: Row(
-        children: [
-          Icon(
-            Icons.admin_panel_settings,
-            size: 35,
-            color: Color.fromARGB(255, 6, 37, 55),
-          ),
-          SizedBox(width: 12),
-          Text('Menu Admin'),
-        ],
-      ),
-      children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
-      ],
-    );
-  }
-
-  void _showFinishDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin simpan data?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Vperencanaan()),
-                );
-              },
-              child: Text("Ya", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
       },
     );
   }
@@ -1069,4 +972,13 @@ class _PerencanaanState extends State<Perencanaan> {
       },
     );
   }
+}
+
+class TableRowData {
+  String? selectedAlurProses;
+  String? selectedKategori;
+  String detail;
+
+  TableRowData(
+      {this.selectedAlurProses, this.selectedKategori, required this.detail});
 }
