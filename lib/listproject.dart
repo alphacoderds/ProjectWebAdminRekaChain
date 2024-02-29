@@ -212,7 +212,7 @@ class _ListProjectState extends State<ListProject> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '',
+                        'Aksi',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,

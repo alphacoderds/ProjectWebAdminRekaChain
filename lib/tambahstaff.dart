@@ -275,7 +275,7 @@ class _TambahStaffState extends State<TambahStaff> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Konfirmasi Password',
+                                'Password',
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600, fontSize: 15),
                               ),
@@ -392,30 +392,6 @@ class _TambahStaffState extends State<TambahStaff> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Konfirmasi Password',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 15),
-                              ),
-                              SizedBox(
-                                width: 400,
-                                height: 50,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 2, vertical: 2),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(3),
-                                          borderSide: BorderSide(width: 1))),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 20),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
                                 'Status',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
@@ -453,6 +429,31 @@ class _TambahStaffState extends State<TambahStaff> {
                               ),
                             ],
                           ),
+                          SizedBox(height: 20),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Konfirmasi Password',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 15),
+                              ),
+                              SizedBox(
+                                width: 400,
+                                height: 50,
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 2, vertical: 2),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(3),
+                                          borderSide: BorderSide(width: 1))),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
                         ],
                       )
                     ],
