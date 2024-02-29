@@ -23,6 +23,8 @@ class _TambahStaffState extends State<TambahStaff> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
   List<File> uploadFiles = [];
+  bool isPassword = true;
+  bool obscureText = true;
 
   int _selectedIndex = 0;
   List<String> dropdownItemsJabatan = ['Jabatan 1', 'Jabatan 2'];
@@ -274,27 +276,53 @@ class _TambahStaffState extends State<TambahStaff> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Password',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 15),
-                              ),
-                              SizedBox(
-                                width: 400,
-                                height: 50,
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 2, vertical: 2),
-                                      border: OutlineInputBorder(
+                              SizedBox(height: 20),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Konfirmasi Password',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 400,
+                                    height: 50,
+                                    child: TextField(
+                                      obscureText: isPassword,
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 12,
+                                        ),
+                                        border: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(3),
-                                          borderSide: BorderSide(width: 1))),
-                                ),
+                                        ),
+                                        suffixIcon: isPassword
+                                            ? IconButton(
+                                                icon: Icon(
+                                                  obscureText
+                                                      ? Icons.visibility
+                                                      : Icons.visibility_off,
+                                                  color: Colors.grey,
+                                                ),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    obscureText = !obscureText;
+                                                  });
+                                                },
+                                              )
+                                            : null,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                          SizedBox(height: 20),
                         ],
                       ),
                       SizedBox(width: screenWidth * 0.05),
@@ -436,24 +464,43 @@ class _TambahStaffState extends State<TambahStaff> {
                               Text(
                                 'Konfirmasi Password',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 15),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15,
+                                ),
                               ),
                               SizedBox(
                                 width: 400,
                                 height: 50,
                                 child: TextField(
+                                  obscureText: isPassword,
                                   decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.symmetric(
-                                          horizontal: 2, vertical: 2),
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(3),
-                                          borderSide: BorderSide(width: 1))),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 12,
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(3),
+                                    ),
+                                    suffixIcon: isPassword
+                                        ? IconButton(
+                                            icon: Icon(
+                                              obscureText
+                                                  ? Icons.visibility
+                                                  : Icons.visibility_off,
+                                              color: Colors.grey,
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                obscureText = !obscureText;
+                                              });
+                                            },
+                                          )
+                                        : null,
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(height: 20),
                         ],
                       )
                     ],
@@ -469,7 +516,11 @@ class _TambahStaffState extends State<TambahStaff> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _showFinishDialog();
+                    _showFinishDialog() {
+                      setState(() {
+                        obscureText = true;
+                      });
+                    }
                   },
                   child: Text(
                     'Simpan',
@@ -482,9 +533,6 @@ class _TambahStaffState extends State<TambahStaff> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  width: screenWidth * 0.03,
-                )
               ],
             ),
           ],
@@ -666,7 +714,7 @@ class _TambahStaffState extends State<TambahStaff> {
       ),
       children: [
         _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 8, 35),
       ],
     );
   }
