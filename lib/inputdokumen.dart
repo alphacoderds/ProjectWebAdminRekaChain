@@ -549,7 +549,7 @@ class _InputDokumenState extends State<InputDokumen> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const InputDokumen()),
+                  MaterialPageRoute(builder: (context) => ViewUpload()),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),

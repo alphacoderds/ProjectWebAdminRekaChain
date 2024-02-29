@@ -251,7 +251,7 @@ class _ViewUploadState extends State<ViewUpload> {
                   child: Row(
                     children: [
                       Text(
-                        'Unduh',
+                        'Tanggal Upload',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
@@ -266,7 +266,7 @@ class _ViewUploadState extends State<ViewUpload> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Lihat',
+                        'Aksi',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -287,57 +287,34 @@ class _ViewUploadState extends State<ViewUpload> {
                   alignment: Alignment.center,
                   child: Text('Pdf 1'),
                 )),
-                DataCell(
-                  IconButton(
-                    icon: Icon(Icons.file_download_outlined),
-                    onPressed: () {
-                      setState(() {
-                        isViewVisible = !isViewVisible;
-                      });
-                    },
-                  ),
-                ),
-                DataCell(
-                  Center(
-                    child: IconButton(
-                      icon: Icon(Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          isViewVisible = !isViewVisible;
-                        });
-                      },
-                    ),
-                  ),
-                ),
-              ]),
-              DataRow(cells: [
                 DataCell(Container(
                   alignment: Alignment.center,
-                  child: Text('2'),
+                  child: Text('28/02/2024'),
                 )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('Pdf 2'),
-                )),
-                DataCell(
-                  IconButton(
-                    icon: Icon(Icons.file_download_outlined),
-                    onPressed: () {
-                      setState(() {
-                        isViewVisible = !isViewVisible;
-                      });
-                    },
-                  ),
-                ),
                 DataCell(
                   Center(
-                    child: IconButton(
-                      icon: Icon(Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          isViewVisible = !isViewVisible;
-                        });
-                      },
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              isViewVisible = !isViewVisible;
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.file_download_outlined),
+                          onPressed: () {
+                            setState(() {
+                              isViewVisible = !isViewVisible;
+                            });
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),

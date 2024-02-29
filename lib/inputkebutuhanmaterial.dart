@@ -563,7 +563,7 @@ class _InputMaterialState extends State<InputMaterial> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const InputDokumen()),
+                  MaterialPageRoute(builder: (context) => Viewkm()),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),

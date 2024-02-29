@@ -11,12 +11,12 @@ import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 
-class ListProject extends StatefulWidget {
+class ListStaff extends StatefulWidget {
   @override
-  State<ListProject> createState() => _ListProjectState();
+  State<ListStaff> createState() => _ListStaffState();
 }
 
-class _ListProjectState extends State<ListProject> {
+class _ListStaffState extends State<ListStaff> {
   int _selectedIndex = 0;
   bool isViewVisible = false;
   late double screenWidth = MediaQuery.of(context).size.width;
@@ -37,7 +37,7 @@ class _ListProjectState extends State<ListProject> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => ListProject(),
+              builder: (context) => ListStaff(),
             );
           default:
             return null;
@@ -56,7 +56,7 @@ class _ListProjectState extends State<ListProject> {
                   title: Padding(
                     padding: EdgeInsets.only(left: screenHeight * 0.01),
                     child: Text(
-                      'List Project',
+                      'List Staff',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -165,14 +165,14 @@ class _ListProjectState extends State<ListProject> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
-            columnSpacing: 200.0,
-            horizontalMargin: 50.0,
+            columnSpacing: 30.0,
+            horizontalMargin: 20.0,
             columns: [
               DataColumn(
                 label: Container(
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
                   child: Text(
-                    'No.',
+                    'No',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
@@ -183,7 +183,7 @@ class _ListProjectState extends State<ListProject> {
                   child: Row(
                     children: [
                       Text(
-                        'Kode Project',
+                        'Kode Staff',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
@@ -197,7 +197,7 @@ class _ListProjectState extends State<ListProject> {
                   child: Row(
                     children: [
                       Text(
-                        'Nama Project',
+                        'Jabatan',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16),
                       ),
@@ -212,11 +212,53 @@ class _ListProjectState extends State<ListProject> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        '',
+                        'Unit Kerja',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Divisi',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Nama Lengkap',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'View',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ],
                   ),
@@ -231,69 +273,35 @@ class _ListProjectState extends State<ListProject> {
                 )),
                 DataCell(Container(
                   alignment: Alignment.center,
-                  child: Text('R-22'),
+                  child: Text('U117'),
                 )),
                 DataCell(Container(
                   alignment: Alignment.center,
-                  child: Text('PT. Nugraha Jasa'),
+                  child: Text('Jabatan 2'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('Unit Kerja 2'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('Divisi 2'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('Budi'),
                 )),
                 DataCell(
                   Center(
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TambahProject()),
-                            );
-                          },
-                        ),
-                        SizedBox(width: 10),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {},
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ]),
-              DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('2'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('R-23'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('PT.INKA'),
-                )),
-                DataCell(
-                  Center(
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => TambahProject()),
-                            );
-                          },
-                        ),
-                        SizedBox(width: 10),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {},
-                        ),
-                      ],
+                    child: IconButton(
+                      icon: Icon(Icons.visibility),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => TambahStaff()),
+                        );
+                      },
                     ),
                   ),
                 ),

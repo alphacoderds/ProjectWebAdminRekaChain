@@ -9,12 +9,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  int _selectedIndex = 0;
   late TextEditingController nipController;
   late TextEditingController passwordController;
-  late double screenWidth;
-  late double screenHeight;
   double hintTextSize = 14;
   bool obscureText = true;
+  bool isViewVisible = false;
+  late double screenWidth = MediaQuery.of(context).size.width;
+  late double screenHeight = MediaQuery.of(context).size.height;
 
   @override
   void initState() {
@@ -27,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
+    Orientation orientation = MediaQuery.of(context).orientation;
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -59,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: EdgeInsets.only(
               top: screenHeight * 0.010,
               left: screenWidth * 0,
-              right: 5.5,
+              right: screenWidth * 0.025,
             ),
             child: Image(
               image: const AssetImage('assets/images/bolder31.png'),
@@ -72,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
             scrollDirection: Axis.horizontal,
             child: Row(children: [
               SizedBox(
-                width: screenWidth * 0.08,
+                width: screenWidth * 0.001,
               ),
               Image.asset(
                 'assets/images/gudang.png',
@@ -84,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: screenHeight * 0.15),
+                  SizedBox(height: screenHeight * 0.20),
                   Image.asset(
                     'assets/images/logoREKA.png',
                     width: screenWidth * 0.2,
@@ -122,9 +125,9 @@ class _LoginPageState extends State<LoginPage> {
                     textAlign: TextAlign.left,
                   ),
                   SizedBox(height: screenHeight * 0.005),
-                  _inputField("Password", passwordController,
+                  _inputFieldPassword("Password", passwordController,
                       isPassword: true, backgroundColor: Colors.white),
-                  SizedBox(height: screenHeight * 0.005),
+                  SizedBox(height: screenHeight * 0.03),
                   _loginBtn(),
                   Expanded(child: Container())
                 ],
@@ -159,7 +162,35 @@ class _LoginPageState extends State<LoginPage> {
             hintText: hintText,
             hintStyle: TextStyle(
               color: const Color.fromARGB(255, 73, 72, 72),
-              fontSize: hintTextSize * screenWidth / 1050,
+              fontSize: hintTextSize * screenWidth / 1200,
+            ),
+            fillColor: backgroundColor,
+            filled: true,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _inputFieldPassword(String hintText, TextEditingController controller,
+      {bool isPassword = false, Color? backgroundColor}) {
+    return SizedBox(
+      width: screenWidth * 0.35,
+      height: screenHeight * 0.06,
+      child: Center(
+        child: TextField(
+          style: const TextStyle(
+              color: Color.fromARGB(255, 8, 8, 8), fontSize: 18),
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: TextStyle(
+              color: const Color.fromARGB(255, 73, 72, 72),
+              fontSize: hintTextSize * screenWidth / 1200,
             ),
             fillColor: backgroundColor,
             filled: true,
@@ -207,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
         height: screenHeight * 0.05,
         child: Center(
           child: Text(
-            "Sign In",
+            "LOGIN",
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: screenHeight * 0.021,
