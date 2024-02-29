@@ -165,7 +165,7 @@ class _ListProjectState extends State<ListProject> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
-            columnSpacing: 200.0,
+            columnSpacing: 100.0,
             horizontalMargin: 50.0,
             columns: [
               DataColumn(
@@ -235,7 +235,8 @@ class _ListProjectState extends State<ListProject> {
                 )),
                 DataCell(Container(
                   alignment: Alignment.center,
-                  child: Text('PT. Nugraha Jasa'),
+                  child: Text(
+                      'PT. Nugraha Jasa Amanah Terpercaya Insyaallah Berkah'),
                 )),
                 DataCell(
                   Center(
