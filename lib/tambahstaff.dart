@@ -516,11 +516,7 @@ class _TambahStaffState extends State<TambahStaff> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _showFinishDialog() {
-                      setState(() {
-                        obscureText = true;
-                      });
-                    }
+                    _showFinishDialog();
                   },
                   child: Text(
                     'Simpan',
