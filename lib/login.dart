@@ -162,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
             hintText: hintText,
             hintStyle: TextStyle(
               color: const Color.fromARGB(255, 73, 72, 72),
-              fontSize: hintTextSize * screenWidth / 1200,
+              fontSize: hintTextSize * screenHeight / 700,
             ),
             fillColor: backgroundColor,
             filled: true,
@@ -190,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
             hintText: hintText,
             hintStyle: TextStyle(
               color: const Color.fromARGB(255, 73, 72, 72),
-              fontSize: hintTextSize * screenWidth / 1200,
+              fontSize: hintTextSize * screenHeight / 700,
             ),
             fillColor: backgroundColor,
             filled: true,

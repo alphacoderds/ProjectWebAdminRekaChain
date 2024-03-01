@@ -16,6 +16,7 @@ import 'package:RekaChain/viewupload.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class InputMaterial extends StatefulWidget {
   const InputMaterial({super.key});
@@ -290,20 +291,32 @@ class _InputMaterialState extends State<InputMaterial> {
                                   ),
                                   SizedBox(height: 10),
                                   RichText(
-                                      text: TextSpan(children: [
-                                    TextSpan(
-                                      text: 'Download Template Excel',
-                                    ),
-                                    TextSpan(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                        text: 'Download Template Excel',
+                                      ),
+                                      TextSpan(
                                         style: TextStyle(
-                                            color: Colors.blueAccent[700]),
+                                          color: Colors.blueAccent[700],
+                                        ),
                                         text: ' Input Kebutuhan Material',
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () async {
-                                            var url =
-                                                'https://www.figma.com/file/Oty6jOcRnse0kBBgrMNTJa/flutter-project?type=design&node-id=197-154&mode=design&t=oN7tMuNo70tqRCrq-0';
-                                          })
-                                  ]))
+                                            // Import the required package
+                                            final uri = Uri.parse(
+                                                'https://youtu.be/7PIji8OubXU?si=jUB8efp9cbQwc5Tg');
+
+                                            // Check if URL is valid and can be launched
+                                            if (uri != null &&
+                                                await canLaunchUrl(uri)) {
+                                              await launchUrl(uri);
+                                            } else {
+                                              throw 'Could not launch URL';
+                                            }
+                                          },
+                                      ),
+                                    ]),
+                                  ),
                                 ],
                               ),
                             ],
@@ -604,5 +617,13 @@ class _InputMaterialState extends State<InputMaterial> {
         );
       },
     );
+  }
+
+  void _launchURL(Uri url) async {
+    if (url != null && await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
