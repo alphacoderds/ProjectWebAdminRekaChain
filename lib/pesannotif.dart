@@ -37,151 +37,158 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(
-              builder: (context) => const PesanNotifikasi(),
-            );
-          default:
-            return null;
-        }
-      },
-      home: Scaffold(
-        body: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDrawer(),
-            Expanded(
-              child: Scaffold(
-                appBar: AppBar(
-                  backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-                  toolbarHeight: 65,
-                  title: Padding(
-                    padding: EdgeInsets.only(left: screenHeight * 0.05),
-                  ),
-                  actions: [
-                    Padding(
-                      padding: EdgeInsets.only(right: screenHeight * 0.11),
-                      child: Row(
-                        children: [
-                          SizedBox(width: 16),
-                          IconButton(
-                            icon: Icon(
-                              Icons.notifications_active,
-                              size: 33,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Notifikasi(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        screenWidth = constraints.maxWidth;
+        screenHeight = constraints.maxHeight;
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/':
+                return MaterialPageRoute(
+                  builder: (context) => PesanNotifikasi(),
+                );
+              default:
+                return null;
+            }
+          },
+          home: Scaffold(
+            body: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDrawer(),
+                Expanded(
+                  child: Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+                      toolbarHeight: 65,
+                      title: Padding(
+                        padding: EdgeInsets.only(left: screenHeight * 0.05),
+                      ),
+                      actions: [
+                        Padding(
+                          padding: EdgeInsets.only(right: screenHeight * 0.11),
+                          child: Row(
+                            children: [
+                              SizedBox(width: 16),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.notifications_active,
+                                  size: 33,
+                                  color: Colors.white,
                                 ),
-                              );
-                            },
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Notifikasi(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.account_circle_rounded,
+                                  size: 35,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Profile(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.account_circle_rounded,
-                              size: 35,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Profile(),
+                        )
+                      ],
+                    ),
+                    body: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.05,
+                      ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Center(
+                            child: Container(
+                              width: screenWidth * 0.70,
+                              height: screenHeight * 0.77,
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: screenHeight * 0.008,
+                                  horizontal: screenWidth * 0.015,
                                 ),
-                              );
-                            },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextField(
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.grey,
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: 'Isi Pesan',
+                                        hintStyle: TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.grey,
+                                        ),
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                    )
-                  ],
-                ),
-                body: Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: screenHeight * 0.05,
-                  ),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Center(
-                        child: Container(
-                          width: screenWidth * 0.70,
-                          height: screenHeight * 0.77,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: screenHeight * 0.008,
-                              horizontal: screenWidth * 0.015,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextField(
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.grey,
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: 'Isi Pesan',
-                                    hintStyle: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.grey,
-                                    ),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(right: 45, bottom: 8),
-          child: SizedBox(
-            width: 100.0,
-            height: 40.0,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => InputDokumen()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                  primary: const Color.fromRGBO(43, 56, 86, 1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  )),
-              child: Text(
-                'Kembali',
-                style: TextStyle(
-                  color: Colors.white,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.endDocked,
+            floatingActionButton: Padding(
+              padding: EdgeInsets.only(right: 45, bottom: 8),
+              child: SizedBox(
+                width: 100.0,
+                height: 40.0,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InputDokumen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                      primary: const Color.fromRGBO(43, 56, 86, 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      )),
+                  child: Text(
+                    'Kembali',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

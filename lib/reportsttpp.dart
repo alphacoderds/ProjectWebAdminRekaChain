@@ -33,116 +33,122 @@ class _ReportSTTPState extends State<ReportSTTPP> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(
-              builder: (context) => ReportSTTPP(),
-            );
-          default:
-            return null;
-        }
-      },
-      home: Scaffold(
-        body: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDrawer(),
-            Expanded(
-              child: Scaffold(
-                appBar: AppBar(
-                  backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-                  toolbarHeight: 65,
-                  title: Padding(
-                    padding: EdgeInsets.only(left: screenHeight * 0.02),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 300,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                          ),
-                          child: DropdownButton<String>(
-                            alignment: Alignment.center,
-                            hint: Text('--Pilih Nama/Kode Project--'),
-                            value: selectedValue,
-                            underline: SizedBox(),
-                            borderRadius: BorderRadius.circular(5),
-                            items: dropdownItems.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedValue = newValue;
-                              });
-                            },
-                          ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        screenWidth = constraints.maxWidth;
+        screenHeight = constraints.maxHeight;
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/':
+                return MaterialPageRoute(
+                  builder: (context) => ReportSTTPP(),
+                );
+              default:
+                return null;
+            }
+          },
+          home: Scaffold(
+            body: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDrawer(),
+                Expanded(
+                  child: Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+                      toolbarHeight: 65,
+                      title: Padding(
+                        padding: EdgeInsets.only(left: screenHeight * 0.02),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: 300,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
+                              ),
+                              child: DropdownButton<String>(
+                                alignment: Alignment.center,
+                                hint: Text('--Pilih Nama/Kode Project--'),
+                                value: selectedValue,
+                                underline: SizedBox(),
+                                borderRadius: BorderRadius.circular(5),
+                                items: dropdownItems.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    selectedValue = newValue;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+                      actions: [
+                        Padding(
+                          padding: EdgeInsets.only(right: screenHeight * 0.11),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: screenWidth * 0.005,
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.notifications_active,
+                                  size: 33,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Notifikasi()),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.account_circle_rounded,
+                                  size: 35,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Profile()),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                  ),
-                  actions: [
-                    Padding(
-                      padding: EdgeInsets.only(right: screenHeight * 0.11),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: screenWidth * 0.005,
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.notifications_active,
-                              size: 33,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Notifikasi()),
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.account_circle_rounded,
-                              size: 35,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Profile()),
-                              );
-                            },
-                          ),
-                        ],
+                    body: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Center(
+                        child: _buildMainTable(),
                       ),
-                    )
-                  ],
-                ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: _buildMainTable(),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+          ),
+        );
+      },
     );
   }
 

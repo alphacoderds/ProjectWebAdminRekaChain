@@ -44,113 +44,120 @@ class _TambahStaffState extends State<TambahStaff> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(
-              builder: (context) => const TambahStaff(),
-            );
-          default:
-            return null;
-        }
-      },
-      home: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.only(left: screenWidth * 0.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDrawer(),
-              Expanded(
-                child: Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-                    toolbarHeight: 65,
-                    title: Padding(
-                      padding: EdgeInsets.only(left: screenHeight * 0.01),
-                      child: Text(
-                        'Data Staff',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Donegal One',
-                          color: Colors.white,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        screenWidth = constraints.maxWidth;
+        screenHeight = constraints.maxHeight;
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/':
+                return MaterialPageRoute(
+                  builder: (context) => const TambahStaff(),
+                );
+              default:
+                return null;
+            }
+          },
+          home: Scaffold(
+            body: Padding(
+              padding: EdgeInsets.only(left: screenWidth * 0.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDrawer(),
+                  Expanded(
+                    child: Scaffold(
+                      appBar: AppBar(
+                        backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+                        toolbarHeight: 65,
+                        title: Padding(
+                          padding: EdgeInsets.only(left: screenHeight * 0.01),
+                          child: Text(
+                            'Data Staff',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Donegal One',
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    actions: [
-                      Padding(
-                        padding: EdgeInsets.only(right: screenHeight * 0.11),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: screenWidth * 0.005,
+                        actions: [
+                          Padding(
+                            padding:
+                                EdgeInsets.only(right: screenHeight * 0.11),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: screenWidth * 0.005,
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.list,
+                                    size: 38,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ListStaff()),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.notifications_active,
+                                    size: 33,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Notifikasi()),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 35,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Profile()),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.list,
-                                size: 38,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ListStaff()),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.notifications_active,
-                                size: 33,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Notifikasi()),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.account_circle_rounded,
-                                size: 35,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Profile()),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  body: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          _buildMainTable(),
+                          )
                         ],
                       ),
+                      body: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Center(
+                          child: Column(
+                            children: [
+                              _buildMainTable(),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

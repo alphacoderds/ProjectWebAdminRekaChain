@@ -50,128 +50,136 @@ class _TambahProjectState extends State<TambahProject> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(
-              builder: (context) => const TambahProject(),
-            );
-          default:
-            return null;
-        }
-      },
-      home: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.only(left: screenWidth * 0.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDrawer(),
-              Expanded(
-                child: Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-                    toolbarHeight: 65,
-                    title: Padding(
-                      padding: EdgeInsets.only(left: screenHeight * 0.01),
-                      child: Text(
-                        'Data Project',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Donegal One',
-                          color: Colors.white,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        screenWidth = constraints.maxWidth;
+        screenHeight = constraints.maxHeight;
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/':
+                return MaterialPageRoute(
+                  builder: (context) => TambahProject(),
+                );
+              default:
+                return null;
+            }
+          },
+          home: Scaffold(
+            body: Padding(
+              padding: EdgeInsets.only(left: screenWidth * 0.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDrawer(),
+                  Expanded(
+                    child: Scaffold(
+                      appBar: AppBar(
+                        backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+                        toolbarHeight: 65,
+                        title: Padding(
+                          padding: EdgeInsets.only(left: screenHeight * 0.01),
+                          child: Text(
+                            'Data Project',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Donegal One',
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
+                        actions: [
+                          Padding(
+                            padding:
+                                EdgeInsets.only(right: screenHeight * 0.11),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: screenWidth * 0.005,
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.list,
+                                    size: 38,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ListProject()),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.notifications_active,
+                                    size: 33,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Notifikasi()),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 35,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Profile()),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      body: Center(
+                        child: _buildMainTable(),
                       ),
                     ),
-                    actions: [
-                      Padding(
-                        padding: EdgeInsets.only(right: screenHeight * 0.11),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: screenWidth * 0.005,
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.list,
-                                size: 38,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ListProject()),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.notifications_active,
-                                size: 33,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Notifikasi()),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.account_circle_rounded,
-                                size: 35,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Profile()),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
                   ),
-                  body: Center(
-                    child: _buildMainTable(),
+                ],
+              ),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.endDocked,
+            floatingActionButton: Padding(
+              padding: EdgeInsets.only(right: 0.02, bottom: 8),
+              child: SizedBox(
+                width: 100.0,
+                height: 40.0,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _showFinishDialog();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: const Color.fromRGBO(43, 56, 86, 1),
                   ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        floatingActionButton: Padding(
-          padding: EdgeInsets.only(right: 0.02, bottom: 8),
-          child: SizedBox(
-            width: 100.0,
-            height: 40.0,
-            child: ElevatedButton(
-              onPressed: () {
-                _showFinishDialog();
-              },
-              style: ElevatedButton.styleFrom(
-                primary: const Color.fromRGBO(43, 56, 86, 1),
-              ),
-              child: Text(
-                'Simpan',
-                style: TextStyle(
-                  color: Colors.white,
+                  child: Text(
+                    'Simpan',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
