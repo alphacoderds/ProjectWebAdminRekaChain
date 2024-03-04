@@ -11,6 +11,7 @@ import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class TambahProject extends StatefulWidget {
   const TambahProject({super.key});

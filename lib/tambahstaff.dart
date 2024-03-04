@@ -171,13 +171,13 @@ class _TambahStaffState extends State<TambahStaff> {
       scrollDirection: Axis.vertical,
       child: Padding(
         padding: EdgeInsets.symmetric(
-            vertical: screenHeight * 0.05, horizontal: screenWidth * 0.02),
+            vertical: screenHeight * 0.04, horizontal: screenWidth * 0.02),
         child: Column(
           children: [
             Container(
               alignment: Alignment.center,
               width: screenWidth * 0.8,
-              height: screenHeight * 0.95,
+              height: screenHeight * 0.90,
               decoration: BoxDecoration(
                 border: Border.all(),
                 borderRadius: BorderRadius.circular(10),
@@ -289,7 +289,7 @@ class _TambahStaffState extends State<TambahStaff> {
                             SizedBox(height: 20),
                             _inputFieldPassword('Password', passwordController,
                                 isPassword: true,
-                                backgroundColor: Colors.white),
+                                backgroundColor: Colors.transparent),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -438,7 +438,7 @@ class _TambahStaffState extends State<TambahStaff> {
                               "Konfirmasi Password",
                               konfirmasiPasswordController,
                               isKonfirmasiPassword: true,
-                              backgroundColor: Colors.white,
+                              backgroundColor: Colors.transparent,
                             ),
                             SizedBox(height: screenHeight * 0.03),
                           ],
@@ -612,7 +612,7 @@ class _TambahStaffState extends State<TambahStaff> {
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
           _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
     );
@@ -627,7 +627,7 @@ class _TambahStaffState extends State<TambahStaff> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -647,8 +647,6 @@ class _TambahStaffState extends State<TambahStaff> {
                 builder: (context) => AfterSales(),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -688,6 +686,7 @@ class _TambahStaffState extends State<TambahStaff> {
       leading: Icon(
         icon,
         size: size.toDouble(),
+        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
         if (index == 9) {
@@ -759,7 +758,7 @@ class _TambahStaffState extends State<TambahStaff> {
       ),
       children: [
         _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
       ],
     );
   }

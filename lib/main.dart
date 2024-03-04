@@ -1,14 +1,7 @@
-import 'package:RekaChain/AfterSales/AfterSales.dart';
-import 'package:RekaChain/cetak1.dart';
-import 'package:RekaChain/listproject.dart';
-import 'package:RekaChain/liststaff.dart';
-import 'package:RekaChain/login.dart';
-import 'package:RekaChain/perencanaan.dart';
-import 'package:RekaChain/reportsttpp.dart';
-import 'package:RekaChain/viewikm.dart';
-import 'package:RekaChain/viewreportsttpp.dart';
-import 'package:RekaChain/viewupload.dart';
+import 'package:RekaChain/tambahproject.dart';
+import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,13 +12,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Perencanaan(),
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: TambahStaff(),
+        );
+      },
     );
   }
 }
