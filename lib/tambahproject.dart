@@ -13,6 +13,8 @@ import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
+import 'package:http/http.dart' as http;
+
 class TambahProject extends StatefulWidget {
   const TambahProject({super.key});
 
@@ -26,6 +28,36 @@ class _TambahProjectState extends State<TambahProject> {
 
   late TextEditingController nmprojectController;
   late TextEditingController kdprojectController;
+
+  Future _simpan() async {
+    final response = await http.post(
+      Uri.parse(
+        'http://192.168.8.213/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/createproject.php',
+      ),
+      body: {
+        "kodeProject": kdprojectController.text,
+        "namaProject": nmprojectController.text,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ListProject(
+            newProject: {
+              "no": response.body,
+              "kodeProject": kdprojectController.text,
+              "namaProject": nmprojectController.text,
+            },
+          ),
+        ),
+      );
+      return true;
+    }
+
+    return false;
+  }
 
   int _selectedIndex = 0;
   List<String> dropdownItems1 = [
@@ -164,7 +196,7 @@ class _TambahProjectState extends State<TambahProject> {
                 height: 40.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    _showFinishDialog();
+                    _simpan();
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color.fromRGBO(43, 56, 86, 1),

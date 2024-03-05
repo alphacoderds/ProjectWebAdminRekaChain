@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
@@ -11,7 +13,13 @@ import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 
+import 'package:http/http.dart' as http;
+
 class ListProject extends StatefulWidget {
+  final Map<String, dynamic>? newProject;
+
+  const ListProject({Key? key, this.newProject}) : super(key: key);
+
   @override
   State<ListProject> createState() => _ListProjectState();
 }
@@ -21,6 +29,54 @@ class _ListProjectState extends State<ListProject> {
   bool isViewVisible = false;
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+
+  List _listdata = [];
+  bool _isloading = true;
+
+  Future _getdata() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.8.213/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _listdata = data;
+          _isloading = false;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    if (widget.newProject != null) {
+      _listdata.add(widget.newProject!);
+    }
+    _getdata();
+    super.initState();
+  }
+
+  Future _hapus(String id) async {
+    try {
+      final respone = await http.post(
+          Uri.parse(
+              'http://192.168.10.115/crudflutter/flutter_crud/lib/hapus.php'),
+          body: {
+            "nohp": id,
+          });
+      if (respone.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print(e);
+    }
+  }
 
   List<String> dropdownItems = [
     '--Pilih Nama/Kode Project--',
@@ -203,122 +259,73 @@ class _ListProjectState extends State<ListProject> {
                 ),
               ),
             ],
-            rows: [
-              DataRow(cells: [
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('1'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('R-22'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'PT. Nugraha Jasa Amanah Terpercaya Insyaallah Berkah',
-                      ),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Center(
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TambahProject(),
-                                ),
-                              );
-                            },
+            rows: _listdata
+                .asMap()
+                .map(
+                  (index, data) => MapEntry(
+                    index,
+                    DataRow(
+                      cells: [
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text((index + 1).toString()),
+                            ),
                           ),
-                          SizedBox(width: 10),
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () {},
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['kodeProject'] ?? ''),
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ]),
-              DataRow(cells: [
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('2'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('R-23'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('PT.INKA'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Center(
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => TambahProject(),
-                                ),
-                              );
-                            },
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['namaProject'] ?? ''),
+                            ),
                           ),
-                          SizedBox(width: 10),
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () {},
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Center(
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => TambahProject(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(width: 10),
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ]),
-            ],
+                )
+                .values
+                .toList(),
           ),
         ),
       ),
