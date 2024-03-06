@@ -1,10 +1,9 @@
 <?php
-$conn=new mysqli("localhost","root","","crudflutter");
-$id = $_POST["id"];
-$nohp = $_POST["nohp"];
-$nama = $_POST["nama"];
-$alamat = $_POST["alamat"];
-$data= mysqli_query($conn, "update siswa set nohp='$nohp', nama='$nama', alamat='$alamat' where id='$id' ");
+$conn=new mysqli("localhost","root","","db_rekachain");
+$no = $_POST["no"];
+$kodeProject = $_POST["kodeProject"];
+$namaProject = $_POST["namaProject"];
+$data= mysqli_query($conn, "update project set no='$no', kodeProject='$kodeProject', namaProject='$namaProject' ");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'

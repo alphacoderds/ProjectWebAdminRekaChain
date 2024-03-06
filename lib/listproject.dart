@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
+import 'package:RekaChain/editproject.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
@@ -37,11 +38,12 @@ class _ListProjectState extends State<ListProject> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.213/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/readproject.php',
         ),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print(data);
         setState(() {
           _listdata = data;
           _isloading = false;
@@ -305,7 +307,7 @@ class _ListProjectState extends State<ListProject> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => TambahProject(),
+                                          builder: (context) => EditProject(),
                                         ),
                                       );
                                     },
