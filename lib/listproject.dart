@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
@@ -12,7 +11,6 @@ import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
 
 class ListProject extends StatefulWidget {
@@ -37,7 +35,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.213/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/readproject.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -65,7 +63,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final respone = await http.post(
           Uri.parse(
-              'http://192.168.10.115/crudflutter/flutter_crud/lib/hapus.php'),
+              'http://192.168.10.165/crudflutter/flutter_crud/lib/hapus.php'),
           body: {
             "nohp": id,
           });

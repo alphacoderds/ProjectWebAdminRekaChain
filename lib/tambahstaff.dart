@@ -11,9 +11,10 @@ import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class TambahStaff extends StatefulWidget {
-  const TambahStaff({super.key});
+  const TambahStaff({Key? key}) : super(key: key);
 
   @override
   State<TambahStaff> createState() => _TambahStaffState();
@@ -22,6 +23,16 @@ class TambahStaff extends StatefulWidget {
 class _TambahStaffState extends State<TambahStaff> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+  late TextEditingController kodestaffController;
+  late TextEditingController namaController;
+  late TextEditingController jabatanController;
+  late TextEditingController unitkerjaController;
+  late TextEditingController departemenController;
+  late TextEditingController divisiController;
+  late TextEditingController emailController;
+  late TextEditingController nomortelponController;
+  late TextEditingController nipController;
+  late TextEditingController statusController;
   late TextEditingController passwordController;
   late TextEditingController konfirmasiPasswordController;
   List<File> uploadFiles = [];
@@ -47,122 +58,189 @@ class _TambahStaffState extends State<TambahStaff> {
   List<String> dropdownItemsStatus = ['Aktif', 'Tidak Aktif'];
   String? selectedValueStatus;
 
+  Future _simpan() async {
+    final response = await http.post(
+      Uri.parse(
+        'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/create.php',
+      ),
+      body: {
+        "kode_staff": kodestaffController.text,
+        "nama": namaController.text,
+        "jabatan": jabatanController.text,
+        "unit_kerja": unitkerjaController.text,
+        "departemen": departemenController.text,
+        "divisi": divisiController.text,
+        "email": emailController.text,
+        "no_telp": nomortelponController.text,
+        "nip": nipController.text,
+        "status": statusController.text,
+        "password": passwordController.text,
+        "konfirmasi_passwrod": konfirmasiPasswordController.text,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ListStaff(
+            newStaff: {
+              "kode_staff": kodestaffController.text,
+              "nama": namaController.text,
+              "jabatan": jabatanController.text,
+              "unit_kerja": unitkerjaController.text,
+              "departemen": departemenController.text,
+              "divisi": divisiController.text,
+              "email": emailController.text,
+              "no_telp": nomortelponController.text,
+              "nip": nipController.text,
+              "status": statusController.text,
+              "password": passwordController.text,
+              "konfirmasi_password": konfirmasiPasswordController.text,
+            },
+          ),
+        ),
+      );
+      return true;
+    }
+    return false;
+  }
+
   @override
   void initState() {
     super.initState();
+    kodestaffController = TextEditingController();
+    namaController = TextEditingController();
+    jabatanController = TextEditingController();
+    unitkerjaController = TextEditingController();
+    departemenController = TextEditingController();
+    divisiController = TextEditingController();
+    emailController = TextEditingController();
+    nomortelponController = TextEditingController();
+    nipController = TextEditingController();
+    statusController = TextEditingController();
+    passwordController = TextEditingController();
     passwordController = TextEditingController();
     konfirmasiPasswordController = TextEditingController();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(
-              builder: (context) => const TambahStaff(),
-            );
-          default:
-            return null;
-        }
-      },
-      home: Scaffold(
-        body: Padding(
-          padding: EdgeInsets.only(left: screenWidth * 0.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDrawer(),
-              Expanded(
-                child: Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-                    toolbarHeight: 65,
-                    title: Padding(
-                      padding: EdgeInsets.only(left: screenHeight * 0.01),
-                      child: Text(
-                        'Data Staff',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Donegal One',
-                          color: Colors.white,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        screenWidth = constraints.maxWidth;
+        screenHeight = constraints.maxHeight;
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/':
+                return MaterialPageRoute(
+                  builder: (context) => const TambahStaff(),
+                );
+              default:
+                return null;
+            }
+          },
+          home: Scaffold(
+            body: Padding(
+              padding: EdgeInsets.only(left: screenWidth * 0.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDrawer(),
+                  Expanded(
+                    child: Scaffold(
+                      appBar: AppBar(
+                        backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+                        toolbarHeight: 65,
+                        title: Padding(
+                          padding: EdgeInsets.only(left: screenHeight * 0.01),
+                          child: Text(
+                            'Data Staff',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Donegal One',
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    actions: [
-                      Padding(
-                        padding: EdgeInsets.only(right: screenHeight * 0.11),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: screenWidth * 0.005,
+                        actions: [
+                          Padding(
+                            padding:
+                                EdgeInsets.only(right: screenHeight * 0.11),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: screenWidth * 0.005,
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.list,
+                                    size: 38,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ListStaff()),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.notifications_active,
+                                    size: 33,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Notifikasi()),
+                                    );
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 35,
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Profile()),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.list,
-                                size: 38,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ListStaff()),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.notifications_active,
-                                size: 33,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Notifikasi()),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.account_circle_rounded,
-                                size: 35,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Profile()),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  body: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          _buildMainTable(),
+                          )
                         ],
                       ),
+                      body: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Center(
+                          child: Column(
+                            children: [
+                              _buildMainTable(),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 

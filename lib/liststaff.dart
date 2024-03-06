@@ -10,8 +10,13 @@ import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ListStaff extends StatefulWidget {
+  final Map<String, dynamic>? newStaff;
+
+  const ListStaff({Key? key, this.newStaff}) : super(key: key);
   @override
   State<ListStaff> createState() => _ListStaffState();
 }
@@ -21,6 +26,62 @@ class _ListStaffState extends State<ListStaff> {
   bool isViewVisible = false;
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+  late TextEditingController kodestaffController;
+  late TextEditingController namaController;
+  late TextEditingController jabatanController;
+  late TextEditingController unitkerjaController;
+  late TextEditingController departemenController;
+  late TextEditingController divisiController;
+
+  List _listdata = [];
+  bool _isloading = true;
+
+  Future _getdata() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.8.213/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _listdata = data;
+          _isloading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+    return [];
+  }
+
+  @override
+  void initState() {
+    if (widget.newStaff != null) {
+      _listdata.add(widget.newStaff!);
+    }
+    _getdata();
+    super.initState();
+  }
+
+  Future _hapus(String id) async {
+    try {
+      final respone = await http.post(
+          Uri.parse(
+              'http://192.168.10.115/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/hapusproject.php'),
+          body: {
+            "nohp": id,
+          });
+      if (respone.statusCode == 200) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+    return [];
+  }
 
   List<String> dropdownItems = [
     '--Pilih Nama/Kode Project--',
@@ -193,6 +254,15 @@ class _ListStaffState extends State<ListStaff> {
                 DataColumn(
                   label: Center(
                     child: Text(
+                      'Nama Lengkap',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
                       'Jabatan',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -220,15 +290,6 @@ class _ListStaffState extends State<ListStaff> {
                 DataColumn(
                   label: Center(
                     child: Text(
-                      'Nama Lengkap',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
                       'View',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -236,85 +297,93 @@ class _ListStaffState extends State<ListStaff> {
                   ),
                 ),
               ],
-              rows: [
-                DataRow(cells: [
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => TambahStaff()),
-                                );
-                              },
+              rows: _listdata
+                  .asMap()
+                  .map(
+                    (index, data) => MapEntry(
+                      index,
+                      DataRow(cells: [
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text('1'),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text('1'),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text('1'),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text('1'),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text('1'),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text('1'),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Center(
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.visibility),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => TambahStaff(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
                     ),
-                  ),
-                ]),
-              ],
+                  )
+                  .values
+                  .toList(),
             ),
           ),
         ),
