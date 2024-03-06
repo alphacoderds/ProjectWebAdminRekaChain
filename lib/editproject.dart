@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:html';
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
@@ -9,54 +10,54 @@ import 'package:RekaChain/notification.dart';
 import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
+import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import 'package:http/http.dart' as http;
 
-class TambahProject extends StatefulWidget {
-  const TambahProject({super.key});
+class EditProject extends StatefulWidget {
+  const EditProject({super.key});
 
   @override
-  State<TambahProject> createState() => _TambahProjectState();
+  State<EditProject> createState() => _EditProjectState();
 }
 
-class _TambahProjectState extends State<TambahProject> {
+class _EditProjectState extends State<EditProject> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
+  late TextEditingController noController;
   late TextEditingController nmprojectController;
   late TextEditingController kdprojectController;
 
-  Future<void> _simpan() async {
-    final response = await http.post(
-      Uri.parse(
-          'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/createproject.php'),
-      body: {
-        "kodeProject": kdprojectController.text,
-        "namaProject": nmprojectController.text,
-      },
-    );
+  List<Map<String, dynamic>> _listdata = [];
 
-    if (response.statusCode == 200) {
-      final newProjectData = {
-        "no": response.body,
-        "kodeProject": kdprojectController.text,
-        "namaProject": nmprojectController.text,
-      };
-
-      _showFinishDialog();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ListProject(newProject: newProjectData),
-        ),
+  Future<void> fetchData() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/editproject.php'),
       );
-    } else {
-      print('Gagal menyimpan data: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final List<Map<String, dynamic>> fetchedData =
+            List<Map<String, dynamic>>.from(json.decode(response.body));
+        setState(() {
+          _listdata = fetchedData;
+        });
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
   }
 
   int _selectedIndex = 0;
@@ -75,13 +76,6 @@ class _TambahProjectState extends State<TambahProject> {
   String? selectedValue2;
 
   @override
-  void initState() {
-    super.initState();
-    kdprojectController = TextEditingController();
-    nmprojectController = TextEditingController();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -93,7 +87,7 @@ class _TambahProjectState extends State<TambahProject> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => TambahProject(),
+                  builder: (context) => EditProject(),
                 );
               default:
                 return null;
@@ -114,7 +108,7 @@ class _TambahProjectState extends State<TambahProject> {
                         title: Padding(
                           padding: EdgeInsets.only(left: screenHeight * 0.01),
                           child: Text(
-                            'Data Project',
+                            'Update Project',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -196,7 +190,7 @@ class _TambahProjectState extends State<TambahProject> {
                 height: 40.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    _simpan();
+                    fetchData();
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color.fromRGBO(43, 56, 86, 1),
