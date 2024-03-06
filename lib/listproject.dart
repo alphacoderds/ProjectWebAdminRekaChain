@@ -65,7 +65,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final respone = await http.post(
           Uri.parse(
-              'http://192.168.10.165/crudflutter/flutter_crud/lib/hapus.php'),
+              'http://192.168.8.165/crudflutter/flutter_crud/lib/hapus.php'),
           body: {
             "nohp": id,
           });

@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class TambahStaff extends StatefulWidget {
-  const TambahStaff({Key? key}) : super(key: key);
+  const TambahStaff({super.key});
 
   @override
   State<TambahStaff> createState() => _TambahStaffState();
@@ -23,6 +23,7 @@ class TambahStaff extends StatefulWidget {
 class _TambahStaffState extends State<TambahStaff> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+  
   late TextEditingController kodestaffController;
   late TextEditingController namaController;
   late TextEditingController jabatanController;
@@ -35,6 +36,7 @@ class _TambahStaffState extends State<TambahStaff> {
   late TextEditingController statusController;
   late TextEditingController passwordController;
   late TextEditingController konfirmasiPasswordController;
+
   List<File> uploadFiles = [];
   bool isPassword = true;
   bool isKonfirmasiPassword = true;
@@ -58,10 +60,10 @@ class _TambahStaffState extends State<TambahStaff> {
   List<String> dropdownItemsStatus = ['Aktif', 'Tidak Aktif'];
   String? selectedValueStatus;
 
-  Future _simpan() async {
+  Future<void> _simpan() async {
     final response = await http.post(
       Uri.parse(
-        'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/create.php',
+        'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/createproject.php',
       ),
       body: {
         "kode_staff": kodestaffController.text,
@@ -80,30 +82,26 @@ class _TambahStaffState extends State<TambahStaff> {
     );
 
     if (response.statusCode == 200) {
+      final newStaffData = {
+        "no": response.body,
+        "kodeStaff": kodestaffController.text,
+        "nama": namaController.text,
+        "jabatan": jabatanController.text,
+        "unit_kerja": unitkerjaController.text,
+        "divisi": divisiController.text,
+      };
+
+      _showFinishDialog();
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ListStaff(
-            newStaff: {
-              "kode_staff": kodestaffController.text,
-              "nama": namaController.text,
-              "jabatan": jabatanController.text,
-              "unit_kerja": unitkerjaController.text,
-              "departemen": departemenController.text,
-              "divisi": divisiController.text,
-              "email": emailController.text,
-              "no_telp": nomortelponController.text,
-              "nip": nipController.text,
-              "status": statusController.text,
-              "password": passwordController.text,
-              "konfirmasi_password": konfirmasiPasswordController.text,
-            },
-          ),
+          builder: (context) => ListStaff(newStaff: newStaffData),
         ),
       );
-      return true;
+    } else {
+      print('Gagal menyimpan data: ${response.statusCode}');
     }
-    return false;
   }
 
   @override
@@ -122,7 +120,6 @@ class _TambahStaffState extends State<TambahStaff> {
     passwordController = TextEditingController();
     passwordController = TextEditingController();
     konfirmasiPasswordController = TextEditingController();
-    super.initState();
   }
 
   @override

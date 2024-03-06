@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
@@ -11,7 +12,6 @@ import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class ListStaff extends StatefulWidget {
   final Map<String, dynamic>? newStaff;
@@ -26,12 +26,6 @@ class _ListStaffState extends State<ListStaff> {
   bool isViewVisible = false;
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-  late TextEditingController kodestaffController;
-  late TextEditingController namaController;
-  late TextEditingController jabatanController;
-  late TextEditingController unitkerjaController;
-  late TextEditingController departemenController;
-  late TextEditingController divisiController;
 
   List _listdata = [];
   bool _isloading = true;
@@ -40,7 +34,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.213/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.10.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/readproject.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -50,11 +44,11 @@ class _ListStaffState extends State<ListStaff> {
           _isloading = false;
         });
       }
-    } catch (e) {
-      print('Error fetching data: $e');
+        } catch (e) {
+      print(e);
     }
-    return [];
   }
+
 
   @override
   void initState() {
@@ -69,7 +63,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final respone = await http.post(
           Uri.parse(
-              'http://192.168.10.115/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/hapusproject.php'),
+              'http://192.168.10.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/hapusproject.php'),
           body: {
             "nohp": id,
           });
@@ -80,13 +74,12 @@ class _ListStaffState extends State<ListStaff> {
     } catch (e) {
       print('Error fetching data: $e');
     }
-    return [];
   }
 
   List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
+    '--Pilih Nama/Kode Staff--',
+    '001 - Ahmad Budi',
+    '002 - Ahmad Yudi'
   ];
   String? selectedValue;
 
@@ -562,7 +555,7 @@ class _ListStaffState extends State<ListStaff> {
         ],
       ),
       children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_add, 7, 35),
         _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
       ],
     );
