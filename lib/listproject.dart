@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/editproject.dart';
@@ -12,6 +13,7 @@ import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
 
 class ListProject extends StatefulWidget {
@@ -61,20 +63,31 @@ class _ListProjectState extends State<ListProject> {
     super.initState();
   }
 
-  Future _hapus(String id) async {
+  Future<void> updateData() async {
+    await _getdata();
+    setState(() {});
+  }
+
+  Future<void> _hapusData(String id) async {
     try {
-      final respone = await http.post(
-          Uri.parse(
-              'http://192.168.8.165/crudflutter/flutter_crud/lib/hapus.php'),
-          body: {
-            "nohp": id,
-          });
-      if (respone.statusCode == 200) {
-        return true;
+      final response = await http.post(
+        Uri.parse(
+          'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/hapusproject.php',
+        ),
+        body: {
+          "kodeProject": id,
+        },
+      );
+
+      print('Delete response: ${response.statusCode} - ${response.body}');
+
+      if (response.statusCode == 200) {
+        await updateData();
+      } else {
+        print('Failed to delete data: ${response.statusCode}');
       }
-      return false;
     } catch (e) {
-      print(e);
+      print('Error deleting data: $e');
     }
   }
 
@@ -305,15 +318,31 @@ class _ListProjectState extends State<ListProject> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => EditProject(),
+                                          builder: (context) => EditProject(
+                                            selectedProject: {
+                                              "no": _listdata[index]['no'],
+                                              "kodeProject": _listdata[index]
+                                                  ['kodeProject'],
+                                              "namaProject": _listdata[index]
+                                                  ['namaProject'],
+                                            },
+                                          ),
                                         ),
-                                      );
+                                      ).then((result) {
+                                        if (result != null && result) {
+                                          updateData();
+                                        }
+                                      });
                                     },
                                   ),
                                   SizedBox(width: 10),
                                   IconButton(
                                     icon: Icon(Icons.delete),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      _showDeleteDialog(_listdata[index]
+                                              ['kodeProject']
+                                          .toString());
+                                    },
                                   ),
                                 ],
                               ),
@@ -329,6 +358,35 @@ class _ListProjectState extends State<ListProject> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showDeleteDialog(String id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin menghapus data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _hapusData(id);
+                Navigator.of(context).pop();
+              },
+              child: Text("Hapus", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
     );
   }
 

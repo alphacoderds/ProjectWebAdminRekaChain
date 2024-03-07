@@ -1,7 +1,7 @@
 <?php
-$conn=new mysqli("localhost","root","","crudflutter");
-$nohp = $_POST["nohp"];
-$data= mysqli_query($conn, "delete from siswa where nohp='$nohp' ");
+$conn=new mysqli("localhost","root","","db_rekachain");
+$kodeProject = $_POST["kodeProject"];
+$data= mysqli_query($conn, "delete from project where kodeProject='$kodeProject' ");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'

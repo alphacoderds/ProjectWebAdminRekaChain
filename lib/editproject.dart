@@ -18,7 +18,10 @@ import 'package:sizer/sizer.dart';
 import 'package:http/http.dart' as http;
 
 class EditProject extends StatefulWidget {
-  const EditProject({super.key});
+  final Map<String, dynamic> selectedProject;
+
+  const EditProject({Key? key, this.selectedProject = const {}})
+      : super(key: key);
 
   @override
   State<EditProject> createState() => _EditProjectState();
@@ -57,7 +60,10 @@ class _EditProjectState extends State<EditProject> {
   @override
   void initState() {
     super.initState();
-    fetchData();
+    nmprojectController = TextEditingController(
+        text: widget.selectedProject['namaProject'] ?? '');
+    kdprojectController = TextEditingController(
+        text: widget.selectedProject['kodeProject'] ?? '');
   }
 
   int _selectedIndex = 0;
@@ -87,7 +93,7 @@ class _EditProjectState extends State<EditProject> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => EditProject(),
+                  builder: (context) => const EditProject(),
                 );
               default:
                 return null;
@@ -190,7 +196,7 @@ class _EditProjectState extends State<EditProject> {
                 height: 40.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    fetchData();
+                    _updateDataAndNavigateToListProject();
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color.fromRGBO(43, 56, 86, 1),
@@ -208,6 +214,28 @@ class _EditProjectState extends State<EditProject> {
         );
       },
     );
+  }
+
+  void _updateDataAndNavigateToListProject() async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/editproject.php'),
+        body: {
+          'no': widget.selectedProject['no'].toString(),
+          'kodeProject': kdprojectController.text,
+          'namaProject': nmprojectController.text,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        _showFinishDialog();
+      } else {
+        print('Failed to update data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error updating data: $e');
+    }
   }
 
   Widget _buildMainTable() {
