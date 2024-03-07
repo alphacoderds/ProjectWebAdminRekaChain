@@ -63,7 +63,7 @@ class _TambahStaffState extends State<TambahStaff> {
   Future<void> _simpan() async {
     final response = await http.post(
       Uri.parse(
-        'http://192.168.8.159/ProjectWebAdminRekaChain/lib/Project/createproject.php',
+        'http://192.168.8.165/ProjectWebAdminRekaChain/lib/Project/createproject.php',
       ),
       body: {
         "kode_staff": kodestaffController.text,
@@ -117,7 +117,6 @@ class _TambahStaffState extends State<TambahStaff> {
     nomortelponController = TextEditingController();
     nipController = TextEditingController();
     statusController = TextEditingController();
-    passwordController = TextEditingController();
     passwordController = TextEditingController();
     konfirmasiPasswordController = TextEditingController();
   }
@@ -530,7 +529,7 @@ class _TambahStaffState extends State<TambahStaff> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _showFinishDialog();
+                    _simpan();
                   },
                   child: Text(
                     'Simpan',
