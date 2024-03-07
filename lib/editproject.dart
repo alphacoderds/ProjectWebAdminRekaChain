@@ -13,8 +13,6 @@ import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
-
 import 'package:http/http.dart' as http;
 
 class EditProject extends StatefulWidget {
@@ -41,7 +39,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/editproject.php'),
+            'http://192.168.8.159/ProjectWebAdminRekaChain/lib/Project/editproject.php'),
       );
       if (response.statusCode == 200) {
         final List<Map<String, dynamic>> fetchedData =
@@ -60,6 +58,7 @@ class _EditProjectState extends State<EditProject> {
   @override
   void initState() {
     super.initState();
+    fetchData();
     nmprojectController = TextEditingController(
         text: widget.selectedProject['namaProject'] ?? '');
     kdprojectController = TextEditingController(
@@ -220,7 +219,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/editproject.php'),
+            'http://192.168.8.159/ProjectWebAdminRekaChain/lib/Project/editproject.php'),
         body: {
           'no': widget.selectedProject['no'].toString(),
           'kodeProject': kdprojectController.text,

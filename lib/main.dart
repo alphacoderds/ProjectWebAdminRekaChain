@@ -2,12 +2,13 @@ import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
+import 'dart:async';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget { 
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override

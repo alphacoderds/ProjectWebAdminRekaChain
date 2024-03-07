@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class TambahStaff extends StatefulWidget {
-  const TambahStaff({super.key});
+  const TambahStaff({Key? key}) : super(key: key);
 
   @override
   State<TambahStaff> createState() => _TambahStaffState();
@@ -23,7 +23,7 @@ class TambahStaff extends StatefulWidget {
 class _TambahStaffState extends State<TambahStaff> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-  
+
   late TextEditingController kodestaffController;
   late TextEditingController namaController;
   late TextEditingController jabatanController;
@@ -63,7 +63,7 @@ class _TambahStaffState extends State<TambahStaff> {
   Future<void> _simpan() async {
     final response = await http.post(
       Uri.parse(
-        'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/createproject.php',
+        'http://192.168.8.159/ProjectWebAdminRekaChain/lib/Project/createproject.php',
       ),
       body: {
         "kode_staff": kodestaffController.text,

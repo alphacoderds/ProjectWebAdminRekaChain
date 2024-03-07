@@ -34,7 +34,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/readproject.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -44,11 +44,10 @@ class _ListStaffState extends State<ListStaff> {
           _isloading = false;
         });
       }
-        } catch (e) {
+    } catch (e) {
       print(e);
     }
   }
-
 
   @override
   void initState() {
@@ -59,20 +58,31 @@ class _ListStaffState extends State<ListStaff> {
     super.initState();
   }
 
-  Future _hapus(String id) async {
+  Future<void> updateData() async {
+    await _getdata();
+    setState(() {});
+  }
+
+  Future<void> _hapusData(String id) async {
     try {
-      final respone = await http.post(
-          Uri.parse(
-              'http://192.168.10.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/hapusproject.php'),
-          body: {
-            "nohp": id,
-          });
-      if (respone.statusCode == 200) {
-        return true;
+      final response = await http.post(
+        Uri.parse(
+          'http://192.168.8.159/ProjectWebAdminRekaChain/lib/Project/hapusproject.php',
+        ),
+        body: {
+          "kodeProject": id,
+        },
+      );
+
+      print('Delete response: ${response.statusCode} - ${response.body}');
+
+      if (response.statusCode == 200) {
+        await updateData();
+      } else {
+        print('Failed to delete data: ${response.statusCode}');
       }
-      return false;
     } catch (e) {
-      print('Error fetching data: $e');
+      print('Error deleting data: $e');
     }
   }
 

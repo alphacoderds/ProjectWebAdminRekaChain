@@ -30,7 +30,7 @@ class _TambahProjectState extends State<TambahProject> {
   Future<void> _simpan() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.8.165/ProjectWebAdminRekaChain/ProjectWebAdminRekaChain/lib/Project/createproject.php'),
+          'http://192.168.8.159/ProjectWebAdminRekaChain/lib/Project/createproject.php'),
       body: {
         "kodeProject": kdprojectController.text,
         "namaProject": nmprojectController.text,
