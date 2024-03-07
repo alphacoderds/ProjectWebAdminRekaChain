@@ -1,33 +1,6 @@
 <?php
 $conn=new mysqli("localhost","root","","db_rekachain");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 $no = $_POST["no"];
-$kodeProject = $_POST["kodeProject"];
-$namaProject = $_POST["namaProject"];
-$data = $conn->prepare("INSERT INTO project (no, kodeProject, namaProject) VALUES (?, ?, ?)");
-$data->bind_param("iss", $no, $kodeProject, $namaProject);
-$result = $data->execute();
-if ($data) {
-    echo json_encode([
-        'pesan' => 'Sukses'
-    ]);
-}else{
-    echo json_encode([
-        'pesan' => 'Gagal'
-    ]);
-}
-$data->close();
-$conn->close();
-?>
-
-<?php
-$conn=new mysqli("localhost","root","","db_rekachain");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 $kode_staff = $_POST["kode_staff"];
 $nama = $_POST["nama"];
 $jabatan = $_POST["jabatan"];
@@ -40,11 +13,7 @@ $nip = $_POST["nip"];
 $status = $_POST["status"];
 $password = $_POST["password"];
 $konfirmasi_password = $_POST["konfirmasi_password"];
-
-$data = $conn->prepare("INSERT INTO tbl_tambahStaff (kode_staff, nama, jabatan, unit_kerja, departemen, divisi, email, no_telp, nip, status, password, konfirmasi_password) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$data->bind_param("ssssssssssss", $kode_staff, $nama, $jabatan, $unit_kerja, $departemen, $divisi, $email, $no_telp, $nip, $status, $password, $konfirmasi_password);
-$result = $data->execute();
-
+$data = mysqli_query($conn, "insert into tbl_tambahstaff set no='$no', kode_staff='$kode_staff', nama='$nama', jabatan='$jabatan', unit_kerja='$unit_kerja', departemen='$departemen', divisi='$divisi', email='$email', no_telp='$no_telp', nip='$nip', status='$status', password='$password', konfirmasi_password='$konfirmasi_password' ");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'
@@ -54,6 +23,4 @@ if ($data) {
         'pesan' => 'Gagal'
     ]);
 }
-$stmt->close();
-$conn->close();
 ?>

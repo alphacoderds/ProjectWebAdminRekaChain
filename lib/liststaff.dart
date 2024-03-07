@@ -70,7 +70,7 @@ class _ListStaffState extends State<ListStaff> {
           'http://192.168.8.159/ProjectWebAdminRekaChain/lib/Project/hapusproject.php',
         ),
         body: {
-          "kodeProject": id,
+          "kode_staff": id,
         },
       );
 
@@ -311,7 +311,7 @@ class _ListStaffState extends State<ListStaff> {
                             scrollDirection: Axis.horizontal,
                             child: Container(
                               alignment: Alignment.center,
-                              child: Text('1'),
+                              child: Text((index + 1).toString()),
                             ),
                           ),
                         ),
@@ -320,7 +320,7 @@ class _ListStaffState extends State<ListStaff> {
                             scrollDirection: Axis.horizontal,
                             child: Container(
                               alignment: Alignment.center,
-                              child: Text('1'),
+                              child: Text(data['kode_staff'] ?? ''),
                             ),
                           ),
                         ),
@@ -329,7 +329,7 @@ class _ListStaffState extends State<ListStaff> {
                             scrollDirection: Axis.horizontal,
                             child: Container(
                               alignment: Alignment.center,
-                              child: Text('1'),
+                              child: Text(data['nama'] ?? ''),
                             ),
                           ),
                         ),
@@ -338,7 +338,7 @@ class _ListStaffState extends State<ListStaff> {
                             scrollDirection: Axis.horizontal,
                             child: Container(
                               alignment: Alignment.center,
-                              child: Text('1'),
+                              child: Text(data['jabatan'] ?? ''),
                             ),
                           ),
                         ),
@@ -347,7 +347,7 @@ class _ListStaffState extends State<ListStaff> {
                             scrollDirection: Axis.horizontal,
                             child: Container(
                               alignment: Alignment.center,
-                              child: Text('1'),
+                              child: Text(data['unit_kerja'] ?? ''),
                             ),
                           ),
                         ),
@@ -356,7 +356,7 @@ class _ListStaffState extends State<ListStaff> {
                             scrollDirection: Axis.horizontal,
                             child: Container(
                               alignment: Alignment.center,
-                              child: Text('1'),
+                              child: Text(data['divisi'] ?? ''),
                             ),
                           ),
                         ),
@@ -565,7 +565,7 @@ class _ListStaffState extends State<ListStaff> {
         ],
       ),
       children: [
-        _buildSubListTile('Tambah Staff', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
         _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
       ],
     );

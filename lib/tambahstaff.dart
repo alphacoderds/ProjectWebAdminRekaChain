@@ -77,7 +77,7 @@ class _TambahStaffState extends State<TambahStaff> {
         "nip": nipController.text,
         "status": statusController.text,
         "password": passwordController.text,
-        "konfirmasi_passwrod": konfirmasiPasswordController.text,
+        "konfirmasi_password": konfirmasiPasswordController.text,
       },
     );
 
