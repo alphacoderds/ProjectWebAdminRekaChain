@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:html';
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
@@ -10,17 +11,19 @@ import 'package:RekaChain/perencanaan.dart';
 import 'package:RekaChain/profile.dart';
 import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
+import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class TambahStaff extends StatefulWidget {
-  const TambahStaff({Key? key}) : super(key: key);
+class EditStaff extends StatefulWidget {
+  final Map<String, dynamic> selectedStaff;
+  const EditStaff({Key? key, this.selectedStaff = const {}}) : super(key: key);
 
   @override
-  State<TambahStaff> createState() => _TambahStaffState();
+  State<EditStaff> createState() => _EditStaffState();
 }
 
-class _TambahStaffState extends State<TambahStaff> {
+class _EditStaffState extends State<EditStaff> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
@@ -38,6 +41,9 @@ class _TambahStaffState extends State<TambahStaff> {
   late TextEditingController konfirmasiPasswordController;
 
   List<File> uploadFiles = [];
+
+  List<Map<String, dynamic>> _listdata = [];
+
   bool isPassword = true;
   bool isKonfirmasiPassword = true;
   bool obscureTextPassword = true;
@@ -60,72 +66,59 @@ class _TambahStaffState extends State<TambahStaff> {
   List<String> dropdownItemsStatus = ['Aktif', 'Tidak Aktif'];
   String? selectedValueStatus;
 
-  Future<void> _simpan() async {
-    final response = await http.post(
-      Uri.parse(
-        "http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/createproject.php",
-      ),
-      body: {
-        "kode_staff": kodestaffController.text,
-        "nama": namaController.text,
-        "jabatan": selectedValueJabatan ?? '',
-        "unit_kerja": selectedValueUnitKerja ?? '',
-        "departemen": selectedValueDepartemen ?? '',
-        "divisi": selectedValueDivisi ?? '',
-        "email": emailController.text,
-        "no_telp": nomortelponController.text,
-        "nip": nipController.text,
-        "status": selectedValueStatus ?? '',
-        "password": passwordController.text,
-        "konfirmasi_password": konfirmasiPasswordController.text,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final newStaffData = {
-        "no": response.body,
-        "kodeStaff": kodestaffController.text,
-        "nama": namaController.text,
-        "jabatan": jabatanController.text,
-        "unit_kerja": unitkerjaController.text,
-        "departemen": departemenController.text,
-        "divisi": divisiController.text,
-        "email": emailController.text,
-        "no_telp": nomortelponController.text,
-        "nip": nipController.text,
-        "status": statusController.text,
-        "password": passwordController.text,
-        "konfirmasi_password": konfirmasiPasswordController.text,
-      };
-
-      _showFinishDialog();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ListStaff(newStaff: newStaffData),
-        ),
+  Future<void> fetchData() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/editproject.php'),
       );
-    } else {
-      print('Gagal menyimpan data: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final List<Map<String, dynamic>> fetchedData =
+            List<Map<String, dynamic>>.from(jsonDecode(response.body));
+        setState(() {
+          _listdata = fetchedData;
+          selectedValueJabatan = widget.selectedStaff['jabatan'];
+          selectedValueDepartemen = widget.selectedStaff['departemen'];
+          selectedValueUnitKerja = widget.selectedStaff['unit_kerja'];
+          selectedValueDivisi = widget.selectedStaff['divisi'];
+          selectedValueStatus = widget.selectedStaff['status'];
+        });
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
     }
   }
 
   @override
   void initState() {
     super.initState();
-    kodestaffController = TextEditingController();
-    namaController = TextEditingController();
-    jabatanController = TextEditingController();
-    unitkerjaController = TextEditingController();
-    departemenController = TextEditingController();
-    divisiController = TextEditingController();
-    emailController = TextEditingController();
-    nomortelponController = TextEditingController();
-    nipController = TextEditingController();
-    statusController = TextEditingController();
-    passwordController = TextEditingController();
-    konfirmasiPasswordController = TextEditingController();
+    fetchData();
+    kodestaffController =
+        TextEditingController(text: widget.selectedStaff['kode_staff'] ?? '');
+    namaController =
+        TextEditingController(text: widget.selectedStaff['nama'] ?? '');
+    jabatanController =
+        TextEditingController(text: widget.selectedStaff['jabatan'] ?? '');
+    unitkerjaController =
+        TextEditingController(text: widget.selectedStaff['unit_kerja'] ?? '');
+    departemenController =
+        TextEditingController(text: widget.selectedStaff['departemen'] ?? '');
+    divisiController =
+        TextEditingController(text: widget.selectedStaff['divisi'] ?? '');
+    emailController =
+        TextEditingController(text: widget.selectedStaff['email'] ?? '');
+    nomortelponController =
+        TextEditingController(text: widget.selectedStaff['no_telp'] ?? '');
+    nipController =
+        TextEditingController(text: widget.selectedStaff['nip'] ?? '');
+    statusController =
+        TextEditingController(text: widget.selectedStaff['status'] ?? '');
+    passwordController =
+        TextEditingController(text: widget.selectedStaff['password'] ?? '');
+    konfirmasiPasswordController = TextEditingController(
+        text: widget.selectedStaff['konfirmasi_password'] ?? '');
   }
 
   @override
@@ -140,7 +133,7 @@ class _TambahStaffState extends State<TambahStaff> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const TambahStaff(),
+                  builder: (context) => const EditStaff(),
                 );
               default:
                 return null;
@@ -245,6 +238,38 @@ class _TambahStaffState extends State<TambahStaff> {
         );
       },
     );
+  }
+
+  void _updateDataAndNavigateToListProject() async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/editproject.php'),
+        body: {
+          'no': widget.selectedStaff['no'].toString(),
+          "kode_staff": kodestaffController.text,
+          "nama": namaController.text,
+          "jabatan": selectedValueJabatan ?? '',
+          "unit_kerja": selectedValueUnitKerja ?? '',
+          "departemen": selectedValueDepartemen ?? '',
+          "divisi": selectedValueDivisi ?? '',
+          "email": emailController.text,
+          "no_telp": nomortelponController.text,
+          "nip": nipController.text,
+          "status": selectedValueStatus ?? '',
+          "password": passwordController.text,
+          "konfirmasi_password": konfirmasiPasswordController.text,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        _showFinishDialog();
+      } else {
+        print('Failed to update data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error updating data: $e');
+    }
   }
 
   Widget _buildMainTable() {
@@ -537,7 +562,7 @@ class _TambahStaffState extends State<TambahStaff> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _simpan();
+                    _updateDataAndNavigateToListProject();
                   },
                   child: Text(
                     'Simpan',

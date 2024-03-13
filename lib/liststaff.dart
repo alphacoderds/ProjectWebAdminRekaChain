@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
+import 'package:RekaChain/editstaff.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
@@ -372,9 +373,40 @@ class _ListStaffState extends State<ListStaff> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => TambahStaff(),
+                                          builder: (context) => EditStaff(
+                                            selectedStaff: {
+                                              "no": _listdata[index]['no'],
+                                              "kode_staff": _listdata[index]
+                                                  ['kode_staff'],
+                                              "nama": _listdata[index]['nama'],
+                                              "jabatan": _listdata[index]
+                                                  ['jabatan'],
+                                              "unit_kerja": _listdata[index]
+                                                  ['unit_kerja'],
+                                              "departemen": _listdata[index]
+                                                  ['departemen'],
+                                              "divisi": _listdata[index]
+                                                  ['divisi'],
+                                              "email": _listdata[index]
+                                                  ['email'],
+                                              "no_telp": _listdata[index]
+                                                  ['no_telp'],
+                                              "nip": _listdata[index]['nip'],
+                                              "status": _listdata[index]
+                                                  ['status'],
+                                              "password": _listdata[index]
+                                                  ['password'],
+                                              "konfirmasi_password":
+                                                  _listdata[index]
+                                                      ['konfirmasi_password'],
+                                            },
+                                          ),
                                         ),
-                                      );
+                                      ).then((result) {
+                                        if (result != null && result) {
+                                          updateData();
+                                        }
+                                      });
                                     },
                                   ),
                                 ],

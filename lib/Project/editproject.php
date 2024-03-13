@@ -29,7 +29,7 @@ $nip = $_POST["nip"];
 $status = $_POST["status"];
 $password = $_POST["password"];
 $konfirmasi_password = $_POST["konfirmasi_password"];
-$data= mysqli_query($conn, "update tbl_tambahStaff set kode_staff='$kode_staff', nama='$nama', jabatan='$jabatan', unit_kerja='$unit_kerja', departemen='$departemen', divisi='$divisi', email='$email', no_telp='$no_telp', nip='$nip', status='$status', password='$password', konfirmasi_password='$konfirmasi_password' ");
+$data= mysqli_query($conn, "update tbl_tambahStaff set kode_staff='$kode_staff', nama='$nama', jabatan='$jabatan', unit_kerja='$unit_kerja', departemen='$departemen', divisi='$divisi', email='$email', no_telp='$no_telp', nip='$nip', status='$status', password='$password', konfirmasi_password='$konfirmasi_password' where no='$no'");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'
