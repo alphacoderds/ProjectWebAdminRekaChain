@@ -1,7 +1,7 @@
 <?php
 $conn=new mysqli("localhost","root","","db_rekachain");
 $kodeProject = $_POST["kodeProject"];
-$data= mysqli_query($conn, "delete from project where kodeProject='$kodeProject' ");
+$data= mysqli_query($conn, "delete from tbl_project where kodeProject='$kodeProject' ");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'

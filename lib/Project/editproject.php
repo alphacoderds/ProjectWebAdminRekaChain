@@ -3,7 +3,7 @@ $conn=new mysqli("localhost","root","","db_rekachain");
 $no = $_POST["no"];
 $kodeProject = $_POST["kodeProject"];
 $namaProject = $_POST["namaProject"];
-$data= mysqli_query($conn, "update project set kodeProject='$kodeProject', namaProject='$namaProject' where no='$no' ");
+$data= mysqli_query($conn, "update tbl_project set kodeProject='$kodeProject', namaProject='$namaProject' where no='$no' ");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'

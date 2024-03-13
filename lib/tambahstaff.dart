@@ -42,7 +42,7 @@ class _TambahStaffState extends State<TambahStaff> {
   bool isKonfirmasiPassword = true;
   bool obscureTextPassword = true;
   bool obscureTextKonfirmasiPassword = true;
-  bool isViewVisible = false;
+  bool isViewVisible = true;
 
   int _selectedIndex = 0;
   List<String> dropdownItemsJabatan = ['Jabatan 1', 'Jabatan 2'];
@@ -63,7 +63,7 @@ class _TambahStaffState extends State<TambahStaff> {
   Future<void> _simpan() async {
     final response = await http.post(
       Uri.parse(
-        'http://192.168.8.165/ProjectWebAdminRekaChain/lib/Project/createproject.php',
+        "http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/createproject.php",
       ),
       body: {
         "kode_staff": kodestaffController.text,
@@ -88,7 +88,14 @@ class _TambahStaffState extends State<TambahStaff> {
         "nama": namaController.text,
         "jabatan": jabatanController.text,
         "unit_kerja": unitkerjaController.text,
+        "departemen": departemenController.text,
         "divisi": divisiController.text,
+        "email": emailController.text,
+        "no_telp": nomortelponController.text,
+        "nip": nipController.text,
+        "status": statusController.text,
+        "password": passwordController.text,
+        "konfirmasi_password": konfirmasiPasswordController.text,
       };
 
       _showFinishDialog();
@@ -269,7 +276,7 @@ class _TambahStaffState extends State<TambahStaff> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _textfieldStaff('Kode Staff'),
+                            _textfieldStaff('Kode Staff', kodestaffController),
                             SizedBox(height: 20),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,9 +364,9 @@ class _TambahStaffState extends State<TambahStaff> {
                               ],
                             ),
                             SizedBox(height: 20),
-                            _textfieldStaff('E-mail'),
+                            _textfieldStaff('E-mail', emailController),
                             SizedBox(height: 20),
-                            _textfieldStaff('Username/NIP'),
+                            _textfieldStaff('Username/NIP', nipController),
                             SizedBox(height: 20),
                             _inputFieldPassword('Password', passwordController,
                                 isPassword: true,
@@ -375,7 +382,7 @@ class _TambahStaffState extends State<TambahStaff> {
                         SizedBox(width: screenWidth * 0.05),
                         Column(
                           children: [
-                            _textfieldStaff('Nama Lengkap'),
+                            _textfieldStaff('Nama Lengkap', namaController),
                             SizedBox(height: 20),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -463,7 +470,8 @@ class _TambahStaffState extends State<TambahStaff> {
                               ],
                             ),
                             SizedBox(height: 20),
-                            _textfieldStaff('Nomor Telepon'),
+                            _textfieldStaff(
+                                'Nomor Telepon', nomortelponController),
                             SizedBox(height: 20),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -547,6 +555,32 @@ class _TambahStaffState extends State<TambahStaff> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _textfieldStaff(
+      String informasiStaff, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          informasiStaff,
+          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
+        ),
+        SizedBox(
+          width: 400,
+          height: 50,
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(3),
+                    borderSide: BorderSide(width: 1))),
+          ),
+        ),
+      ],
     );
   }
 
@@ -898,30 +932,6 @@ class _TambahStaffState extends State<TambahStaff> {
           ],
         );
       },
-    );
-  }
-
-  Widget _textfieldStaff(String informasiStaff) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          informasiStaff,
-          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-        ),
-        SizedBox(
-          width: 400,
-          height: 50,
-          child: TextField(
-            decoration: InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(3),
-                    borderSide: BorderSide(width: 1))),
-          ),
-        ),
-      ],
     );
   }
 }
