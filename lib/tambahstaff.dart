@@ -57,13 +57,13 @@ class _TambahStaffState extends State<TambahStaff> {
   List<String> dropdownItemsDivisi = ['Divisi 1', 'Divisi 2'];
   String? selectedValueDivisi;
 
-  List<String> dropdownItemsStatus = ['Aktif', 'Tidak Aktif'];
+  List<String> dropdownItemsStatus = ['Aktif', 'Non Aktif'];
   String? selectedValueStatus;
 
-  Future<void> _simpan() async {
+  Future<void> _simpan(BuildContext context) async {
     final response = await http.post(
       Uri.parse(
-        "http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/createproject.php",
+        "http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/create.php",
       ),
       body: {
         "kode_staff": kodestaffController.text,
@@ -161,7 +161,7 @@ class _TambahStaffState extends State<TambahStaff> {
                         title: Padding(
                           padding: EdgeInsets.only(left: screenHeight * 0.01),
                           child: Text(
-                            'Data Staff',
+                            'Tambah Data Staff Baru',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -537,7 +537,7 @@ class _TambahStaffState extends State<TambahStaff> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _simpan();
+                    _simpan(context);
                   },
                   child: Text(
                     'Simpan',

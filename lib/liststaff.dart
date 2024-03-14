@@ -35,7 +35,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/read.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -68,7 +68,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/hapusproject.php',
+          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/hapus.php',
         ),
         body: {
           "kode_staff": id,
@@ -234,8 +234,8 @@ class _ListStaffState extends State<ListStaff> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              columnSpacing: 200.0,
-              horizontalMargin: 50.0,
+              columnSpacing: 180.0,
+              horizontalMargin: 70.0,
               columns: [
                 DataColumn(
                   label: Center(
@@ -286,6 +286,15 @@ class _ListStaffState extends State<ListStaff> {
                   label: Center(
                     child: Text(
                       'Divisi',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Status',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -358,6 +367,15 @@ class _ListStaffState extends State<ListStaff> {
                             child: Container(
                               alignment: Alignment.center,
                               child: Text(data['divisi'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['status'] ?? ''),
                             ),
                           ),
                         ),

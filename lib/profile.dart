@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:RekaChain/editprofile.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  final Map<String, dynamic>? newStaff;
+  final Map<String, dynamic>? tambahStaffData;
 
+  const Profile({Key? key, this.newStaff, this.tambahStaffData})
+      : super(key: key);
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -11,6 +17,42 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+
+  List _listdata = [];
+  bool _isloading = true;
+
+  Future<void> _getdata() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/read.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          _listdata = data;
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    if (widget.newStaff != null) {
+      _listdata.add(widget.newStaff!);
+    }
+    _getdata();
+    super.initState();
+  }
+
+  Future<void> updateData() async {
+    await _getdata();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -101,6 +143,20 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget _buildRightSection() {
+    String namaLengkap = _listdata.isNotEmpty ? _listdata[0]['nama'] ?? '' : '';
+    String jabatan = _listdata.isNotEmpty ? _listdata[0]['jabatan'] ?? '' : '';
+    String unitKerja =
+        _listdata.isNotEmpty ? _listdata[0]['unit_kerja'] ?? '' : '';
+    String departemen =
+        _listdata.isNotEmpty ? _listdata[0]['departemen'] ?? '' : '';
+    String divisi = _listdata.isNotEmpty ? _listdata[0]['divisi'] ?? '' : '';
+    String nomorTelepon =
+        _listdata.isNotEmpty ? _listdata[0]['no_telp'] ?? '' : '';
+    String nip = _listdata.isNotEmpty ? _listdata[0]['nip'] ?? '' : '';
+    String password =
+        _listdata.isNotEmpty ? _listdata[0]['password'] ?? '' : '';
+    String status = _listdata.isNotEmpty ? _listdata[0]['status'] ?? '' : '';
+
     return Stack(
       children: [
         Column(
@@ -121,23 +177,23 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             const SizedBox(height: 16.0),
-            _buildTextView(' Nama Lengkap :', text: ''),
+            _buildTextView(' Nama Lengkap :', text: namaLengkap),
             _buildDivider(),
-            _buildTextView(' Jabatan :', text: ''),
+            _buildTextView(' Jabatan :', text: jabatan),
             _buildDivider(),
-            _buildTextView(' Unit Kerja :', text: ''),
+            _buildTextView(' Unit Kerja :', text: unitKerja),
             _buildDivider(),
-            _buildTextView(' Departemen :', text: ''),
+            _buildTextView(' Departemen :', text: departemen),
             _buildDivider(),
-            _buildTextView(' Divisi :', text: ''),
+            _buildTextView(' Divisi :', text: divisi),
             _buildDivider(),
-            _buildTextView(' Nomor Telepon :', text: ''),
+            _buildTextView(' Nomor Telepon :', text: nomorTelepon),
             _buildDivider(),
-            _buildTextView(' NIP :', text: ''),
+            _buildTextView(' NIP :', text: nip),
             _buildDivider(),
             _buildTextView(' Password :', text: ''),
             _buildDivider(),
-            _buildTextView(' Status :', text: ''),
+            _buildTextView(' Status :', text: status),
             _buildDivider(),
             const SizedBox(height: 16.0),
           ],

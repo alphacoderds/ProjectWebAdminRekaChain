@@ -30,7 +30,7 @@ class _TambahProjectState extends State<TambahProject> {
   Future<void> _simpan() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/createproject.php'),
+          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/create.php'),
       body: {
         "kodeProject": kdprojectController.text,
         "namaProject": nmprojectController.text,
@@ -44,14 +44,14 @@ class _TambahProjectState extends State<TambahProject> {
         "namaProject": nmprojectController.text,
       };
 
-      _showFinishDialog();
-
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => ListProject(newProject: newProjectData),
         ),
       );
+
+      _showFinishDialog();
     } else {
       print('Gagal menyimpan data: ${response.statusCode}');
     }
@@ -112,7 +112,7 @@ class _TambahProjectState extends State<TambahProject> {
                         title: Padding(
                           padding: EdgeInsets.only(left: screenHeight * 0.01),
                           child: Text(
-                            'Data Project',
+                            'Tambah Data Project Baru',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
