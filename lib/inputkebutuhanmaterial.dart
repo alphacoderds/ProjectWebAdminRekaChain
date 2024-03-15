@@ -311,11 +311,8 @@ class _InputMaterialState extends State<InputMaterial> {
                                         text: ' Input Kebutuhan Material',
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () async {
-                                            // Import the required package
                                             final uri = Uri.parse(
-                                                'https://youtu.be/7PIji8OubXU?si=jUB8efp9cbQwc5Tg');
-
-                                            // Check if URL is valid and can be launched
+                                                'https://drive.google.com/drive/folders/1i6OxoJ8IHlSI5zso79puxtYLK4rO1Ns7?usp=sharing');
                                             if (uri != null &&
                                                 await canLaunchUrl(uri)) {
                                               await launchUrl(uri);

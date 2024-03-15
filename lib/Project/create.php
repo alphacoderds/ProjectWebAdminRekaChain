@@ -45,9 +45,11 @@ if ($data) {
 <?php 
 $conn=new mysqli("localhost","root","","db_rekachain");
 $no = $_POST["no"];
+$namaProject = $_POST["namaProject"];
 $file = $_POST["file"];
 $noProduk = $_POST["noProduk"];
-$data = mysqli_query($conn, "insert into tbl_file set no='$no', file='$file', noProduk='$noProduk' ");
+$tanggal = $_POST["tanggal"];
+$data = mysqli_query($conn, "insert into tbl_file set no='$no', namaProject='$namaProject', file='$file', noProduk='$noProduk', tanggal='$tanggal' ");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'

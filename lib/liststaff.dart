@@ -31,6 +31,14 @@ class _ListStaffState extends State<ListStaff> {
   List _listdata = [];
   bool _isloading = true;
 
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+
   Future<void> _getdata() async {
     try {
       final response = await http.get(
@@ -155,6 +163,7 @@ class _ListStaffState extends State<ListStaff> {
                                     SizedBox(width: 8),
                                     Expanded(
                                       child: TextField(
+                                        onChanged: _updateSearchQuery,
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
                                           hintText: 'Cari',
@@ -223,6 +232,12 @@ class _ListStaffState extends State<ListStaff> {
   }
 
   Widget _buildMainTable() {
+    List filteredData = _listdata.where((data) {
+      String kodeProject = data['kodeProject'] ?? '';
+      String namaProject = data['namaProject'] ?? '';
+      return kodeProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          namaProject.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
     return Container(
       alignment: Alignment.center,
       child: SingleChildScrollView(
@@ -310,7 +325,7 @@ class _ListStaffState extends State<ListStaff> {
                   ),
                 ),
               ],
-              rows: _listdata
+              rows: filteredData
                   .asMap()
                   .map(
                     (index, data) => MapEntry(
@@ -393,29 +408,30 @@ class _ListStaffState extends State<ListStaff> {
                                         MaterialPageRoute(
                                           builder: (context) => EditStaff(
                                             selectedStaff: {
-                                              "no": _listdata[index]['no'],
-                                              "kode_staff": _listdata[index]
+                                              "no": filteredData[index]['no'],
+                                              "kode_staff": filteredData[index]
                                                   ['kode_staff'],
-                                              "nama": _listdata[index]['nama'],
-                                              "jabatan": _listdata[index]
+                                              "nama": filteredData[index]
+                                                  ['nama'],
+                                              "jabatan": filteredData[index]
                                                   ['jabatan'],
-                                              "unit_kerja": _listdata[index]
+                                              "unit_kerja": filteredData[index]
                                                   ['unit_kerja'],
-                                              "departemen": _listdata[index]
+                                              "departemen": filteredData[index]
                                                   ['departemen'],
-                                              "divisi": _listdata[index]
+                                              "divisi": filteredData[index]
                                                   ['divisi'],
-                                              "email": _listdata[index]
+                                              "email": filteredData[index]
                                                   ['email'],
-                                              "no_telp": _listdata[index]
+                                              "no_telp": filteredData[index]
                                                   ['no_telp'],
-                                              "nip": _listdata[index]['nip'],
-                                              "status": _listdata[index]
+                                              "nip": filteredData[index]['nip'],
+                                              "status": filteredData[index]
                                                   ['status'],
-                                              "password": _listdata[index]
+                                              "password": filteredData[index]
                                                   ['password'],
                                               "konfirmasi_password":
-                                                  _listdata[index]
+                                                  filteredData[index]
                                                       ['konfirmasi_password'],
                                             },
                                           ),

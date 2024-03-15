@@ -22,13 +22,6 @@ class _ViewkmState extends State<Viewkm> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue;
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -82,36 +75,6 @@ class _ViewkmState extends State<Viewkm> {
                                       child: TextField(
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
-                                          hintText: 'Kode Project',
-                                        ),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.search,
-                                        size: 30,
-                                      ),
-                                      onPressed: () {},
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 20),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 7),
-                                width: 250,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: 8),
-                                    Expanded(
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
                                           hintText: 'Kode Lot',
                                         ),
                                       ),
@@ -126,6 +89,7 @@ class _ViewkmState extends State<Viewkm> {
                                   ],
                                 ),
                               ),
+                              SizedBox(width: 20),
                             ],
                           ),
                         ),

@@ -31,6 +31,14 @@ class _ListProjectState extends State<ListProject> {
   List _listdata = [];
   bool _isloading = true;
 
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+
   Future _getdata() async {
     try {
       final response = await http.get(
@@ -156,6 +164,7 @@ class _ListProjectState extends State<ListProject> {
                                     SizedBox(width: 8),
                                     Expanded(
                                       child: TextField(
+                                        onChanged: _updateSearchQuery,
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
                                           hintText: 'Cari',
@@ -224,6 +233,12 @@ class _ListProjectState extends State<ListProject> {
   }
 
   Widget _buildMainTable() {
+    List filteredData = _listdata.where((data) {
+      String kodeProject = data['kodeProject'] ?? '';
+      String namaProject = data['namaProject'] ?? '';
+      return kodeProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          namaProject.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
     return Container(
       alignment: Alignment.center,
       child: SingleChildScrollView(
@@ -269,7 +284,7 @@ class _ListProjectState extends State<ListProject> {
                 ),
               ),
             ],
-            rows: _listdata
+            rows: filteredData
                 .asMap()
                 .map(
                   (index, data) => MapEntry(
@@ -317,10 +332,10 @@ class _ListProjectState extends State<ListProject> {
                                         MaterialPageRoute(
                                           builder: (context) => EditProject(
                                             selectedProject: {
-                                              "no": _listdata[index]['no'],
-                                              "kodeProject": _listdata[index]
+                                              "no": filteredData[index]['no'],
+                                              "kodeProject": filteredData[index]
                                                   ['kodeProject'],
-                                              "namaProject": _listdata[index]
+                                              "namaProject": filteredData[index]
                                                   ['namaProject'],
                                             },
                                           ),
@@ -336,7 +351,7 @@ class _ListProjectState extends State<ListProject> {
                                   IconButton(
                                     icon: Icon(Icons.delete),
                                     onPressed: () {
-                                      _showDeleteDialog(_listdata[index]
+                                      _showDeleteDialog(filteredData[index]
                                               ['kodeProject']
                                           .toString());
                                     },

@@ -22,11 +22,6 @@ class _ViewUploadState extends State<ViewUpload> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
   String? selectedValue;
 
   @override
@@ -97,35 +92,6 @@ class _ViewUploadState extends State<ViewUpload> {
                                 ),
                               ),
                               SizedBox(width: 20),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 7),
-                                width: 250,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: 8),
-                                    Expanded(
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: 'Kode Lot',
-                                        ),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.search,
-                                        size: 30,
-                                      ),
-                                      onPressed: () {},
-                                    ),
-                                  ],
-                                ),
-                              ),
                             ],
                           ),
                         ),
@@ -237,6 +203,22 @@ class _ViewUploadState extends State<ViewUpload> {
               DataColumn(
                 label: Center(
                   child: Text(
+                    'Nama Project',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'No Produk',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
                     'Nama Dokumen',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
@@ -267,6 +249,24 @@ class _ViewUploadState extends State<ViewUpload> {
                     child: Container(
                       alignment: Alignment.center,
                       child: Text('1'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('PT INKA'),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('0012'),
                     ),
                   ),
                 ),

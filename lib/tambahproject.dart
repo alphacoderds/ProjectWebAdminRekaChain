@@ -44,14 +44,14 @@ class _TambahProjectState extends State<TambahProject> {
         "namaProject": nmprojectController.text,
       };
 
+      _showFinishDialog();
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => ListProject(newProject: newProjectData),
         ),
       );
-
-      _showFinishDialog();
     } else {
       print('Gagal menyimpan data: ${response.statusCode}');
     }

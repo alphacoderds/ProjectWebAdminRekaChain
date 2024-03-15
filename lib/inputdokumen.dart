@@ -12,6 +12,7 @@ import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewupload.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:file_picker/file_picker.dart';
 
@@ -26,6 +27,8 @@ class _InputDokumenState extends State<InputDokumen> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
+  TextEditingController tanggalcontroller = TextEditingController();
+
   List<File> uploadFiles = [];
 
   Future<void> _uploadDocument() async {
@@ -35,6 +38,20 @@ class _InputDokumenState extends State<InputDokumen> {
       print('Path File: ${result.files.single.path}');
     } else {
       print('Pengguna membatalkan memilih file');
+    }
+  }
+
+  Future<void> _selectDate(TextEditingController controller) async {
+    DateTime? _picked = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (_picked != null) {
+      setState(() {
+        controller.text = _picked.toString().split(" ")[0];
+      });
     }
   }
 
@@ -290,6 +307,19 @@ class _InputDokumenState extends State<InputDokumen> {
                                     ),
                                   ),
                                   SizedBox(height: 10),
+                                  RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                        text: 'Input Dokumen',
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(
+                                          color: Colors.blueAccent[700],
+                                        ),
+                                        text: ' Berupa Pdf',
+                                      ),
+                                    ]),
+                                  ),
                                 ],
                               ),
                             ],
@@ -332,6 +362,43 @@ class _InputDokumenState extends State<InputDokumen> {
                                           selectedValue = newValue;
                                         });
                                       },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 40),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Tanggal',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 90,
+                                    width: 150,
+                                    child: TextField(
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      textAlign: TextAlign.center,
+                                      controller: tanggalcontroller,
+                                      readOnly: true,
+                                      onTap: () {
+                                        _selectDate(tanggalcontroller);
+                                      },
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 15,
+                                          vertical: 2,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
