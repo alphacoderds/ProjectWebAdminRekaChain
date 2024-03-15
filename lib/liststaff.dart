@@ -43,7 +43,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/read.php',
+          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
         ),
       );
       if (response.statusCode == 200) {
