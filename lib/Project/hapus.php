@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 $conn=new mysqli("localhost","root","","db_rekachain");
 $kodeProject = $_POST["kodeProject"];
 $data= mysqli_query($conn, "delete from tbl_project where kodeProject='$kodeProject' ");

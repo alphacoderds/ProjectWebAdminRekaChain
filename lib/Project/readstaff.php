@@ -1,4 +1,5 @@
 <?php
+header("Access-Control-Allow-Origin: *");
 $conn=new mysqli("localhost","root","","db_rekachain");
 $query=mysqli_query($conn,"select * from tbl_tambahstaff");
 $data=mysqli_fetch_all($query,MYSQLI_ASSOC);

@@ -63,7 +63,7 @@ class _TambahStaffState extends State<TambahStaff> {
   Future<void> _simpan(BuildContext context) async {
     final response = await http.post(
       Uri.parse(
-        "http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/create.php",
+        "http://192.168.8.250/ProjectWebAdminRekaChain/lib/Project/create.php",
       ),
       body: {
         "kode_staff": kodestaffController.text,

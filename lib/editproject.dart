@@ -39,7 +39,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.8.250/ProjectWebAdminRekaChain/lib/Project/edit.php'),
       );
       if (response.statusCode == 200) {
         final List<Map<String, dynamic>> fetchedData =
@@ -219,7 +219,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.8.250/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           'no': widget.selectedProject['no'].toString(),
           'kodeProject': kdprojectController.text,
