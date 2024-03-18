@@ -3,6 +3,7 @@ import 'dart:html';
 
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
+import 'package:RekaChain/editproject.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
@@ -219,6 +220,12 @@ class _ReportSTTPState extends State<ReportSTTPP> {
   }
 
   Widget _buildMainTable() {
+    List filteredData = _listdata.where((data) {
+      String kodeProject = data['namaProject'] ?? '';
+      String namaProject = data['kodeProject'] ?? '';
+      return kodeProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          namaProject.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
     return Container(
       alignment: Alignment.center,
       child: SingleChildScrollView(
@@ -270,58 +277,78 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                   ),
                 ),
               ],
-              rows: [
-                DataRow(cells: [
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewReportSTTPP()),
-                                );
-                              },
+              rows: filteredData
+                  .asMap()
+                  .map(
+                    (index, data) => MapEntry(
+                      index,
+                      DataRow(cells: [
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text((index + 1).toString()),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['namaProject'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['kodeProject'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Center(
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.visibility),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditProject(
+                                            selectedProject: {
+                                              "no": filteredData[index]['no'],
+                                              "namaProject": filteredData[index]
+                                                  ['namaProject'],
+                                              "kodeProject": filteredData[index]
+                                                  ['kodeProject'],
+                                            },
+                                          ),
+                                        ),
+                                      ).then((result) {
+                                        if (result != null && result) {
+                                          updateData();
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]),
                     ),
-                  ),
-                ]),
-              ],
+                  )
+                  .values
+                  .toList(),
             ),
           ),
         ),

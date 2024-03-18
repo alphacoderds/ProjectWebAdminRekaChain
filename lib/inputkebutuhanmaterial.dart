@@ -35,6 +35,8 @@ class _InputMaterialState extends State<InputMaterial> {
   int _selectedIndex = 0;
   List<String> dropdownItems1 = [];
   String? selectedValue1;
+  List<String> dropdownItems2 = [];
+  String? selectedValue2;
 
   Future<void> _uploadDocument() async {
     FilePickerResult? result =
@@ -54,8 +56,10 @@ class _InputMaterialState extends State<InputMaterial> {
       final List<dynamic> data = jsonDecode(response.body);
 
       setState(() {
-        dropdownItems1 = ['--Pilih Nama/Kode Project--'];
-        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
+        dropdownItems1 = ['--Pilih Nama Project/Kode Project--'];
+        dropdownItems1.addAll(data.map((e) => e['idProject'].toString()));
+        dropdownItems2 = ['--Pilih Kode Lot--'];
+        dropdownItems2.addAll(data.map((e) => e['kodeProject'].toString()));
       });
     } else {
       throw Exception('Failed to load project names');
@@ -67,13 +71,6 @@ class _InputMaterialState extends State<InputMaterial> {
     super.initState();
     fetchProjectNames();
   }
-
-  List<String> dropdownItems2 = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue2;
 
   @override
   Widget build(BuildContext context) {
@@ -263,7 +260,8 @@ class _InputMaterialState extends State<InputMaterial> {
                                     ),
                                     child: DropdownButton<String>(
                                       value: selectedValue1,
-                                      hint: Text('--Pilih Nama Project--'),
+                                      hint: Text(
+                                          '--Pilih Nama Project/Kode Project--'),
                                       onChanged: (newValue) {
                                         setState(() {
                                           selectedValue1 = newValue;
@@ -366,22 +364,19 @@ class _InputMaterialState extends State<InputMaterial> {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: DropdownButton<String>(
-                                      alignment: Alignment.center,
-                                      hint: Text('--Pilih Kode Lot--'),
                                       value: selectedValue2,
-                                      underline: SizedBox(),
-                                      borderRadius: BorderRadius.circular(5),
+                                      hint: Text('--Pilih Kode Lot--'),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          selectedValue2 = newValue;
+                                        });
+                                      },
                                       items: dropdownItems2.map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
                                         );
                                       }).toList(),
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          selectedValue2 = newValue;
-                                        });
-                                      },
                                     ),
                                   ),
                                 ],

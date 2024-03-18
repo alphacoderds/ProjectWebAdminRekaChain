@@ -71,7 +71,7 @@ class _InputDokumenState extends State<InputDokumen> {
 
       setState(() {
         dropdownItems1 = ['--Pilih Nama/Kode Project--'];
-        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
+        dropdownItems1.addAll(data.map((e) => e['idProject'].toString()));
       });
     } else {
       throw Exception('Failed to load project names');
@@ -272,7 +272,8 @@ class _InputDokumenState extends State<InputDokumen> {
                                     ),
                                     child: DropdownButton<String>(
                                       value: selectedValue1,
-                                      hint: Text('--Pilih Nama Project--'),
+                                      hint: Text(
+                                          '--Pilih Nama Project/Kode Project--'),
                                       onChanged: (newValue) {
                                         setState(() {
                                           selectedValue1 = newValue;

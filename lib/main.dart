@@ -1,4 +1,5 @@
-import 'package:RekaChain/tambahstaff.dart';
+import 'package:RekaChain/perencanaan.dart';
+import 'package:RekaChain/tambahproject.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'dart:async';
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: TambahStaff(),
+          home: TambahProject(),
         );
       },
     );

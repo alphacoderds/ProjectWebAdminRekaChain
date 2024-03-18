@@ -47,7 +47,7 @@ class _PerencanaanState extends State<Perencanaan> {
 
       setState(() {
         dropdownItems1 = ['--Pilih Nama/Kode Project--'];
-        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
+        dropdownItems1.addAll(data.map((e) => e['idProject'].toString()));
       });
     } else {
       throw Exception('Failed to load project names');
@@ -259,7 +259,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                                           fontSize: 15),
                                                     ),
                                                     Container(
-                                                      width: 225,
+                                                      width: 335,
                                                       height: 40,
                                                       decoration: BoxDecoration(
                                                           border: Border.all(
@@ -272,7 +272,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                                           String>(
                                                         value: selectedValue1,
                                                         hint: Text(
-                                                            '--Pilih Nama Project--'),
+                                                            '--Pilih Nama Project/Kode Project--'),
                                                         onChanged: (newValue) {
                                                           setState(() {
                                                             selectedValue1 =
