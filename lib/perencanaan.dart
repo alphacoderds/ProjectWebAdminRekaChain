@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
 import 'package:RekaChain/inputdokumen.dart';
@@ -10,6 +12,7 @@ import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewperencanaan.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Perencanaan extends StatefulWidget {
   const Perencanaan({super.key});
@@ -24,8 +27,8 @@ class _PerencanaanState extends State<Perencanaan> {
   bool isViewVisible = false;
 
   int _selectedIndex = 0;
-  late List<String> dropdownItems;
-  String? selectedValue;
+  late List<String> dropdownItems1 = [];
+  String? selectedValue1;
 
   late List<String> dropdownItemsAlurProses;
   String? selectedValueAlurProses;
@@ -34,6 +37,22 @@ class _PerencanaanState extends State<Perencanaan> {
   String? selectedValueKategori;
 
   List<TableRowData> rowsData = [];
+
+  Future<void> fetchProjectNames() async {
+    final response = await http.get(Uri.parse(
+        'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+
+      setState(() {
+        dropdownItems1 = ['--Pilih Nama/Kode Project--'];
+        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
+      });
+    } else {
+      throw Exception('Failed to load project names');
+    }
+  }
 
 //===========================================================Widget Tambah Table Alur===========================================================//
   void addRow() {
@@ -48,6 +67,7 @@ class _PerencanaanState extends State<Perencanaan> {
 
   void initState() {
     super.initState();
+    fetchProjectNames();
     // Tambahkan satu baris awal
     rowsData.add(TableRowData(
       selectedAlurProses: null,
@@ -75,8 +95,6 @@ class _PerencanaanState extends State<Perencanaan> {
 
   @override
   Widget build(BuildContext context) {
-    dropdownItems = ['R22-PT. Nugraha Jasa', 'PT. INDAH JAYA'];
-
     dropdownItemsAlurProses = ['PPC', 'Produksi'];
 
     dropdownItemsKategori = ['Produk', 'Material'];
@@ -252,34 +270,24 @@ class _PerencanaanState extends State<Perencanaan> {
                                                                   .circular(3)),
                                                       child: DropdownButton<
                                                           String>(
-                                                        alignment:
-                                                            Alignment.center,
+                                                        value: selectedValue1,
                                                         hint: Text(
-                                                            '--Pilih Nama/Kode Project--',
-                                                            style: TextStyle(
-                                                                fontSize: 15)),
-                                                        value: selectedValue,
-                                                        underline: SizedBox(),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        items: dropdownItems
-                                                            .map(
-                                                                (String value) {
-                                                          return DropdownMenuItem<
-                                                                  String>(
-                                                              value: value,
-                                                              child:
-                                                                  Text(value));
-                                                        }).toList(),
+                                                            '--Pilih Nama Project--'),
                                                         onChanged: (newValue) {
                                                           setState(() {
-                                                            selectedValue =
+                                                            selectedValue1 =
                                                                 newValue;
                                                           });
                                                         },
-                                                        dropdownColor:
-                                                            Colors.white,
+                                                        items: dropdownItems1
+                                                            .map(
+                                                                (String value) {
+                                                          return DropdownMenuItem<
+                                                              String>(
+                                                            value: value,
+                                                            child: Text(value),
+                                                          );
+                                                        }).toList(),
                                                       ),
                                                     )
                                                   ],

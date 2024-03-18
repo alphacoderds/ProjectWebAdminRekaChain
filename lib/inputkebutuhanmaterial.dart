@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:RekaChain/AfterSales/AfterSales.dart';
@@ -17,6 +18,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
 
 class InputMaterial extends StatefulWidget {
   const InputMaterial({super.key});
@@ -30,6 +32,10 @@ class _InputMaterialState extends State<InputMaterial> {
   late double screenHeight = MediaQuery.of(context).size.height;
   List<File> uploadFiles = [];
 
+  int _selectedIndex = 0;
+  List<String> dropdownItems1 = [];
+  String? selectedValue1;
+
   Future<void> _uploadDocument() async {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
@@ -40,13 +46,27 @@ class _InputMaterialState extends State<InputMaterial> {
     }
   }
 
-  int _selectedIndex = 0;
-  List<String> dropdownItems1 = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue1;
+  Future<void> fetchProjectNames() async {
+    final response = await http.get(Uri.parse(
+        'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+
+      setState(() {
+        dropdownItems1 = ['--Pilih Nama/Kode Project--'];
+        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
+      });
+    } else {
+      throw Exception('Failed to load project names');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProjectNames();
+  }
 
   List<String> dropdownItems2 = [
     '--Pilih Nama/Kode Project--',
@@ -242,22 +262,19 @@ class _InputMaterialState extends State<InputMaterial> {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: DropdownButton<String>(
-                                      alignment: Alignment.center,
-                                      hint: Text('--Pilih Nama Project--'),
-                                      underline: SizedBox(),
                                       value: selectedValue1,
-                                      borderRadius: BorderRadius.circular(5),
+                                      hint: Text('--Pilih Nama Project--'),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          selectedValue1 = newValue;
+                                        });
+                                      },
                                       items: dropdownItems1.map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
                                         );
                                       }).toList(),
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          selectedValue1 = newValue;
-                                        });
-                                      },
                                     ),
                                   ),
                                 ],

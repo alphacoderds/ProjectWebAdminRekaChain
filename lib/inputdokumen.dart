@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:RekaChain/AfterSales/AfterSales.dart';
@@ -12,8 +13,7 @@ import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewupload.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
+import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 
 class InputDokumen extends StatefulWidget {
@@ -26,6 +26,13 @@ class InputDokumen extends StatefulWidget {
 class _InputDokumenState extends State<InputDokumen> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+
+  int _selectedIndex = 0;
+  late List<String> dropdownItems1 = [];
+  String? selectedValue1;
+
+  late List<String> dropdownItems2 = [];
+  String? selectedValue2;
 
   TextEditingController tanggalcontroller = TextEditingController();
 
@@ -55,13 +62,27 @@ class _InputDokumenState extends State<InputDokumen> {
     }
   }
 
-  int _selectedIndex = 0;
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue;
+  Future<void> fetchProjectNames() async {
+    final response = await http.get(Uri.parse(
+        'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+
+      setState(() {
+        dropdownItems1 = ['--Pilih Nama/Kode Project--'];
+        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
+      });
+    } else {
+      throw Exception('Failed to load project names');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProjectNames();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -250,22 +271,19 @@ class _InputDokumenState extends State<InputDokumen> {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: DropdownButton<String>(
-                                      alignment: Alignment.center,
+                                      value: selectedValue1,
                                       hint: Text('--Pilih Nama Project--'),
-                                      underline: SizedBox(),
-                                      value: selectedValue,
-                                      borderRadius: BorderRadius.circular(5),
-                                      items: dropdownItems.map((String value) {
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          selectedValue1 = newValue;
+                                        });
+                                      },
+                                      items: dropdownItems1.map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
                                         );
                                       }).toList(),
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          selectedValue = newValue;
-                                        });
-                                      },
                                     ),
                                   ),
                                 ],
@@ -348,10 +366,10 @@ class _InputDokumenState extends State<InputDokumen> {
                                     child: DropdownButton<String>(
                                       alignment: Alignment.center,
                                       hint: Text('--Pilih No Produk--'),
-                                      value: selectedValue,
+                                      value: selectedValue2,
                                       underline: SizedBox(),
                                       borderRadius: BorderRadius.circular(5),
-                                      items: dropdownItems.map((String value) {
+                                      items: dropdownItems2.map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
@@ -359,7 +377,7 @@ class _InputDokumenState extends State<InputDokumen> {
                                       }).toList(),
                                       onChanged: (newValue) {
                                         setState(() {
-                                          selectedValue = newValue;
+                                          selectedValue2 = newValue;
                                         });
                                       },
                                     ),

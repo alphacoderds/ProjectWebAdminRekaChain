@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:RekaChain/AfterSales/AfterSales.dart';
@@ -12,8 +13,12 @@ import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewreportsttpp.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ReportSTTPP extends StatefulWidget {
+  final Map<String, dynamic>? newProject;
+
+  const ReportSTTPP({Key? key, this.newProject}) : super(key: key);
   @override
   State<ReportSTTPP> createState() => _ReportSTTPState();
 }
@@ -23,13 +28,70 @@ class _ReportSTTPState extends State<ReportSTTPP> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
+  
+  List _listdata = [];
+  bool _isloading = true;
+
   int _selectedIndex = 0;
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
+  List<String> dropdownItems = [];
   String? selectedValue;
+
+String _searchQuery = '';
+
+void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+  Future<void> fetchProjectNames() async {
+    final response = await http.get(Uri.parse(
+        'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+
+      setState(() {
+        dropdownItems = ['--Pilih Nama/Kode Project--'];
+        dropdownItems.addAll(data.map((e) => e['namaProject'].toString()));
+      });
+    } else {
+      throw Exception('Failed to load project names');
+    }
+  }
+
+    Future _getdata() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print(data);
+        setState(() {
+          _listdata = data;
+          _isloading = false;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+    }
+Future<void> updateData() async {
+    await _getdata();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProjectNames();
+    if (widget.newProject != null) {
+      _listdata.add(widget.newProject!);
+    }
+    _getdata();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,24 +134,27 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                                 borderRadius: BorderRadius.circular(5),
                                 color: Colors.white,
                               ),
-                              child: DropdownButton<String>(
-                                alignment: Alignment.center,
-                                hint: Text('--Pilih Nama/Kode Project--'),
-                                value: selectedValue,
-                                underline: SizedBox(),
-                                borderRadius: BorderRadius.circular(5),
-                                items: dropdownItems.map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    selectedValue = newValue;
-                                  });
-                                },
-                              ),
+                              child: Row(
+                                  children: [
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: TextField(
+                                        onChanged: _updateSearchQuery,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: 'Cari',
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.search,
+                                        size: 30,
+                                      ),
+                                      onPressed: () {},
+                                    ),
+                                  ],
+                                ),
                             ),
                           ],
                         ),
@@ -153,6 +218,12 @@ class _ReportSTTPState extends State<ReportSTTPP> {
   }
 
   Widget _buildMainTable() {
+    List filteredData = _listdata.where((data) {
+      String kodeProject = data['namaProject'] ?? '';
+      String namaProject = data['kodeProject'] ?? '';
+      return kodeProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          namaProject.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
     return Container(
       alignment: Alignment.center,
       child: SingleChildScrollView(
@@ -204,58 +275,78 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                   ),
                 ),
               ],
-              rows: [
-                DataRow(cells: [
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewReportSTTPP()),
-                                );
-                              },
+              rows: filteredData
+                  .asMap()
+                  .map(
+                    (index, data) => MapEntry(
+                      index,
+                      DataRow(cells: [
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text((index + 1).toString()),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['namaProject'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['kodeProject'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Center(
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.visibility),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditStaff(
+                                            selectedStaff: {
+                                              "no": filteredData[index]['no'],
+                                              "kode_staff": filteredData[index]
+                                                  ['kode_staff'],
+                                              "nama": filteredData[index]
+                                                  ['nama'],
+                                            },
+                                          ),
+                                        ),
+                                      ).then((result) {
+                                        if (result != null && result) {
+                                          updateData();
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                ]),
                     ),
                   ),
-                ]),
-              ],
+              .values
+                  .toList(),
             ),
           ),
         ),
