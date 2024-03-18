@@ -28,7 +28,6 @@ class _ReportSTTPState extends State<ReportSTTPP> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
-  
   List _listdata = [];
   bool _isloading = true;
 
@@ -36,13 +35,14 @@ class _ReportSTTPState extends State<ReportSTTPP> {
   List<String> dropdownItems = [];
   String? selectedValue;
 
-String _searchQuery = '';
+  String _searchQuery = '';
 
-void _updateSearchQuery(String query) {
+  void _updateSearchQuery(String query) {
     setState(() {
       _searchQuery = query;
     });
   }
+
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
         'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
@@ -59,7 +59,7 @@ void _updateSearchQuery(String query) {
     }
   }
 
-    Future _getdata() async {
+  Future _getdata() async {
     try {
       final response = await http.get(
         Uri.parse(
@@ -77,8 +77,9 @@ void _updateSearchQuery(String query) {
     } catch (e) {
       print(e);
     }
-    }
-Future<void> updateData() async {
+  }
+
+  Future<void> updateData() async {
     await _getdata();
     setState(() {});
   }
@@ -135,26 +136,26 @@ Future<void> updateData() async {
                                 color: Colors.white,
                               ),
                               child: Row(
-                                  children: [
-                                    SizedBox(width: 8),
-                                    Expanded(
-                                      child: TextField(
-                                        onChanged: _updateSearchQuery,
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: 'Cari',
-                                        ),
+                                children: [
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    child: TextField(
+                                      onChanged: _updateSearchQuery,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: 'Cari',
                                       ),
                                     ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.search,
-                                        size: 30,
-                                      ),
-                                      onPressed: () {},
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.search,
+                                      size: 30,
                                     ),
-                                  ],
-                                ),
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -218,12 +219,6 @@ Future<void> updateData() async {
   }
 
   Widget _buildMainTable() {
-    List filteredData = _listdata.where((data) {
-      String kodeProject = data['namaProject'] ?? '';
-      String namaProject = data['kodeProject'] ?? '';
-      return kodeProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          namaProject.toLowerCase().contains(_searchQuery.toLowerCase());
-    }).toList();
     return Container(
       alignment: Alignment.center,
       child: SingleChildScrollView(
@@ -275,78 +270,58 @@ Future<void> updateData() async {
                   ),
                 ),
               ],
-              rows: filteredData
-                  .asMap()
-                  .map(
-                    (index, data) => MapEntry(
-                      index,
-                      DataRow(cells: [
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text((index + 1).toString()),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['namaProject'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['kodeProject'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Center(
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.visibility),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EditStaff(
-                                            selectedStaff: {
-                                              "no": filteredData[index]['no'],
-                                              "kode_staff": filteredData[index]
-                                                  ['kode_staff'],
-                                              "nama": filteredData[index]
-                                                  ['nama'],
-                                            },
-                                          ),
-                                        ),
-                                      ).then((result) {
-                                        if (result != null && result) {
-                                          updateData();
-                                        }
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                ]),
+              rows: [
+                DataRow(cells: [
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
                     ),
                   ),
-              .values
-                  .toList(),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Center(
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.visibility),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ViewReportSTTPP()),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+              ],
             ),
           ),
         ),
