@@ -95,13 +95,6 @@ class _ListStaffState extends State<ListStaff> {
     }
   }
 
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Staff--',
-    '001 - Ahmad Budi',
-    '002 - Ahmad Yudi'
-  ];
-  String? selectedValue;
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(

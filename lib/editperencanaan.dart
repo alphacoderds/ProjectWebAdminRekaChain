@@ -1,42 +1,40 @@
 import 'dart:convert';
 
 import 'package:RekaChain/AfterSales/AfterSales.dart';
-import 'package:RekaChain/WebAdmin/dasboard.dart';
-import 'package:RekaChain/WebAdmin/inputdokumen.dart';
-import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebAdmin/login.dart';
-import 'package:RekaChain/WebAdmin/notification.dart';
-import 'package:RekaChain/WebAdmin/profile.dart';
-import 'package:RekaChain/WebAdmin/reportsttpp.dart';
-import 'package:RekaChain/WebAdmin/tambahproject.dart';
-import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-import 'package:RekaChain/WebAdmin/viewperencanaan.dart';
+import 'package:RekaChain/dasboard.dart';
+import 'package:RekaChain/inputdokumen.dart';
+import 'package:RekaChain/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/login.dart';
+import 'package:RekaChain/notification.dart';
+import 'package:RekaChain/perencanaan.dart';
+import 'package:RekaChain/profile.dart';
+import 'package:RekaChain/reportsttpp.dart';
+import 'package:RekaChain/tambahproject.dart';
+import 'package:RekaChain/tambahstaff.dart';
+import 'package:RekaChain/viewperencanaan.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class Perencanaan extends StatefulWidget {
-  const Perencanaan({super.key});
+class EditPerencanaan extends StatefulWidget {
+  final Map<String, dynamic> selectedProject;
+  const EditPerencanaan({Key? key, this.selectedProject = const {}})
+      : super(key: key);
 
   @override
-  State<Perencanaan> createState() => _PerencanaanState();
+  State<EditPerencanaan> createState() => _EditPerencanaanState();
 }
 
-class _PerencanaanState extends State<Perencanaan> {
+class _EditPerencanaanState extends State<EditPerencanaan> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
   bool isViewVisible = false;
 
   int _selectedIndex = 0;
-  late List<String> dropdownItemsIdProject = [];
-  String? selectedValueIdProject;
-
-  List<String> dropdownItemsAlurProses = ['PPC', 'Produksi'];
-  String? selectedValueAlurProses;
-
-  List<String> dropdownItemsKategori = ['Produk', 'Material'];
-  String? selectedValueKategori;
+  String? selectedValue1;
+  String? selectedValue2;
 
   List<TableRowData> rowsData = [];
+  List<Map<String, dynamic>> _listdata = [];
 
   TextEditingController idProjectcontroller = TextEditingController();
   TextEditingController noProdukcontroller = TextEditingController();
@@ -51,79 +49,23 @@ class _PerencanaanState extends State<Perencanaan> {
   TextEditingController kategoricontroller = TextEditingController();
   TextEditingController detailcontroller = TextEditingController();
 
-  Future<void> _simpan(BuildContext context) async {
-    List<Map<String, String>> maintableData = [];
-    for (TableRowData rowData in rowsData) {
-      maintableData.add({
-        "alurProses": rowData.selectedValueAlurProses ?? '',
-        "kategori": rowData.selectedValueKategori ?? '',
-        "keterangan": rowData.detailcontroller.text,
-      });
-    }
-
-    final response = await http.post(
-      Uri.parse(
-        "http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/create.php",
-      ),
-      body: {
-        "id_project": selectedValueIdProject ?? '',
-        "noIndukProduk": noProdukcontroller.text,
-        "noSeriAwal": noSeriAwalcontroller.text,
-        "targetMulai": tglMulaicontroller.text,
-        "namaProduk": namaProdukcontroller.text,
-        "jumlahLot": jumlahLotcontroller.text,
-        "kodeLot": kodeLotcontroller.text,
-        "noSeriAkhir": noSeriAkhircontroller.text,
-        "targetSelesai": tglSelesaicontroller.text,
-        "maintableData": jsonEncode(maintableData),
-        "alurProses": selectedValueAlurProses ?? '',
-        "kategori": selectedValueKategori ?? '',
-        "keterangan": detailcontroller.text,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final newProjectData = {
-        "id_project": idProjectcontroller.text,
-        "noIndukProduk": noProdukcontroller.text,
-        "noSeriAwal": noSeriAwalcontroller.text,
-        "targetMulai": tglMulaicontroller.text,
-        "namaProduk": namaProdukcontroller.text,
-        "jumlahLot": jumlahLotcontroller.text,
-        "kodeLot": kodeLotcontroller.text,
-        "noSeriAkhir": noSeriAkhircontroller.text,
-        "targetSelesai": tglSelesaicontroller.text,
-        "alurProses": alurProsescontroller.text,
-        "kategori": kategoricontroller.text,
-        "keterangan": detailcontroller.text,
-      };
-
-      _showFinishDialog();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Vperencanaan(newProject: newProjectData),
-        ),
+  void fetchData() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php?id_project=${widget.selectedProject['id_project']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
-    } else {
-      print('Gagal menyimpan data: ${response.statusCode}');
-    }
-  }
-
-  Future<void> fetchProjectNames() async {
-    final response = await http.get(Uri.parse(
-        'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-
-      setState(() {
-        dropdownItems1 = ['--Pilih Nama/Kode Project--'];
-        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
-      });
-    } else {
-      print('Failed to load project names: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final kodeLot = responseData['kodeLot'];
+        setState(() {
+          kodeLotcontroller.text = kodeLot;
+        });
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
     }
   }
 
@@ -131,55 +73,50 @@ class _PerencanaanState extends State<Perencanaan> {
   void addRow() {
     setState(() {
       // Inisialisasi controller baru untuk setiap baris baru
-      TextEditingController newController = TextEditingController();
+      TextEditingController newalurprosesController = TextEditingController();
+      TextEditingController newkategoriController = TextEditingController();
+      TextEditingController newdetailController = TextEditingController();
       rowsData.add(TableRowData(
-        selectedValueAlurProses: null,
-        selectedValueKategori: null,
-        detailcontroller: newController,
+        alurProsescontroller: newalurprosesController,
+        kategoricontroller: newkategoriController,
+        detailcontroller: newdetailController,
       ));
     });
   }
 
+  @override
   void initState() {
     super.initState();
-    fetchProjectNames();
+    noProdukcontroller = TextEditingController(
+        text: widget.selectedProject['noIndukProduk'] ?? '');
+    idProjectcontroller =
+        TextEditingController(text: widget.selectedProject['id_project'] ?? '');
+    noSeriAwalcontroller =
+        TextEditingController(text: widget.selectedProject['noSeriAwal'] ?? '');
+    namaProdukcontroller =
+        TextEditingController(text: widget.selectedProject['namaProduk'] ?? '');
+    jumlahLotcontroller =
+        TextEditingController(text: widget.selectedProject['jumlahLot'] ?? '');
+    kodeLotcontroller =
+        TextEditingController(text: widget.selectedProject['kodeLot'] ?? '');
+    noSeriAkhircontroller = TextEditingController(
+        text: widget.selectedProject['noSeriAkhir'] ?? '');
+    tglMulaicontroller = TextEditingController(
+        text: widget.selectedProject['targetMulai'] ?? '');
+    tglSelesaicontroller = TextEditingController(
+        text: widget.selectedProject['targetSelesai'] ?? '');
+    alurProsescontroller =
+        TextEditingController(text: widget.selectedProject['alurProses'] ?? '');
+    kategoricontroller =
+        TextEditingController(text: widget.selectedProject['kategori'] ?? '');
+    detailcontroller =
+        TextEditingController(text: widget.selectedProject['keterangan'] ?? '');
 
-    idProjectcontroller = TextEditingController();
-    noProdukcontroller = TextEditingController();
-    noSeriAwalcontroller = TextEditingController();
-    namaProdukcontroller = TextEditingController();
-    jumlahLotcontroller = TextEditingController();
-    kodeLotcontroller = TextEditingController();
-    noSeriAkhircontroller = TextEditingController();
-    tglMulaicontroller = TextEditingController();
-    tglSelesaicontroller = TextEditingController();
-    alurProsescontroller = TextEditingController();
-    kategoricontroller = TextEditingController();
-    detailcontroller = TextEditingController();
+    fetchData();
 
     noProdukcontroller.addListener(_calculateKodeLot);
     jumlahLotcontroller.addListener(_calculateKodeLot);
-    addRow(); // Pemanggilan addRow untuk menambahkan baris awal
-  }
-
-  // Fungsi untuk memperbarui nilai dropdown Alur Proses
-  void onAlurProsesChanged(String? newValue) {
-    setState(() {
-      selectedValueAlurProses = newValue;
-    });
-  }
-
-// Fungsi untuk memperbarui nilai dropdown Kategori
-  void onKategoriChanged(String? newValue) {
-    setState(() {
-      selectedValueKategori = newValue;
-    });
-  }
-
-  void onDetailChanged(String? newValue, int index) {
-    setState(() {
-      rowsData[index].detailcontroller.text = newValue ?? '';
-    });
+    addRow();
   }
 
   @override
@@ -197,6 +134,26 @@ class _PerencanaanState extends State<Perencanaan> {
     });
   }
 
+  // Fungsi untuk memperbarui nilai dropdown Alur Proses
+  void onAlurProsesChanged(String? newValue, int index) {
+    setState(() {
+      rowsData[index].alurProsescontroller.text = newValue ?? '';
+    });
+  }
+
+// Fungsi untuk memperbarui nilai dropdown Kategori
+  void onKategoriChanged(String? newValue, int index) {
+    setState(() {
+      rowsData[index].kategoricontroller.text = newValue ?? '';
+    });
+  }
+
+  void onDetailChanged(String? newValue, int index) {
+    setState(() {
+      rowsData[index].detailcontroller.text = newValue ?? '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -209,7 +166,7 @@ class _PerencanaanState extends State<Perencanaan> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const Perencanaan(),
+                  builder: (context) => const EditPerencanaan(),
                 );
               default:
                 return null;
@@ -354,44 +311,39 @@ class _PerencanaanState extends State<Perencanaan> {
                                                     Text(
                                                       'Project',
                                                       style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontSize: 15),
-                                                    ),
-                                                    Container(
-                                                      width: 225,
-                                                      height: 40,
-                                                      decoration: BoxDecoration(
-                                                          border: Border.all(
-                                                              color: Colors
-                                                                  .black54),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(3)),
-                                                      child: DropdownButton<
-                                                          String>(
-                                                        value:
-                                                            selectedValueIdProject,
-                                                        hint: Text(
-                                                            '--Pilih Nama Project--'),
-                                                        onChanged: (newValue) {
-                                                          setState(() {
-                                                            selectedValueIdProject =
-                                                                newValue;
-                                                          });
-                                                        },
-                                                        items:
-                                                            dropdownItemsIdProject
-                                                                .map((String
-                                                                    value) {
-                                                          return DropdownMenuItem<
-                                                              String>(
-                                                            value: value,
-                                                            child: Text(value),
-                                                          );
-                                                        }).toList(),
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 15,
                                                       ),
-                                                    )
+                                                    ),
+                                                    SizedBox(
+                                                      width: 220,
+                                                      height: 40,
+                                                      child: TextFormField(
+                                                        controller:
+                                                            idProjectcontroller,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                                 SizedBox(height: 40),
@@ -402,10 +354,9 @@ class _PerencanaanState extends State<Perencanaan> {
                                                     Text(
                                                       'No Induk Finish Produk',
                                                       style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 15,
-                                                      ),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 15),
                                                     ),
                                                     SizedBox(
                                                       width: 220,
@@ -793,7 +744,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                         SizedBox(width: 20),
                                         ElevatedButton(
                                           onPressed: () {
-                                            _simpan(context);
+                                            _updateDataAndNavigateToListProject();
                                           },
                                           child: Text(
                                             'Simpan',
@@ -821,6 +772,37 @@ class _PerencanaanState extends State<Perencanaan> {
         );
       },
     );
+  }
+
+  void _updateDataAndNavigateToListProject() async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+        body: {
+          "id_project": idProjectcontroller.text,
+          "noIndukProduk": noProdukcontroller.text,
+          "noSeriAwal": noSeriAwalcontroller.text,
+          "targetMulai": tglMulaicontroller.text,
+          "namaProduk": namaProdukcontroller.text,
+          "jumlahLot": jumlahLotcontroller.text,
+          "kodeLot": kodeLotcontroller.text,
+          "noSeriAkhir": noSeriAkhircontroller.text,
+          "targetSelesai": tglSelesaicontroller.text,
+          "alurProses": alurProsescontroller.text,
+          "kategori": kategoricontroller.text,
+          "keterangan": detailcontroller.text,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        _showFinishDialog();
+      } else {
+        print('Failed to update data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error updating data: $e');
+    }
   }
 
 //===========================================================Widget DatePicker===========================================================//
@@ -864,7 +846,7 @@ class _PerencanaanState extends State<Perencanaan> {
               ),
               DataColumn(
                 label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
                   child: Text(
                     'Kategori',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -885,37 +867,43 @@ class _PerencanaanState extends State<Perencanaan> {
             ],
             rows: rowsData.map((TableRowData rowData) {
               return DataRow(cells: [
-                DataCell(DropdownButton<String>(
-                  value: rowData.selectedValueAlurProses,
-                  hint: Text('--Pilih Alur Proses--'),
-                  items: dropdownItemsAlurProses.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      rowData.selectedValueAlurProses = newValue;
-                    });
-                  },
-                  focusColor: Colors.white,
+                DataCell(Container(
+                  height: 100,
+                  width: 100,
+                  child: TextFormField(
+                    controller: rowData.alurProsescontroller,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(8),
+                    ),
+                    onChanged: (newValue) {
+                      if (newValue.isNotEmpty) {
+                        setState(() {
+                          rowData.alurProsescontroller.text =
+                              newValue.substring(0, 100000);
+                        });
+                      }
+                    },
+                  ),
                 )),
-                DataCell(DropdownButton<String>(
-                  value: rowData.selectedValueKategori,
-                  hint: Text('--Pilih Kategori--'),
-                  items: dropdownItemsKategori.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      rowData.selectedValueKategori = newValue;
-                    });
-                  },
-                  focusColor: Colors.white,
+                DataCell(Container(
+                  height: 100,
+                  width: 100,
+                  child: TextFormField(
+                    controller: rowData.kategoricontroller,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(8),
+                    ),
+                    onChanged: (newValue) {
+                      if (newValue.isNotEmpty) {
+                        setState(() {
+                          rowData.kategoricontroller.text =
+                              newValue.substring(0, 100000);
+                        });
+                      }
+                    },
+                  ),
                 )),
                 DataCell(Container(
                   height: 100,
@@ -996,7 +984,7 @@ class _PerencanaanState extends State<Perencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => Dashboard(),
               ),
             );
           } else if (index == 6) {
@@ -1188,12 +1176,12 @@ class _PerencanaanState extends State<Perencanaan> {
 }
 
 class TableRowData {
-  String? selectedValueAlurProses;
-  String? selectedValueKategori;
+  TextEditingController alurProsescontroller;
+  TextEditingController kategoricontroller;
   TextEditingController detailcontroller;
   TableRowData({
-    this.selectedValueAlurProses,
-    this.selectedValueKategori,
+    required this.alurProsescontroller,
+    required this.kategoricontroller,
     required this.detailcontroller,
   });
 }

@@ -1,7 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
 $conn=new mysqli("localhost","root","","db_rekachain");
-$no = $_POST["no"];
+$no_tambahproject = $_POST["no_tambahproject"];
 $kodeProject = $_POST["kodeProject"];
 $namaProject = $_POST["namaProject"];
 $data = mysqli_query($conn, "INSERT into tbl_project set no='$no', kodeProject='$kodeProject', namaProject='$namaProject' ");
@@ -19,7 +19,7 @@ if ($data) {
 <?php
 header("Access-Control-Allow-Origin: *");
 $conn=new mysqli("localhost","root","","db_rekachain");
-$no = $_POST["no"];
+$no_tambahstaff = $_POST["no_tambahstaff"];
 $kode_staff = $_POST["kode_staff"];
 $nama = $_POST["nama"];
 $jabatan = $_POST["jabatan"];
