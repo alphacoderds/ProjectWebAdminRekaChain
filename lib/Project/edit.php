@@ -4,8 +4,7 @@ $conn=new mysqli("localhost","root","","db_rekachain");
 $no = $_POST["no"];
 $kodeProject = $_POST["kodeProject"];
 $namaProject = $_POST["namaProject"];
-$idProject = $_POST["idProject"];
-$data= mysqli_query($conn, "update tbl_project set kodeProject='$kodeProject', namaProject='$namaProject', idProject='$idProject'  where no='$no' ");
+$data= mysqli_query($conn, "UPDATE tbl_project set kodeProject='$kodeProject', namaProject='$namaProject' where no='$no' ");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'
@@ -18,6 +17,7 @@ if ($data) {
 ?>
 
 <?php
+header("Access-Control-Allow-Origin: *");
 $conn=new mysqli("localhost","root","","db_rekachain");
 $kode_staff = $_POST["kode_staff"];
 $nama = $_POST["nama"];
@@ -31,7 +31,7 @@ $nip = $_POST["nip"];
 $status = $_POST["status"];
 $password = $_POST["password"];
 $konfirmasi_password = $_POST["konfirmasi_password"];
-$data= mysqli_query($conn, "update tbl_tambahStaff set kode_staff='$kode_staff', nama='$nama', jabatan='$jabatan', unit_kerja='$unit_kerja', departemen='$departemen', divisi='$divisi', email='$email', no_telp='$no_telp', nip='$nip', status='$status', password='$password', konfirmasi_password='$konfirmasi_password' where no='$no'");
+$data= mysqli_query($conn, "UPDATE tbl_tambahStaff set kode_staff='$kode_staff', nama='$nama', jabatan='$jabatan', unit_kerja='$unit_kerja', departemen='$departemen', divisi='$divisi', email='$email', no_telp='$no_telp', nip='$nip', status='$status', password='$password', konfirmasi_password='$konfirmasi_password' where no='$no'");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'

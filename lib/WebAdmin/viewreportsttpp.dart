@@ -1,3 +1,6 @@
+import 'dart:html';
+
+import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -8,17 +11,19 @@ import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-import 'package:RekaChain/WebAdmin/viewaftersales.dart';
 import 'package:flutter/material.dart';
 
-class AfterSales extends StatefulWidget {
+class ViewReportSTTPP extends StatefulWidget {
   @override
-  State<AfterSales> createState() => _AfterSalesState();
+  State<ViewReportSTTPP> createState() => _ViewReportSTTPState();
 }
 
-class _AfterSalesState extends State<AfterSales> {
-  int _selectedIndex = 0;
+class _ViewReportSTTPState extends State<ViewReportSTTPP> {
+  bool isViewVisible = false;
+  late double screenWidth = MediaQuery.of(context).size.width;
+  late double screenHeight = MediaQuery.of(context).size.height;
 
+  int _selectedIndex = 0;
   List<String> dropdownItems = [
     '--Pilih Nama/Kode Project--',
     'R22-PT. Nugraha Jasa',
@@ -26,125 +31,109 @@ class _AfterSalesState extends State<AfterSales> {
   ];
   String? selectedValue;
 
-  bool isViewVisible = false;
-  late double screenWidth;
-  late double screenHeight;
-
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(
-              builder: (context) => AfterSales(),
-            );
-          default:
-            return null;
-        }
-      },
-      home: Scaffold(
-        body: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDrawer(),
-            Expanded(
-              child: Scaffold(
-                appBar: AppBar(
-                  backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-                  toolbarHeight: 65,
-                  title: Padding(
-                    padding: EdgeInsets.only(left: screenHeight * 0.02, top: 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 300,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(5),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        screenWidth = constraints.maxWidth;
+        screenHeight = constraints.maxHeight;
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/':
+                return MaterialPageRoute(
+                  builder: (context) => ViewReportSTTPP(),
+                );
+              default:
+                return null;
+            }
+          },
+          home: Scaffold(
+            body: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDrawer(),
+                Expanded(
+                  child: Scaffold(
+                    appBar: AppBar(
+                      backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+                      toolbarHeight: 65,
+                      title: Padding(
+                        padding: EdgeInsets.only(left: screenHeight * 0.02),
+                        child: Text(
+                          'View Report STTPP',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Donegal One',
                             color: Colors.white,
                           ),
-                          child: DropdownButton<String>(
-                            alignment: Alignment.center,
-                            hint: Text('--Pilih Nama/Kode Project--'),
-                            value: selectedValue,
-                            underline: SizedBox(),
-                            borderRadius: BorderRadius.circular(5),
-                            items: dropdownItems.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedValue = newValue;
-                              });
-                            },
-                          ),
                         ),
+                      ),
+                      actions: [
+                        Padding(
+                          padding: EdgeInsets.only(right: screenHeight * 0.11),
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: screenWidth * 0.005,
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.file_download_outlined,
+                                  size: 33,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                onPressed: () {},
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.notifications_active,
+                                  size: 33,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Notifikasi()),
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.account_circle_rounded,
+                                  size: 35,
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Profile()),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                  ),
-                  actions: [
-                    Padding(
-                      padding: EdgeInsets.only(right: screenHeight * 0.11),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: screenWidth * 0.005,
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.notifications_active,
-                              size: 33,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Notifikasi()),
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.account_circle_rounded,
-                              size: 35,
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Profile()),
-                              );
-                            },
-                          ),
-                        ],
+                    body: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Center(
+                        child: _buildMainTable(),
                       ),
-                    )
-                  ],
-                ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: _buildMainTable(),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+          ),
+        );
+      },
     );
   }
 
@@ -166,7 +155,7 @@ class _AfterSalesState extends State<AfterSales> {
                 DataColumn(
                   label: Center(
                     child: Text(
-                      'No',
+                      'Nama Produk',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -175,7 +164,7 @@ class _AfterSalesState extends State<AfterSales> {
                 DataColumn(
                   label: Center(
                     child: Text(
-                      'Nama Project',
+                      'Kode QR',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -184,7 +173,7 @@ class _AfterSalesState extends State<AfterSales> {
                 DataColumn(
                   label: Center(
                     child: Text(
-                      'Nomor Produk',
+                      'Proses',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -193,7 +182,7 @@ class _AfterSalesState extends State<AfterSales> {
                 DataColumn(
                   label: Center(
                     child: Text(
-                      'Tanggal Project',
+                      'Tanggal Mulai',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -202,7 +191,25 @@ class _AfterSalesState extends State<AfterSales> {
                 DataColumn(
                   label: Center(
                     child: Text(
-                      'View',
+                      'Tanggal Selesai',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Personil',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Keterangan',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -225,7 +232,16 @@ class _AfterSalesState extends State<AfterSales> {
                       scrollDirection: Axis.horizontal,
                       child: Container(
                         alignment: Alignment.center,
-                        child: Text('abc'),
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
                     ),
                   ),
@@ -250,21 +266,18 @@ class _AfterSalesState extends State<AfterSales> {
                   DataCell(
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewAfterSales()),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
                       ),
                     ),
                   ),

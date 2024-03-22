@@ -1,24 +1,27 @@
-import 'package:RekaChain/WebAdmin/dasboard.dart';
-import 'package:RekaChain/WebAdmin/inputdokumen.dart';
-import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebAdmin/login.dart';
-import 'package:RekaChain/WebAdmin/notification.dart';
-import 'package:RekaChain/WebAdmin/perencanaan.dart';
-import 'package:RekaChain/WebAdmin/profile.dart';
-import 'package:RekaChain/WebAdmin/reportsttpp.dart';
-import 'package:RekaChain/WebAdmin/tambahproject.dart';
-import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-import 'package:RekaChain/WebAdmin/viewaftersales.dart';
+import 'dart:html';
+
+import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebUser/dasboard.dart';
+import 'package:RekaChain/WebUser/inputdokumen.dart';
+import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/WebUser/login.dart';
+import 'package:RekaChain/WebUser/notification.dart';
+import 'package:RekaChain/WebUser/perencanaan.dart';
+import 'package:RekaChain/WebUser/profile.dart';
+import 'package:RekaChain/WebUser/viewreportsttpp.dart';
 import 'package:flutter/material.dart';
 
-class AfterSales extends StatefulWidget {
+class ReportSTTPP extends StatefulWidget {
   @override
-  State<AfterSales> createState() => _AfterSalesState();
+  State<ReportSTTPP> createState() => _ReportSTTPState();
 }
 
-class _AfterSalesState extends State<AfterSales> {
-  int _selectedIndex = 0;
+class _ReportSTTPState extends State<ReportSTTPP> {
+  bool isViewVisible = false;
+  late double screenWidth = MediaQuery.of(context).size.width;
+  late double screenHeight = MediaQuery.of(context).size.height;
 
+  int _selectedIndex = 0;
   List<String> dropdownItems = [
     '--Pilih Nama/Kode Project--',
     'R22-PT. Nugraha Jasa',
@@ -26,22 +29,15 @@ class _AfterSalesState extends State<AfterSales> {
   ];
   String? selectedValue;
 
-  bool isViewVisible = false;
-  late double screenWidth;
-  late double screenHeight;
-
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => AfterSales(),
+              builder: (context) => ReportSTTPP(),
             );
           default:
             return null;
@@ -58,7 +54,7 @@ class _AfterSalesState extends State<AfterSales> {
                   backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                   toolbarHeight: 65,
                   title: Padding(
-                    padding: EdgeInsets.only(left: screenHeight * 0.02, top: 2),
+                    padding: EdgeInsets.only(left: screenHeight * 0.02),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -133,9 +129,14 @@ class _AfterSalesState extends State<AfterSales> {
                     )
                   ],
                 ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
+                body: Center(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    margin: EdgeInsets.all(50.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black),
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
                     child: _buildMainTable(),
                   ),
                 ),
@@ -149,128 +150,131 @@ class _AfterSalesState extends State<AfterSales> {
   }
 
   Widget _buildMainTable() {
-    return Container(
-      alignment: Alignment.center,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height - 50,
-          ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columnSpacing: 200.0,
-              horizontalMargin: 50.0,
-              columns: [
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'No',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height - 50,
+        ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            columnSpacing: 200.0,
+            horizontalMargin: 50.0,
+            columns: [
+              DataColumn(
+                label: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: Text(
+                    'No.',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Nama Project',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Nomor Produk',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Tanggal Project',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'View',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-              ],
-              rows: [
-                DataRow(cells: [
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Nama Project',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ),
-                    ),
+                    ],
                   ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('abc'),
+                ),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Kode Lot',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 16),
                       ),
-                    ),
+                    ],
                   ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewAfterSales()),
-                                );
-                              },
-                            ),
-                          ],
+                ),
+              ),
+              DataColumn(
+                label: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'View',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
                       ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+            rows: [
+              DataRow(cells: [
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('1'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('Project 1'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('AA21 1/24'),
+                )),
+                DataCell(
+                  Center(
+                    child: IconButton(
+                      icon: Icon(Icons.visibility),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ViewReportSTTPP()),
+                        );
+                      },
                     ),
                   ),
-                ]),
-              ],
-            ),
+                ),
+              ]),
+              DataRow(cells: [
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('2'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('Project 2'),
+                )),
+                DataCell(Container(
+                  alignment: Alignment.center,
+                  child: Text('AA22 1/26'),
+                )),
+                DataCell(
+                  Center(
+                    child: IconButton(
+                      icon: Icon(Icons.visibility),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ViewReportSTTPP()),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ]),
+            ],
           ),
         ),
       ),
@@ -302,8 +306,7 @@ class _AfterSalesState extends State<AfterSales> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Logout', Icons.logout, 7, 35),
         ],
       ),
     );
@@ -318,7 +321,7 @@ class _AfterSalesState extends State<AfterSales> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 7) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -328,7 +331,7 @@ class _AfterSalesState extends State<AfterSales> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => UserDashboard(),
               ),
             );
           } else if (index == 6) {
@@ -338,6 +341,8 @@ class _AfterSalesState extends State<AfterSales> {
                 builder: (context) => AfterSales(),
               ),
             );
+          } else {
+            Navigator.pop(context);
           }
         }
       },
@@ -380,7 +385,7 @@ class _AfterSalesState extends State<AfterSales> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 7) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -414,43 +419,9 @@ class _AfterSalesState extends State<AfterSales> {
                 builder: (context) => InputDokumen(),
               ),
             );
-          } else if (index == 7) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TambahProject(),
-              ),
-            );
-          } else if (index == 8) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => TambahStaff(),
-              ),
-            );
           }
         }
       },
-    );
-  }
-
-  Widget _buildAdminMenu() {
-    return ExpansionTile(
-      title: Row(
-        children: [
-          Icon(
-            Icons.admin_panel_settings,
-            size: 35,
-            color: Color.fromARGB(255, 6, 37, 55),
-          ),
-          SizedBox(width: 12),
-          Text('Menu Admin'),
-        ],
-      ),
-      children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
-      ],
     );
   }
 

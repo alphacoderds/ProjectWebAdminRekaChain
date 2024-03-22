@@ -1,3 +1,5 @@
+import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/DetailViewPerencanaan.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -8,25 +10,15 @@ import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-import 'package:RekaChain/WebAdmin/viewaftersales.dart';
 import 'package:flutter/material.dart';
 
-class AfterSales extends StatefulWidget {
+class Vperencanaan extends StatefulWidget {
   @override
-  State<AfterSales> createState() => _AfterSalesState();
+  State<Vperencanaan> createState() => _VperencanaanState();
 }
 
-class _AfterSalesState extends State<AfterSales> {
+class _VperencanaanState extends State<Vperencanaan> {
   int _selectedIndex = 0;
-
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue;
-
-  bool isViewVisible = false;
   late double screenWidth;
   late double screenHeight;
 
@@ -41,7 +33,7 @@ class _AfterSalesState extends State<AfterSales> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => AfterSales(),
+              builder: (context) => Vperencanaan(),
             );
           default:
             return null;
@@ -58,43 +50,20 @@ class _AfterSalesState extends State<AfterSales> {
                   backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                   toolbarHeight: 65,
                   title: Padding(
-                    padding: EdgeInsets.only(left: screenHeight * 0.02, top: 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 300,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                          ),
-                          child: DropdownButton<String>(
-                            alignment: Alignment.center,
-                            hint: Text('--Pilih Nama/Kode Project--'),
-                            value: selectedValue,
-                            underline: SizedBox(),
-                            borderRadius: BorderRadius.circular(5),
-                            items: dropdownItems.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedValue = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
+                    padding: EdgeInsets.only(left: screenHeight * 0.02),
+                    child: Text(
+                      'Daftar Data Project',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Donegal One',
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   actions: [
                     Padding(
-                      padding: EdgeInsets.only(right: screenHeight * 0.11),
+                      padding: EdgeInsets.only(right: screenHeight * 0.13),
                       child: Row(
                         children: [
                           SizedBox(
@@ -133,146 +102,12 @@ class _AfterSalesState extends State<AfterSales> {
                     )
                   ],
                 ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: _buildMainTable(),
-                  ),
-                ),
+                body: _ListView(),
               ),
             ),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      ),
-    );
-  }
-
-  Widget _buildMainTable() {
-    return Container(
-      alignment: Alignment.center,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height - 50,
-          ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columnSpacing: 200.0,
-              horizontalMargin: 50.0,
-              columns: [
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'No',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Nama Project',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Nomor Produk',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Tanggal Project',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'View',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-              ],
-              rows: [
-                DataRow(cells: [
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('abc'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewAfterSales()),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ]),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -462,7 +297,7 @@ class _AfterSalesState extends State<AfterSales> {
           title: Text("Logout", style: TextStyle(color: Colors.white)),
           content: Text("Apakah Anda yakin ingin logout?",
               style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          backgroundColor: const Color.fromRGBO(255, 6, 37, 55),
           actions: [
             TextButton(
               onPressed: () {
@@ -485,4 +320,90 @@ class _AfterSalesState extends State<AfterSales> {
       },
     );
   }
+}
+
+Widget _ListView() {
+  return ListView.separated(
+    itemBuilder: (context, index) {
+      return ListViewItem(context, index);
+    },
+    separatorBuilder: (context, index) {
+      return Divider(height: 0);
+    },
+    itemCount: 15,
+  );
+}
+
+Widget ListViewItem(BuildContext context, int index) {
+  return Container(
+    margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(left: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                message(context, index),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget message(BuildContext context, int index) {
+  double textsize = 14;
+  return Container(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 15,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                'R22 - PT. Nugraha Jasa ${index + 1}',
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 17,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.visibility),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DetailP()),
+                );
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                // Add your edit logic here
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                // Add your delete logic here
+              },
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }

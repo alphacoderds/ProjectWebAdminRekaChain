@@ -1,4 +1,4 @@
-import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -8,40 +8,46 @@ import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-import 'package:RekaChain/WebAdmin/viewaftersales.dart';
-import 'package:flutter/material.dart';
 
-class AfterSales extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+
+class AdminDashboard extends StatefulWidget {
   @override
-  State<AfterSales> createState() => _AfterSalesState();
+  State<AdminDashboard> createState() => _DashboardState();
 }
 
-class _AfterSalesState extends State<AfterSales> {
+class _DashboardState extends State<AdminDashboard> {
   int _selectedIndex = 0;
-
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue;
+  late List<_ChartData> data;
+  late TooltipBehavior _tooltip;
 
   bool isViewVisible = false;
-  late double screenWidth;
-  late double screenHeight;
+  late double screenWidth = MediaQuery.of(context).size.width;
+  late double screenHeight = MediaQuery.of(context).size.height;
+
+  @override
+  void initState() {
+    data = [
+      _ChartData('Panel 1', 12),
+      _ChartData('Panel 2', 15),
+      _ChartData('Panel 3', 30),
+      _ChartData('Panel 4', 6.4),
+      _ChartData('Panel 5', 14),
+    ];
+    _tooltip = TooltipBehavior(enable: true);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => AfterSales(),
+              builder: (context) => AdminDashboard(),
             );
           default:
             return null;
@@ -57,41 +63,6 @@ class _AfterSalesState extends State<AfterSales> {
                 appBar: AppBar(
                   backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                   toolbarHeight: 65,
-                  title: Padding(
-                    padding: EdgeInsets.only(left: screenHeight * 0.02, top: 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 300,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                          ),
-                          child: DropdownButton<String>(
-                            alignment: Alignment.center,
-                            hint: Text('--Pilih Nama/Kode Project--'),
-                            value: selectedValue,
-                            underline: SizedBox(),
-                            borderRadius: BorderRadius.circular(5),
-                            items: dropdownItems.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedValue = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   actions: [
                     Padding(
                       padding: EdgeInsets.only(right: screenHeight * 0.11),
@@ -110,7 +81,8 @@ class _AfterSalesState extends State<AfterSales> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi()),
+                                  builder: (context) => Notifikasi(),
+                                ),
                               );
                             },
                           ),
@@ -124,7 +96,8 @@ class _AfterSalesState extends State<AfterSales> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile()),
+                                  builder: (context) => Profile(),
+                                ),
                               );
                             },
                           ),
@@ -133,146 +106,42 @@ class _AfterSalesState extends State<AfterSales> {
                     )
                   ],
                 ),
-                body: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Center(
-                    child: _buildMainTable(),
-                  ),
+                body: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildChartContainer('Nama Pt 1 - Kode Lot'),
+                          SizedBox(width: 20),
+                          _buildChartContainer('Nama Pt 2 - Kode Lot'),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _buildChartContainer('Nama Pt 3 - Kode Lot'),
+                          SizedBox(width: 20),
+                          _buildChartContainer('Nama Pt 4 - Kode Lot'),
+                          SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      ),
-    );
-  }
-
-  Widget _buildMainTable() {
-    return Container(
-      alignment: Alignment.center,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height - 50,
-          ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columnSpacing: 200.0,
-              horizontalMargin: 50.0,
-              columns: [
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'No',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Nama Project',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Nomor Produk',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Tanggal Project',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'View',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-              ],
-              rows: [
-                DataRow(cells: [
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('abc'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewAfterSales()),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ]),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -485,4 +354,35 @@ class _AfterSalesState extends State<AfterSales> {
       },
     );
   }
+
+  Widget _buildChartContainer(String chartTitle) {
+    return Container(
+      width: 500.0,
+      height: 300.0,
+      child: SfCartesianChart(
+        primaryXAxis: CategoryAxis(),
+        primaryYAxis: NumericAxis(minimum: 0, maximum: 100, interval: 10),
+        tooltipBehavior: _tooltip,
+        series: <CartesianSeries<_ChartData, String>>[
+          BarSeries<_ChartData, String>(
+            dataSource: data,
+            xValueMapper: (_ChartData data, _) => data.x,
+            yValueMapper: (_ChartData data, _) => data.y,
+            name: chartTitle,
+            color: Color.fromRGBO(43, 56, 103, 1),
+          )
+        ],
+        title: ChartTitle(
+          text: chartTitle,
+          textStyle: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+}
+
+class _ChartData {
+  _ChartData(this.x, this.y);
+  final String x;
+  final double y;
 }
