@@ -1,17 +1,19 @@
 import 'dart:html';
 import 'package:RekaChain/AfterSales/AfterSales.dart';
-import 'package:RekaChain/dasboard.dart';
-import 'package:RekaChain/inputdokumen.dart';
-import 'package:RekaChain/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/liststaff.dart';
-import 'package:RekaChain/login.dart';
-import 'package:RekaChain/notification.dart';
-import 'package:RekaChain/perencanaan.dart';
-import 'package:RekaChain/profile.dart';
-import 'package:RekaChain/reportsttpp.dart';
-import 'package:RekaChain/tambahproject.dart';
+import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/inputdokumen.dart';
+import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/WebAdmin/liststaff.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
+import 'package:RekaChain/WebAdmin/notification.dart';
+import 'package:RekaChain/WebAdmin/perencanaan.dart';
+import 'package:RekaChain/WebAdmin/profile.dart';
+import 'package:RekaChain/WebAdmin/reportsttpp.dart';
+import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class TambahStaff extends StatefulWidget {
   const TambahStaff({Key? key}) : super(key: key);
@@ -60,10 +62,27 @@ class _TambahStaffState extends State<TambahStaff> {
   List<String> dropdownItemsStatus = ['Aktif', 'Non Aktif'];
   String? selectedValueStatus;
 
+  String hashPassword(String password) {
+    var bytes =
+        utf8.encode(password); // Mengonversi string password ke bytes UTF-8
+    var digest =
+        sha1.convert(bytes); // Menghitung hash SHA-1 dari bytes password
+    return digest.toString(); // Mengembalikan hash sebagai string
+  }
+
   Future<void> _simpan(BuildContext context) async {
+    final hashedPassword = hashPassword(passwordController.text);
+    final hashedKonfirmasiPassword =
+        hashPassword(konfirmasiPasswordController.text);
+
+    if (hashedPassword != hashedKonfirmasiPassword) {
+      print('Konfirmasi password tidak sesuai');
+      return;
+    }
+
     final response = await http.post(
       Uri.parse(
-        "http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/create.php",
+        "http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/create.php",
       ),
       body: {
         "kode_staff": kodestaffController.text,
@@ -76,8 +95,8 @@ class _TambahStaffState extends State<TambahStaff> {
         "no_telp": nomortelponController.text,
         "nip": nipController.text,
         "status": selectedValueStatus ?? '',
-        "password": passwordController.text,
-        "konfirmasi_password": konfirmasiPasswordController.text,
+        "password": hashedPassword,
+        "konfirmasi_password": hashedKonfirmasiPassword,
       },
     );
 
@@ -94,8 +113,8 @@ class _TambahStaffState extends State<TambahStaff> {
         "no_telp": nomortelponController.text,
         "nip": nipController.text,
         "status": statusController.text,
-        "password": passwordController.text,
-        "konfirmasi_password": konfirmasiPasswordController.text,
+        "password": hashedPassword,
+        "konfirmasi_password": hashedKonfirmasiPassword,
       };
 
       _showFinishDialog();
@@ -745,7 +764,7 @@ class _TambahStaffState extends State<TambahStaff> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Dashboard(),
+                builder: (context) => AdminDashboard(),
               ),
             );
           } else if (index == 6) {

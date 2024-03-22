@@ -26,57 +26,77 @@ class _TambahProjectState extends State<TambahProject> {
 
   late TextEditingController nmprojectController;
   late TextEditingController kdprojectController;
+  late TextEditingController idprojectController;
 
   Future<void> _simpan() async {
-    final response = await http.post(
-      Uri.parse(
-          'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/create.php'),
-      body: {
-        "kodeProject": kdprojectController.text,
-        "namaProject": nmprojectController.text,
-      },
-    );
+    if (nmprojectController.text.isNotEmpty) {
+      String idProject =
+          '${kdprojectController.text} - ${nmprojectController.text}';
 
-    if (response.statusCode == 200) {
-      final newProjectData = {
-        "no": response.body,
-        "kodeProject": kdprojectController.text,
-        "namaProject": nmprojectController.text,
-      };
-
-      _showFinishDialog();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ListProject(newProject: newProjectData),
-        ),
+      final response = await http.post(
+        Uri.parse(
+            'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/create.php'),
+        body: {
+          "kodeProject": kdprojectController.text,
+          "namaProject": nmprojectController.text,
+          "idProject": idProject,
+        },
       );
+
+      if (response.statusCode == 200) {
+        final newProjectData = {
+          "no": response.body,
+          "kodeProject": kdprojectController.text,
+          "namaProject": nmprojectController.text,
+          "idProject": idProject,
+        };
+
+        _showFinishDialog();
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ListProject(newProject: newProjectData),
+          ),
+        );
+      } else {
+        print('Gagal menyimpan data: ${response.statusCode}');
+      }
     } else {
-      print('Gagal menyimpan data: ${response.statusCode}');
+      print('Mohon lengkapi nama project.');
     }
   }
 
   int _selectedIndex = 0;
-  List<String> dropdownItems1 = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue1;
 
-  List<String> dropdownItems2 = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
+  String? selectedValue1;
   String? selectedValue2;
+  String? selectedValue3;
 
   @override
   void initState() {
     super.initState();
     kdprojectController = TextEditingController();
     nmprojectController = TextEditingController();
+    idprojectController = TextEditingController();
+
+    kdprojectController.addListener(_calculateIdProject);
+    nmprojectController.addListener(_calculateIdProject);
+  }
+
+  @override
+  void dispose() {
+    kdprojectController.dispose();
+    nmprojectController.dispose();
+    idprojectController.dispose();
+    super.dispose();
+  }
+
+  void _calculateIdProject() {
+    setState(() {
+      idprojectController.text =
+          '${kdprojectController.text} - ${nmprojectController.text}';
+    });
   }
 
   @override
@@ -263,7 +283,7 @@ class _TambahProjectState extends State<TambahProject> {
                                       ),
                                       onChanged: (newValue) {
                                         setState(() {
-                                          selectedValue2 = newValue;
+                                          selectedValue1 = newValue;
                                         });
                                       },
                                     ),
@@ -294,9 +314,35 @@ class _TambahProjectState extends State<TambahProject> {
                                       ),
                                       onChanged: (newValue) {
                                         setState(() {
-                                          selectedValue1 = newValue;
+                                          selectedValue2 = newValue;
                                         });
                                       },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 40),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'ID Project',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: TextFormField(
+                                      controller: idprojectController,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.all(8),
+                                      ),
                                     ),
                                   ),
                                 ],

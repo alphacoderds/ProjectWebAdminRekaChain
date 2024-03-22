@@ -11,7 +11,7 @@ if ($conn->connect_error) {
     die(json_encode(['pesan' => 'Gagal terhubung ke database: ' . $conn->connect_error]));
 }
 
-$query = mysqli_query($conn, "SELECT * FROM tbl_project");
+$query = mysqli_query($conn, "SELECT * FROM tbl_tambahproject");
 
 if (!$query) {
     die(json_encode(['pesan' => 'Gagal mengambil data: ' . mysqli_error($conn)]));

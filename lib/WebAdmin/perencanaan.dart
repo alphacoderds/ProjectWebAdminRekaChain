@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
@@ -119,8 +118,8 @@ class _PerencanaanState extends State<Perencanaan> {
       final List<dynamic> data = jsonDecode(response.body);
 
       setState(() {
-        dropdownItems1 = ['--Pilih Nama/Kode Project--'];
-        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
+        dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
+        dropdownItemsIdProject.addAll(data.map((e) => e['namaProject'].toString()));
       });
     } else {
       print('Failed to load project names: ${response.statusCode}');

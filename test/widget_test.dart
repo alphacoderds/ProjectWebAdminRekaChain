@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:RekaChain/WebAdmin/main.dart';
-import 'package:RekaChain/WebUser/main.dart';
+import 'package:RekaChain/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp1());
-    await tester.pumpWidget(const MyApp2());
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

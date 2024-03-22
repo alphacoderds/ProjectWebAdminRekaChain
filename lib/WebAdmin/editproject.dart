@@ -32,20 +32,25 @@ class _EditProjectState extends State<EditProject> {
   late TextEditingController noController;
   late TextEditingController nmprojectController;
   late TextEditingController kdprojectController;
+  late TextEditingController idprojectController;
 
   List<Map<String, dynamic>> _listdata = [];
 
-  Future<void> fetchData() async {
+  int _selectedIndex = 0;
+  String? selectedValue1;
+  String? selectedValue2;
+
+  void fetchData() async {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/edit.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
       );
       if (response.statusCode == 200) {
-        final List<Map<String, dynamic>> fetchedData =
-            List<Map<String, dynamic>>.from(json.decode(response.body));
+        final responseData = json.decode(response.body);
+        final idProject = responseData['idProject'];
         setState(() {
-          _listdata = fetchedData;
+          idprojectController.text = idProject;
         });
       } else {
         print('Failed to fetch data: ${response.statusCode}');
@@ -63,22 +68,27 @@ class _EditProjectState extends State<EditProject> {
         text: widget.selectedProject['namaProject'] ?? '');
     kdprojectController = TextEditingController(
         text: widget.selectedProject['kodeProject'] ?? '');
+    idprojectController =
+        TextEditingController(text: widget.selectedProject['idProject'] ?? '');
+
+    kdprojectController.addListener(_calculateIdProject);
+    nmprojectController.addListener(_calculateIdProject);
   }
 
-  int _selectedIndex = 0;
-  List<String> dropdownItems1 = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue1;
+  @override
+  void dispose() {
+    kdprojectController.dispose();
+    nmprojectController.dispose();
+    idprojectController.dispose();
+    super.dispose();
+  }
 
-  List<String> dropdownItems2 = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue2;
+  void _calculateIdProject() {
+    setState(() {
+      idprojectController.text =
+          '${kdprojectController.text} - ${nmprojectController.text}';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -219,11 +229,12 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http:/192.168.9.82//ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           'no': widget.selectedProject['no'].toString(),
           'kodeProject': kdprojectController.text,
           'namaProject': nmprojectController.text,
+          'idProject': idprojectController.text,
         },
       );
 
@@ -320,6 +331,32 @@ class _EditProjectState extends State<EditProject> {
                                           selectedValue1 = newValue;
                                         });
                                       },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 40),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'ID Project',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: TextFormField(
+                                      controller: idprojectController,
+                                      decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.all(8),
+                                      ),
                                     ),
                                   ),
                                 ],

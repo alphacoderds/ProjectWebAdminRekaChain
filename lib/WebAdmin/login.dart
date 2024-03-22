@@ -216,7 +216,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
+  } 
 
   Widget _loginBtn() {
     return ElevatedButton(
