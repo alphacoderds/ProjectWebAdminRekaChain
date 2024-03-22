@@ -36,13 +36,17 @@ class _InputDokumenState extends State<InputDokumen> {
 
   TextEditingController tanggalcontroller = TextEditingController();
 
-  List<File> uploadFiles = [];
+  List<PlatformFile> uploadFiles = [];
 
   Future<void> _uploadDocument() async {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
-      print('Path File: ${result.files.single.path}');
+      setState(() {
+        uploadFiles.addAll(result.files);
+      });
+      print(
+          'Dokumen berhasil diunggah: ${result.files.map((file) => file.name)}');
     } else {
       print('Pengguna membatalkan memilih file');
     }
@@ -64,7 +68,7 @@ class _InputDokumenState extends State<InputDokumen> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
@@ -308,18 +312,42 @@ class _InputDokumenState extends State<InputDokumen> {
                                       border: Border.all(),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
-                                        SizedBox(width: 8),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.add,
-                                            size: 35,
-                                          ),
-                                          onPressed: () {
-                                            _uploadDocument();
+                                        SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 8),
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.add,
+                                                size: 35,
+                                              ),
+                                              onPressed: () {
+                                                _uploadDocument();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 8),
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: uploadFiles.length,
+                                          itemBuilder: (context, index) {
+                                            return ListTile(
+                                              title:
+                                                  Text(uploadFiles[index].name),
+                                              trailing: IconButton(
+                                                icon: Icon(Icons.remove_circle),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    uploadFiles.removeAt(index);
+                                                  });
+                                                },
+                                              ),
+                                            );
                                           },
                                         ),
                                       ],

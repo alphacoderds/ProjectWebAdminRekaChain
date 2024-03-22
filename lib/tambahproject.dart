@@ -35,7 +35,7 @@ class _TambahProjectState extends State<TambahProject> {
 
       final response = await http.post(
         Uri.parse(
-            'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/create.php'),
+            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/create.php'),
         body: {
           "kodeProject": kdprojectController.text,
           "namaProject": nmprojectController.text,
@@ -68,13 +68,11 @@ class _TambahProjectState extends State<TambahProject> {
   }
 
   int _selectedIndex = 0;
-  List<String> dropdownItems1 = [];
+
   String? selectedValue1;
 
-  List<String> dropdownItems2 = [];
   String? selectedValue2;
 
-  List<String> dropdownItems3 = [];
   String? selectedValue3;
 
   @override

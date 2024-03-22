@@ -43,7 +43,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
+          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -76,7 +76,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.post(
         Uri.parse(
-          'https://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/hapus.php',
+          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/hapus.php',
         ),
         body: {
           "kode_staff": id,
@@ -94,13 +94,6 @@ class _ListStaffState extends State<ListStaff> {
       print('Error deleting data: $e');
     }
   }
-
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Staff--',
-    '001 - Ahmad Budi',
-    '002 - Ahmad Yudi'
-  ];
-  String? selectedValue;
 
   @override
   Widget build(BuildContext context) {

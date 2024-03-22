@@ -56,7 +56,7 @@ class _EditStaffState extends State<EditStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php'),
       );
       if (response.statusCode == 200) {
         final List<Map<String, dynamic>> fetchedData =
@@ -224,7 +224,7 @@ class _EditStaffState extends State<EditStaff> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           'no': widget.selectedStaff['no'].toString(),
           "kode_staff": kodestaffController.text,

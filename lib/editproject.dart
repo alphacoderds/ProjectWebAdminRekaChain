@@ -36,11 +36,15 @@ class _EditProjectState extends State<EditProject> {
 
   List<Map<String, dynamic>> _listdata = [];
 
+  int _selectedIndex = 0;
+  String? selectedValue1;
+  String? selectedValue2;
+
   void fetchData() async {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/edit.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
+            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -85,16 +89,6 @@ class _EditProjectState extends State<EditProject> {
           '${kdprojectController.text} - ${nmprojectController.text}';
     });
   }
-
-  int _selectedIndex = 0;
-  List<String> dropdownItems1 = [];
-  String? selectedValue1;
-
-  List<String> dropdownItems2 = [];
-  String? selectedValue2;
-
-  List<String> dropdownItems3 = [];
-  String? selectedValue3;
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +229,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           'no': widget.selectedProject['no'].toString(),
           'kodeProject': kdprojectController.text,

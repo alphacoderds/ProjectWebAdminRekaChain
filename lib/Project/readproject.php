@@ -14,7 +14,7 @@ if ($conn->connect_error) {
 }
 
 // Melakukan query untuk mengambil data
-$query = mysqli_query($conn, "SELECT * FROM tbl_project");
+$query = mysqli_query($conn, "SELECT * FROM tbl_tambahproject");
 
 // Memeriksa apakah query berhasil dieksekusi
 if (!$query) {

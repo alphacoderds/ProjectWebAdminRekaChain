@@ -3,7 +3,6 @@ import 'dart:html';
 
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/dasboard.dart';
-import 'package:RekaChain/editprofile.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/login.dart';
 import 'package:RekaChain/notification.dart';
@@ -13,7 +12,6 @@ import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:RekaChain/viewikm.dart';
-import 'package:RekaChain/viewupload.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -50,7 +48,7 @@ class _InputMaterialState extends State<InputMaterial> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.10.194/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);

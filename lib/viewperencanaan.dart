@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:RekaChain/AfterSales/AfterSales.dart';
 import 'package:RekaChain/DetailViewPerencanaan.dart';
 import 'package:RekaChain/dasboard.dart';
+import 'package:RekaChain/editperencanaan.dart';
 import 'package:RekaChain/inputdokumen.dart';
 import 'package:RekaChain/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/login.dart';
@@ -11,8 +14,12 @@ import 'package:RekaChain/reportsttpp.dart';
 import 'package:RekaChain/tambahproject.dart';
 import 'package:RekaChain/tambahstaff.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Vperencanaan extends StatefulWidget {
+  final Map<String, dynamic>? newProject;
+
+  const Vperencanaan({Key? key, this.newProject}) : super(key: key);
   @override
   State<Vperencanaan> createState() => _VperencanaanState();
 }
@@ -21,6 +28,73 @@ class _VperencanaanState extends State<Vperencanaan> {
   int _selectedIndex = 0;
   late double screenWidth;
   late double screenHeight;
+
+  List _listdata = [];
+  bool _isloading = true;
+
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+
+  Future<void> _getdata() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readlistproject.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          _listdata = data;
+          _isloading = false;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    if (widget.newProject != null) {
+      _listdata.add(widget.newProject!);
+    }
+    _getdata();
+    super.initState();
+  }
+
+  Future<void> updateData() async {
+    await _getdata();
+    setState(() {});
+  }
+
+  Future<void> _hapusData(String id) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/hapus.php',
+        ),
+        body: {
+          "id_project": id,
+        },
+      );
+
+      print('Delete response: ${response.statusCode} - ${response.body}');
+
+      if (response.statusCode == 200) {
+        await updateData();
+      } else {
+        print('Failed to delete data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error deleting data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +137,41 @@ class _VperencanaanState extends State<Vperencanaan> {
                   ),
                   actions: [
                     Padding(
-                      padding: EdgeInsets.only(right: screenHeight * 0.13),
+                      padding: EdgeInsets.only(right: screenHeight * 0.11),
                       child: Row(
                         children: [
                           SizedBox(
                             width: screenWidth * 0.005,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            width: 250,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: TextField(
+                                    onChanged: _updateSearchQuery,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Cari',
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
                           ),
                           IconButton(
                             icon: Icon(
@@ -320,90 +424,150 @@ class _VperencanaanState extends State<Vperencanaan> {
       },
     );
   }
-}
 
-Widget _ListView() {
-  return ListView.separated(
-    itemBuilder: (context, index) {
-      return ListViewItem(context, index);
-    },
-    separatorBuilder: (context, index) {
-      return Divider(height: 0);
-    },
-    itemCount: 15,
-  );
-}
+  Widget _ListView() {
+    List filteredData = _listdata.where((data) {
+      String idProject = data['id_project'] ?? '';
+      String kodeLot = data['kodeLot'] ?? '';
+      return idProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
 
-Widget ListViewItem(BuildContext context, int index) {
-  return Container(
-    margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Container(
-            margin: EdgeInsets.only(left: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                message(context, index),
-              ],
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return ListViewItem(context, index, filteredData[index]);
+      },
+      separatorBuilder: (context, index) {
+        return Divider(height: 0);
+      },
+      itemCount: filteredData.length,
+    );
+  }
 
-Widget message(BuildContext context, int index) {
-  double textsize = 14;
-  return Container(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 15,
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                'R22 - PT. Nugraha Jasa ${index + 1}',
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+  Widget ListViewItem(BuildContext context, int index, dynamic projectData) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  message(context, projectData),
+                ],
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.visibility),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget message(BuildContext context, dynamic projectData) {
+    double textsize = 14;
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 15,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '${projectData['id_project']} // ${projectData['kodeLot']}',
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 17,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.visibility),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DetailP()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditPerencanaan(
+                        selectedProject: {
+                          "id_project": projectData['id_project'],
+                          "noIndukproduk": projectData['noIndukProduk'],
+                          "noSeriAwal": projectData['noSeriAwal'],
+                          "targetMulai": projectData['targetMulai'],
+                          "namaProduk": projectData['namaProduk'],
+                          "jumlahLot": projectData['jumlahLot'],
+                          "kodeLot": projectData['kodeLot'],
+                          "noSeriAkhir": projectData['noSeriAkhir'],
+                          "targetSelesai": projectData['targetSelesai'],
+                          "alurProses": projectData['alurProses'],
+                          "kategori": projectData['kategori'],
+                          "keterangan": projectData['keterangan'],
+                        },
+                      ),
+                    ),
+                  ).then((result) {
+                    if (result != null && result) {
+                      updateData();
+                    }
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  _showDeleteDialog(projectData['id_project'].toString());
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteDialog(String id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin menghapus data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => DetailP()),
-                );
+                Navigator.of(context).pop();
               },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
             ),
-            IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                // Add your edit logic here
+            TextButton(
+              onPressed: () async {
+                await _hapusData(id);
+                Navigator.of(context).pop();
               },
-            ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                // Add your delete logic here
-              },
+              child: Text("Hapus", style: TextStyle(color: Colors.white)),
             ),
           ],
-        ),
-      ],
-    ),
-  );
+        );
+      },
+    );
+  }
 }
