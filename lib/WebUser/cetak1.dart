@@ -1,4 +1,4 @@
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/DetailViewPerencanaan.dart';
 import 'package:RekaChain/WebUser/cetak.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/DetailViewPerencanaan.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
@@ -492,15 +492,6 @@ class _VperencanaanState extends State<Vperencanaan> {
               ),
               IconButton(
                 icon: Icon(Icons.visibility),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DetailP()),
-                  );
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.edit),
                 onPressed: () {
                   Navigator.push(
                     context,

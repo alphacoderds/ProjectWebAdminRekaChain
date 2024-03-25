@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:html';
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -44,7 +44,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/edit.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
+            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -229,7 +229,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           'no': widget.selectedProject['no'].toString(),
           'kodeProject': kdprojectController.text,

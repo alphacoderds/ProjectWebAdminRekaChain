@@ -1,5 +1,5 @@
 import 'dart:html';
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/editprofile.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';

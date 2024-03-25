@@ -1,13 +1,14 @@
 import 'dart:convert';
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/Cetak.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
-import 'package:RekaChain/WebUser/inputdokumen.dart';
-import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebUser/login.dart';
-import 'package:RekaChain/WebUser/notification.dart';
-import 'package:RekaChain/WebUser/perencanaan.dart';
-import 'package:RekaChain/WebUser/profile.dart';
-import 'package:RekaChain/WebUser/reportsttpp.dart';
+import 'package:RekaChain/WebAdmin/inputdokumen.dart';
+import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
+import 'package:RekaChain/WebAdmin/notification.dart';
+import 'package:RekaChain/WebAdmin/perencanaan.dart';
+import 'package:RekaChain/WebAdmin/profile.dart';
+import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:RekaChain/WebUser/viewperencanaan.dart';
@@ -190,7 +191,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                               padding:
                                   EdgeInsets.only(left: screenHeight * 0.01),
                               child: Text(
-                                'Input Proses',
+                                'Detail Proses',
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -722,6 +723,30 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                                   Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => Cetak(),
+                                              ),
+                                            );
+                                          },
+                                          child: Text(
+                                            'Cetak',
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Colors.white,
+                                            backgroundColor:
+                                                const Color.fromRGBO(
+                                                    43, 56, 86, 1),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 20),
                                         ElevatedButton(
                                           onPressed: () {
                                             addRow();
