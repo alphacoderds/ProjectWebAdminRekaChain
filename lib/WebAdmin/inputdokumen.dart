@@ -68,7 +68,7 @@ class _InputDokumenState extends State<InputDokumen> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);

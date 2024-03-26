@@ -43,7 +43,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/readproject.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -78,7 +78,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/hapus.php',
+          'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/hapus.php',
         ),
         body: {
           "kodeProject": id,
@@ -344,7 +344,7 @@ class _ListProjectState extends State<ListProject> {
                                       ).then((result) {
                                         if (result != null && result) {
                                           updateData();
-                                        }
+                                        }  
                                       });
                                     },
                                   ),

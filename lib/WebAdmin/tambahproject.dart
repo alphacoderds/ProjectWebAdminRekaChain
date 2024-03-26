@@ -12,6 +12,26 @@ import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+
+class Project {
+  final String kodeProject;
+  final String namaProject;
+  final String idProject;
+
+  Project({required this.kodeProject, required this.namaProject, required this.idProject});
+}
+
+class ProjectProvider extends ChangeNotifier {
+  List<Project> _projects = [];
+ 
+  List<Project> get projects => _projects;
+
+  void addProject(Project project) {
+    _projects.add(project);
+    notifyListeners();
+  }
+}
 
 class TambahProject extends StatefulWidget {
   const TambahProject({super.key});
@@ -35,7 +55,7 @@ class _TambahProjectState extends State<TambahProject> {
 
       final response = await http.post(
         Uri.parse(
-            'http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/create.php'),
+            'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/create_tambahproject.php'),
         body: {
           "kodeProject": kdprojectController.text,
           "namaProject": nmprojectController.text,

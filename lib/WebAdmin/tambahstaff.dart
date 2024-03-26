@@ -14,6 +14,48 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'package:provider/provider.dart';
+
+class Project {
+  final String kode_staff;
+  final String nama;
+  final String jabatan;
+  final String unit_kerja;
+  final String departemen;
+  final String divisi;
+  final String email;
+  final String no_telp;
+  final String nip;
+  final String status;
+  final String password;
+  final String konfirmasi_password;
+
+  Project({
+    required this.kode_staff,
+    required this.nama,
+    required this.jabatan,
+    required this.unit_kerja,
+    required this.departemen,
+    required this.divisi,
+    required this.email,
+    required this.no_telp,
+    required this.nip,
+    required this.status,
+    required this.password,
+    required this.konfirmasi_password,
+  });
+}
+
+class ProjectProvider extends ChangeNotifier {
+  List<Project> _projects = [];
+
+  List<Project> get projects => _projects;
+
+  void addProject(Project project) {
+    _projects.add(project);
+    notifyListeners();
+  }
+}
 
 class TambahStaff extends StatefulWidget {
   const TambahStaff({Key? key}) : super(key: key);
@@ -82,7 +124,7 @@ class _TambahStaffState extends State<TambahStaff> {
 
     final response = await http.post(
       Uri.parse(
-        "http://192.168.9.82/ProjectWebAdminRekaChain/lib/Project/create.php",
+        "http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php",
       ),
       body: {
         "kode_staff": kodestaffController.text,
@@ -277,7 +319,7 @@ class _TambahStaffState extends State<TambahStaff> {
             Container(
               alignment: Alignment.center,
               width: screenWidth * 0.8,
-              height: screenHeight * 0.90,
+              height: screenHeight * 0.88,
               decoration: BoxDecoration(
                 border: Border.all(),
                 borderRadius: BorderRadius.circular(10),
@@ -556,10 +598,20 @@ class _TambahStaffState extends State<TambahStaff> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _simpan(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => LoginPage()),
+                    );
                   },
-                  child: Text(
-                    'Simpan',
+                  child: SizedBox(
+                    width:
+                        100, // Atur lebar tombol sesuai kebutuhan, misalnya 200 piksel
+                    child: Center(
+                      child: Text(
+                        'Simpan',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
@@ -606,8 +658,8 @@ class _TambahStaffState extends State<TambahStaff> {
   Widget _inputFieldPassword(String labelText, TextEditingController controller,
       {bool isPassword = false, Color? backgroundColor}) {
     return SizedBox(
-      width: screenWidth * 0.28,
-      height: screenHeight * 0.1,
+      width: 400,
+      height: 100,
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -661,8 +713,8 @@ class _TambahStaffState extends State<TambahStaff> {
       String labelText, TextEditingController controller,
       {bool isKonfirmasiPassword = false, Color? backgroundColor}) {
     return SizedBox(
-      width: screenWidth * 0.28,
-      height: screenHeight * 0.1,
+      width: 400,
+      height: 100,
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
