@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:html';
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -56,7 +56,11 @@ class _EditStaffState extends State<EditStaff> {
     try {
       final response = await http.get(
         Uri.parse(
+<<<<<<< HEAD
             'https://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+=======
+            'https://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+>>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
       );
       if (response.statusCode == 200) {
         final List<Map<String, dynamic>> fetchedData =
@@ -224,7 +228,11 @@ class _EditStaffState extends State<EditStaff> {
     try {
       final response = await http.post(
         Uri.parse(
+<<<<<<< HEAD
             'https://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+=======
+            'https://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+>>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
         body: {
           'no': widget.selectedStaff['no'].toString(),
           "kode_staff": kodestaffController.text,

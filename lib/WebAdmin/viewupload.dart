@@ -1,4 +1,6 @@
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'dart:convert';
+
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -10,8 +12,12 @@ import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ViewUpload extends StatefulWidget {
+  final Map<String, dynamic>? newProject;
+
+  const ViewUpload({Key? key, this.newProject}) : super(key: key);
   @override
   State<ViewUpload> createState() => _ViewUploadState();
 }
@@ -22,7 +28,74 @@ class _ViewUploadState extends State<ViewUpload> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
-  String? selectedValue;
+  List _listdata = [];
+  bool _isloading = true;
+
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+
+  Future _getdata() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print(data);
+        setState(() {
+          _listdata = data;
+          _isloading = false;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    if (widget.newProject != null) {
+      _listdata.add(widget.newProject!);
+      updateData();
+    }
+    _getdata();
+    super.initState();
+  }
+
+  Future<void> updateData() async {
+    await _getdata();
+    setState(() {});
+  }
+
+  Future<void> _hapusData(String id) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/hapus.php',
+        ),
+        body: {
+          "id_project": id,
+        },
+      );
+
+      print('Delete response: ${response.statusCode} - ${response.body}');
+
+      if (response.statusCode == 200) {
+        await updateData();
+      } else {
+        print('Failed to delete data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error deleting data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,15 +142,14 @@ class _ViewUploadState extends State<ViewUpload> {
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(width: 8),
                                     Expanded(
                                       child: TextField(
+                                        onChanged: _updateSearchQuery,
                                         decoration: InputDecoration(
                                           border: InputBorder.none,
-                                          hintText: 'Nama Project',
+                                          hintText: 'Cari',
                                         ),
                                       ),
                                     ),
@@ -180,6 +252,12 @@ class _ViewUploadState extends State<ViewUpload> {
   }
 
   Widget _buildMainTable() {
+    List filteredData = _listdata.where((data) {
+      String id_project = data['id_project'] ?? '';
+      String kodeLot = data['kodeLot'] ?? '';
+      return id_project.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
     return Container(
       alignment: Alignment.center,
       child: SingleChildScrollView(
@@ -211,7 +289,7 @@ class _ViewUploadState extends State<ViewUpload> {
               DataColumn(
                 label: Center(
                   child: Text(
-                    'No Produk',
+                    'Kode Lot',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
@@ -241,83 +319,83 @@ class _ViewUploadState extends State<ViewUpload> {
                 ),
               ),
             ],
-            rows: [
-              DataRow(cells: [
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('1'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('PT INKA'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('0012'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('Pdf 1'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Text('28/02/2024'),
-                    ),
-                  ),
-                ),
-                DataCell(
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Center(
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.visibility),
-                            onPressed: () {
-                              setState(() {
-                                isViewVisible = !isViewVisible;
-                              });
-                            },
+            rows: filteredData
+                .asMap()
+                .map(
+                  (index, data) => MapEntry(
+                    index,
+                    DataRow(
+                      cells: [
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text((index + 1).toString()),
+                            ),
                           ),
-                          SizedBox(width: 10),
-                          IconButton(
-                            icon: Icon(Icons.file_download_outlined),
-                            onPressed: () {
-                              setState(() {
-                                isViewVisible = !isViewVisible;
-                              });
-                            },
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['id_project'] ?? ''),
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['kodeLot'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['file'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['tanggal'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Center(
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.file_download_outlined),
+                                    onPressed: () {
+                                      setState(() {
+                                        isViewVisible = !isViewVisible;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ]),
-            ],
+                )
+                .values
+                .toList(),
           ),
         ),
       ),

@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'dart:html';
+import 'dart:io';
 
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -15,9 +16,11 @@ import 'package:RekaChain/WebAdmin/viewupload.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 
 class InputDokumen extends StatefulWidget {
-  const InputDokumen({super.key});
+  const InputDokumen({Key? key}) : super(key: key);
 
   @override
   State<InputDokumen> createState() => _InputDokumenState();
@@ -27,14 +30,17 @@ class _InputDokumenState extends State<InputDokumen> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
-  int _selectedIndex = 0;
-  late List<String> dropdownItems1 = [];
-  String? selectedValue1;
-
-  late List<String> dropdownItems2 = [];
-  String? selectedValue2;
-
+  TextEditingController idprojectcontroller = TextEditingController();
+  TextEditingController kodelotcontroller = TextEditingController();
+  TextEditingController filecontroller = TextEditingController();
   TextEditingController tanggalcontroller = TextEditingController();
+
+  int _selectedIndex = 0;
+  late List<String> dropdownItemsIdProject = [];
+  String? selectedValueIdProject;
+
+  late List<String> dropdownItemsKodeLot = [];
+  String? selectedValueKodeLot;
 
   List<PlatformFile> uploadFiles = [];
 
@@ -52,6 +58,62 @@ class _InputDokumenState extends State<InputDokumen> {
     }
   }
 
+  Future<void> _simpan() async {
+    if (selectedValueIdProject != null && selectedValueKodeLot != null) {
+      List<MultipartFile> filesToUpload = [];
+      for (var file in uploadFiles) {
+        filesToUpload.add(
+          MultipartFile.fromBytes(
+            file.bytes!,
+            filename: file.name,
+            contentType: MediaType('application', 'octet-stream'),
+          ),
+        );
+      }
+
+      var formData = FormData.fromMap({
+        'id_project': selectedValueIdProject,
+        'kodeLot': selectedValueKodeLot,
+        'tanggal': tanggalcontroller.text,
+        'file': filesToUpload,
+      });
+
+      try {
+        final response = await Dio().post(
+          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/create.php',
+          data: formData,
+          options: Options(
+            contentType: 'multipart/form-data',
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          final newProjectData = {
+            'id_project': idprojectcontroller.text,
+            'file': filecontroller.text,
+            'kodeLot': kodelotcontroller.text,
+            'tanggal': tanggalcontroller.text,
+          };
+
+          _showFinishDialog();
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ViewUpload(newProject: newProjectData),
+            ),
+          );
+        } else {
+          print('Gagal menyimpan data: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      print('Mohon lengkapi nama project.');
+    }
+  }
+
   Future<void> _selectDate(TextEditingController controller) async {
     DateTime? _picked = await showDatePicker(
       context: context,
@@ -66,16 +128,23 @@ class _InputDokumenState extends State<InputDokumen> {
     }
   }
 
-  Future<void> fetchProjectNames() async {
+  Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
+<<<<<<< HEAD
         'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+=======
+        'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+>>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
 
     if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
+      final List<dynamic> data = jsonDecode(response.body);
 
       setState(() {
-        dropdownItems1 = ['--Pilih Nama/Kode Project--'];
-        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
+        dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
+        dropdownItemsIdProject
+            .addAll(data.map((e) => e['id_project'].toString()));
+        dropdownItemsKodeLot = ['--Pilih Kode Lot--'];
+        dropdownItemsKodeLot.addAll(data.map((e) => e['kodeLot'].toString()));
       });
     } else {
       throw Exception('Failed to load project names');
@@ -85,7 +154,7 @@ class _InputDokumenState extends State<InputDokumen> {
   @override
   void initState() {
     super.initState();
-    fetchProjectNames();
+    fetchProject();
   }
 
   @override
@@ -213,7 +282,7 @@ class _InputDokumenState extends State<InputDokumen> {
                 height: 40.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    _showFinishDialog();
+                    _simpan();
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color.fromRGBO(43, 56, 86, 1),
@@ -275,14 +344,15 @@ class _InputDokumenState extends State<InputDokumen> {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: DropdownButton<String>(
-                                      value: selectedValue1,
+                                      value: selectedValueIdProject,
                                       hint: Text('--Pilih Nama Project--'),
                                       onChanged: (newValue) {
                                         setState(() {
-                                          selectedValue1 = newValue;
+                                          selectedValueIdProject = newValue;
                                         });
                                       },
-                                      items: dropdownItems1.map((String value) {
+                                      items: dropdownItemsIdProject
+                                          .map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
@@ -380,7 +450,7 @@ class _InputDokumenState extends State<InputDokumen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'No Produk',
+                                    'Kode Lot',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
@@ -393,11 +463,12 @@ class _InputDokumenState extends State<InputDokumen> {
                                     ),
                                     child: DropdownButton<String>(
                                       alignment: Alignment.center,
-                                      hint: Text('--Pilih No Produk--'),
-                                      value: selectedValue2,
+                                      hint: Text('--Pilih Kode Lot--'),
+                                      value: selectedValueKodeLot,
                                       underline: SizedBox(),
                                       borderRadius: BorderRadius.circular(5),
-                                      items: dropdownItems2.map((String value) {
+                                      items: dropdownItemsKodeLot
+                                          .map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
@@ -405,7 +476,7 @@ class _InputDokumenState extends State<InputDokumen> {
                                       }).toList(),
                                       onChanged: (newValue) {
                                         setState(() {
-                                          selectedValue2 = newValue;
+                                          selectedValueKodeLot = newValue;
                                         });
                                       },
                                     ),
@@ -659,11 +730,7 @@ class _InputDokumenState extends State<InputDokumen> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => ViewUpload()),
-                );
+                _simpan();
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
             ),

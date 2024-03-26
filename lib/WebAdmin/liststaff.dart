@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/editstaff.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
@@ -43,7 +43,11 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.get(
         Uri.parse(
+<<<<<<< HEAD
           'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
+=======
+          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
+>>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
         ),
       );
       if (response.statusCode == 200) {
@@ -76,7 +80,11 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.post(
         Uri.parse(
+<<<<<<< HEAD
           'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/hapus.php',
+=======
+          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/hapus.php',
+>>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
         ),
         body: {
           "kode_staff": id,

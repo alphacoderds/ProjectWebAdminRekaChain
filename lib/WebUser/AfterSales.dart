@@ -1,12 +1,14 @@
-import 'package:RekaChain/WebUser/dasboard.dart';
-import 'package:RekaChain/WebUser/inputdokumen.dart';
-import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebUser/login.dart';
-import 'package:RekaChain/WebUser/notification.dart';
-import 'package:RekaChain/WebUser/perencanaan.dart';
-import 'package:RekaChain/WebUser/profile.dart';
-import 'package:RekaChain/WebUser/reportsttpp.dart';
-import 'package:RekaChain/WebUser/viewaftersales.dart';
+import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/inputdokumen.dart';
+import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
+import 'package:RekaChain/WebAdmin/notification.dart';
+import 'package:RekaChain/WebAdmin/perencanaan.dart';
+import 'package:RekaChain/WebAdmin/profile.dart';
+import 'package:RekaChain/WebAdmin/reportsttpp.dart';
+import 'package:RekaChain/WebAdmin/tambahproject.dart';
+import 'package:RekaChain/WebAdmin/tambahstaff.dart';
+import 'package:RekaChain/WebAdmin/viewaftersales.dart';
 import 'package:flutter/material.dart';
 
 class AfterSales extends StatefulWidget {
@@ -131,14 +133,9 @@ class _AfterSalesState extends State<AfterSales> {
                     )
                   ],
                 ),
-                body: Center(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    margin: EdgeInsets.all(50.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
                     child: _buildMainTable(),
                   ),
                 ),
@@ -152,110 +149,128 @@ class _AfterSalesState extends State<AfterSales> {
   }
 
   Widget _buildMainTable() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 200,
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 100.0,
-            horizontalMargin: 70.0,
-            columns: [
-              DataColumn(
-                label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 1.0),
-                  child: Text(
-                    'No',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Nama Project',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Nomor Produk',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Text(
-                    'Tanggal Report',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'View',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            rows: [
-              DataRow(cells: [
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('1'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('abcd'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('abcd'),
-                )),
-                DataCell(Container(
-                  alignment: Alignment.center,
-                  child: Text('abcd'),
-                )),
-                DataCell(
-                  Center(
-                    child: IconButton(
-                      icon: Icon(Icons.visibility),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ViewAfterSales()),
-                        );
-                      },
+    return Container(
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 50,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columnSpacing: 200.0,
+              horizontalMargin: 50.0,
+              columns: [
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'No',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                   ),
                 ),
-              ]),
-            ],
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Nama Project',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Nomor Produk',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Tanggal Project',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'View',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+              rows: [
+                DataRow(cells: [
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('abc'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text('1'),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Center(
+                        child: Row(
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.visibility),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ViewAfterSales()),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ]),
+              ],
+            ),
           ),
         ),
       ),
@@ -287,7 +302,8 @@ class _AfterSalesState extends State<AfterSales> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildAdminMenu(),
+          _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
     );
@@ -302,7 +318,7 @@ class _AfterSalesState extends State<AfterSales> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -312,7 +328,7 @@ class _AfterSalesState extends State<AfterSales> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(),
+                builder: (context) => AdminDashboard(),
               ),
             );
           } else if (index == 6) {
@@ -322,8 +338,6 @@ class _AfterSalesState extends State<AfterSales> {
                 builder: (context) => AfterSales(),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -366,7 +380,7 @@ class _AfterSalesState extends State<AfterSales> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -400,9 +414,43 @@ class _AfterSalesState extends State<AfterSales> {
                 builder: (context) => InputDokumen(),
               ),
             );
+          } else if (index == 7) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahProject(),
+              ),
+            );
+          } else if (index == 8) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TambahStaff(),
+              ),
+            );
           }
         }
       },
+    );
+  }
+
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+      ],
     );
   }
 

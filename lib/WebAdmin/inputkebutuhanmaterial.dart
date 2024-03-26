@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'dart:html';
 
-import 'package:RekaChain/AfterSales/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
-import 'package:RekaChain/WebAdmin/editprofile.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebAdmin/notification.dart';
@@ -13,7 +12,6 @@ import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:RekaChain/WebAdmin/viewikm.dart';
-import 'package:RekaChain/WebAdmin/viewupload.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -30,32 +28,47 @@ class InputMaterial extends StatefulWidget {
 class _InputMaterialState extends State<InputMaterial> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-  List<File> uploadFiles = [];
 
   int _selectedIndex = 0;
-  List<String> dropdownItems1 = [];
-  String? selectedValue1;
+  List<String> dropdownItemsIdProject = [];
+  String? selectedValueIdProject;
+
+  List<String> dropdownItemsKodeLot = [];
+  String? selectedValueKodeLot;
+
+  List<PlatformFile> uploadFiles = [];
 
   Future<void> _uploadDocument() async {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
-      print('Path File: ${result.files.single.path}');
+      setState(() {
+        uploadFiles.addAll(result.files);
+      });
+      print(
+          'Dokumen berhasil diunggah: ${result.files.map((file) => file.name)}');
     } else {
-      print('Pengguna membatalkan pemilih file');
+      print('Pengguna membatalkan memilih file');
     }
   }
 
-  Future<void> fetchProjectNames() async {
+  Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
+<<<<<<< HEAD
         'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+=======
+        'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+>>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
 
       setState(() {
-        dropdownItems1 = ['--Pilih Nama/Kode Project--'];
-        dropdownItems1.addAll(data.map((e) => e['namaProject'].toString()));
+        dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
+        dropdownItemsIdProject
+            .addAll(data.map((e) => e['id_project'].toString()));
+        dropdownItemsKodeLot = ['--Pilih Kode Lot--'];
+        dropdownItemsKodeLot.addAll(data.map((e) => e['kodeLot'].toString()));
       });
     } else {
       throw Exception('Failed to load project names');
@@ -65,15 +78,8 @@ class _InputMaterialState extends State<InputMaterial> {
   @override
   void initState() {
     super.initState();
-    fetchProjectNames();
+    fetchProject();
   }
-
-  List<String> dropdownItems2 = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue2;
 
   @override
   Widget build(BuildContext context) {
@@ -262,14 +268,15 @@ class _InputMaterialState extends State<InputMaterial> {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: DropdownButton<String>(
-                                      value: selectedValue1,
+                                      value: selectedValueIdProject,
                                       hint: Text('--Pilih Nama Project--'),
                                       onChanged: (newValue) {
                                         setState(() {
-                                          selectedValue1 = newValue;
+                                          selectedValueIdProject = newValue;
                                         });
                                       },
-                                      items: dropdownItems1.map((String value) {
+                                      items: dropdownItemsIdProject
+                                          .map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
@@ -298,18 +305,42 @@ class _InputMaterialState extends State<InputMaterial> {
                                       border: Border.all(),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
-                                        SizedBox(width: 8),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.add,
-                                            size: 35,
-                                          ),
-                                          onPressed: () {
-                                            _uploadDocument();
+                                        SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 8),
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.add,
+                                                size: 35,
+                                              ),
+                                              onPressed: () {
+                                                _uploadDocument();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 8),
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: uploadFiles.length,
+                                          itemBuilder: (context, index) {
+                                            return ListTile(
+                                              title:
+                                                  Text(uploadFiles[index].name),
+                                              trailing: IconButton(
+                                                icon: Icon(Icons.remove_circle),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    uploadFiles.removeAt(index);
+                                                  });
+                                                },
+                                              ),
+                                            );
                                           },
                                         ),
                                       ],
@@ -368,10 +399,11 @@ class _InputMaterialState extends State<InputMaterial> {
                                     child: DropdownButton<String>(
                                       alignment: Alignment.center,
                                       hint: Text('--Pilih Kode Lot--'),
-                                      value: selectedValue2,
+                                      value: selectedValueKodeLot,
                                       underline: SizedBox(),
                                       borderRadius: BorderRadius.circular(5),
-                                      items: dropdownItems2.map((String value) {
+                                      items: dropdownItemsKodeLot
+                                          .map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
@@ -379,7 +411,7 @@ class _InputMaterialState extends State<InputMaterial> {
                                       }).toList(),
                                       onChanged: (newValue) {
                                         setState(() {
-                                          selectedValue2 = newValue;
+                                          selectedValueKodeLot = newValue;
                                         });
                                       },
                                     ),

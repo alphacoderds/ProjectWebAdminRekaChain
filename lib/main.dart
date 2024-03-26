@@ -1,5 +1,12 @@
+import 'package:RekaChain/WebAdmin/DetailViewPerencanaan.dart';
+import 'package:RekaChain/WebAdmin/inputdokumen.dart';
+import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
+<<<<<<< HEAD
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
+=======
+import 'package:RekaChain/WebAdmin/perencanaan.dart';
+>>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 import 'dart:async';
@@ -21,7 +28,7 @@ class MyApp1 extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: LoginPage(),
+          home: InputDokumen(),
         );
       },
     );
