@@ -44,7 +44,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -62,7 +62,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readproject.php',
         ),
       );
       if (response.statusCode == 200) {

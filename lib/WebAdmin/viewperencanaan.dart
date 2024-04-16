@@ -1,10 +1,7 @@
 import 'dart:convert';
-<<<<<<< HEAD
-import 'package:RekaChain/AfterSales/AfterSales.dart';
-=======
 
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+import 'package:RekaChain/WebAdmin/Cetak1.dart';
 import 'package:RekaChain/WebAdmin/DetailViewPerencanaan.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
@@ -48,7 +45,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readlistproject.php',
+          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readlistproject.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -67,6 +64,7 @@ class _VperencanaanState extends State<Vperencanaan> {
   void initState() {
     if (widget.newProject != null) {
       _listdata.add(widget.newProject!);
+      updateData();
     }
     _getdata();
     super.initState();
@@ -81,10 +79,10 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/hapus.php',
+          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
         ),
         body: {
-          "id_project": id,
+          "kodeLot": id,
         },
       );
 
@@ -210,12 +208,357 @@ class _VperencanaanState extends State<Vperencanaan> {
                     )
                   ],
                 ),
-                body: _ListView(),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
+                    child: _buildMainTable(),
+                  ),
+                ),
               ),
             ),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      ),
+    );
+  }
+
+  Widget _buildMainTable() {
+    List filteredData = _listdata.where((data) {
+      String nama = data['nama'] ?? '';
+      String kodeLot = data['kodeLot'] ?? '';
+      String namaProduk = data['namaProduk'] ?? '';
+      return nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          namaProduk.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
+    return Container(
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 50,
+          ),
+          child: DataTable(
+            columnSpacing: 200.0,
+            horizontalMargin: 50.0,
+            columns: [
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'No',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'Nama Project',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'Nama Produk',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'Kode Lot',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'No Produk',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'Aksi',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
+            rows: filteredData
+                .asMap()
+                .map(
+                  (index, data) => MapEntry(
+                    index,
+                    DataRow(
+                      cells: [
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text((index + 1).toString()),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['nama'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['namaProduk'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['kodeLot'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(data['noProduk'] ?? ''),
+                            ),
+                          ),
+                        ),
+                        DataCell(
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Center(
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.visibility),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              DetailViewPerencanaan(
+                                            selectedProject: {
+                                              "nama": filteredData[index]
+                                                  ['nama'],
+                                              "noIndukProduk":
+                                                  filteredData[index]
+                                                      ['noIndukProduk'],
+                                              "noSeriAwal": filteredData[index]
+                                                  ['noSeriAwal'],
+                                              "targetMulai": filteredData[index]
+                                                  ['targetMulai'],
+                                              "namaProduk": filteredData[index]
+                                                  ['namaProduk'],
+                                              "jumlahLot": filteredData[index]
+                                                  ['jumlahLot'],
+                                              "kodeLot": filteredData[index]
+                                                  ['kodeLot'],
+                                              "noSeriAkhir": filteredData[index]
+                                                  ['noSeriAkhir'],
+                                              "targetSelesai":
+                                                  filteredData[index]
+                                                      ['targetSelesai'],
+                                              "ap1": filteredData[index]['ap1'],
+                                              "kategori1": filteredData[index]
+                                                  ['kategori1'],
+                                              "keterangan1": filteredData[index]
+                                                  ['keterangan1'],
+                                              "ap2": filteredData[index]['ap2'],
+                                              "kategori2": filteredData[index]
+                                                  ['kategori2'],
+                                              "keterangan2": filteredData[index]
+                                                  ['keterangan2'],
+                                              "ap3": filteredData[index]['ap3'],
+                                              "kategori3": filteredData[index]
+                                                  ['kategori3'],
+                                              "keterangan3": filteredData[index]
+                                                  ['keterangan3'],
+                                              "ap4": filteredData[index]['ap4'],
+                                              "kategori4": filteredData[index]
+                                                  ['kategori4'],
+                                              "keterangan4": filteredData[index]
+                                                  ['keterangan4'],
+                                              "ap5": filteredData[index]['ap5'],
+                                              "kategori5": filteredData[index]
+                                                  ['kategori5'],
+                                              "keterangan5": filteredData[index]
+                                                  ['keterangan5'],
+                                              "ap6": filteredData[index]['ap6'],
+                                              "kategori6": filteredData[index]
+                                                  ['kategori6'],
+                                              "keterangan6": filteredData[index]
+                                                  ['keterangan6'],
+                                              "ap7": filteredData[index]['ap7'],
+                                              "kategori7": filteredData[index]
+                                                  ['kategori7'],
+                                              "keterangan7": filteredData[index]
+                                                  ['keterangan7'],
+                                              "ap8": filteredData[index]['ap8'],
+                                              "kategori8": filteredData[index]
+                                                  ['kategori8'],
+                                              "keterangan8": filteredData[index]
+                                                  ['keterangan8'],
+                                              "ap9": filteredData[index]['ap9'],
+                                              "kategori9": filteredData[index]
+                                                  ['kategori9'],
+                                              "keterangan9": filteredData[index]
+                                                  ['keterangan9'],
+                                              "ap10": filteredData[index]
+                                                  ['ap10'],
+                                              "kategori10": filteredData[index]
+                                                  ['kategori10'],
+                                              "keterangan10":
+                                                  filteredData[index]
+                                                      ['keterangan10'],
+                                            },
+                                          ),
+                                        ),
+                                      ).then((result) {
+                                        if (result != null && result) {
+                                          updateData();
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  SizedBox(width: 10),
+                                  IconButton(
+                                    icon: Icon(Icons.local_print_shop),
+                                    onPressed: () async {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Cetak1(
+                                            selectedProject: {
+                                              "id_lot": filteredData[index]
+                                                  ['id_lot'],
+                                              "noProduk": filteredData[index]
+                                                  ['noProduk'],
+                                              "nama": filteredData[index]
+                                                  ['nama'],
+                                              "noIndukProduk":
+                                                  filteredData[index]
+                                                      ['noIndukProduk'],
+                                              "noSeriAwal": filteredData[index]
+                                                  ['noSeriAwal'],
+                                              "targetMulai": filteredData[index]
+                                                  ['targetMulai'],
+                                              "namaProduk": filteredData[index]
+                                                  ['namaProduk'],
+                                              "jumlahLot": filteredData[index]
+                                                  ['jumlahLot'],
+                                              "kodeLot": filteredData[index]
+                                                  ['kodeLot'],
+                                              "noSeriAkhir": filteredData[index]
+                                                  ['noSeriAkhir'],
+                                              "targetSelesai":
+                                                  filteredData[index]
+                                                      ['targetSelesai'],
+                                              "ap1": filteredData[index]['ap1'],
+                                              "kategori1": filteredData[index]
+                                                  ['kategori1'],
+                                              "keterangan1": filteredData[index]
+                                                  ['keterangan1'],
+                                              "ap2": filteredData[index]['ap2'],
+                                              "kategori2": filteredData[index]
+                                                  ['kategori2'],
+                                              "keterangan2": filteredData[index]
+                                                  ['keterangan2'],
+                                              "ap3": filteredData[index]['ap3'],
+                                              "kategori3": filteredData[index]
+                                                  ['kategori3'],
+                                              "keterangan3": filteredData[index]
+                                                  ['keterangan3'],
+                                              "ap4": filteredData[index]['ap4'],
+                                              "kategori4": filteredData[index]
+                                                  ['kategori4'],
+                                              "keterangan4": filteredData[index]
+                                                  ['keterangan4'],
+                                              "ap5": filteredData[index]['ap5'],
+                                              "kategori5": filteredData[index]
+                                                  ['kategori5'],
+                                              "keterangan5": filteredData[index]
+                                                  ['keterangan5'],
+                                              "ap6": filteredData[index]['ap6'],
+                                              "kategori6": filteredData[index]
+                                                  ['kategori6'],
+                                              "keterangan6": filteredData[index]
+                                                  ['keterangan6'],
+                                              "ap7": filteredData[index]['ap7'],
+                                              "kategori7": filteredData[index]
+                                                  ['kategori7'],
+                                              "keterangan7": filteredData[index]
+                                                  ['keterangan7'],
+                                              "ap8": filteredData[index]['ap8'],
+                                              "kategori8": filteredData[index]
+                                                  ['kategori8'],
+                                              "keterangan8": filteredData[index]
+                                                  ['keterangan8'],
+                                              "ap9": filteredData[index]['ap9'],
+                                              "kategori9": filteredData[index]
+                                                  ['kategori9'],
+                                              "keterangan9": filteredData[index]
+                                                  ['keterangan9'],
+                                              "ap10": filteredData[index]
+                                                  ['ap10'],
+                                              "kategori10": filteredData[index]
+                                                  ['kategori10'],
+                                              "keterangan10":
+                                                  filteredData[index]
+                                                      ['keterangan10'],
+                                            },
+                                          ),
+                                        ),
+                                      ).then((result) {
+                                        if (result != null && result) {
+                                          updateData();
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  SizedBox(width: 10),
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      _showDeleteDialog(filteredData[index]
+                                              ['kodeLot']
+                                          .toString());
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                .values
+                .toList(),
+          ),
+        ),
       ),
     );
   }
@@ -426,114 +769,6 @@ class _VperencanaanState extends State<Vperencanaan> {
           ],
         );
       },
-    );
-  }
-
-  Widget _ListView() {
-    List filteredData = _listdata.where((data) {
-      String idProject = data['id_project'] ?? '';
-      String kodeLot = data['kodeLot'] ?? '';
-      return idProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
-    }).toList();
-
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        return ListViewItem(context, index, filteredData[index]);
-      },
-      separatorBuilder: (context, index) {
-        return Divider(height: 0);
-      },
-      itemCount: filteredData.length,
-    );
-  }
-
-  Widget ListViewItem(BuildContext context, int index, dynamic projectData) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  message(context, projectData),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget message(BuildContext context, dynamic projectData) {
-    double textsize = 14;
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 15,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '${projectData['id_project']} // ${projectData['kodeLot']}',
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 17,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              IconButton(
-                icon: Icon(Icons.visibility),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPerencanaan(
-                        selectedProject: {
-                          "id_project": projectData['id_project'],
-                          "noIndukproduk": projectData['noIndukProduk'],
-                          "noSeriAwal": projectData['noSeriAwal'],
-                          "targetMulai": projectData['targetMulai'],
-                          "namaProduk": projectData['namaProduk'],
-                          "jumlahLot": projectData['jumlahLot'],
-                          "kodeLot": projectData['kodeLot'],
-                          "noSeriAkhir": projectData['noSeriAkhir'],
-                          "targetSelesai": projectData['targetSelesai'],
-                          "alurProses": projectData['alurProses'],
-                          "kategori": projectData['kategori'],
-                          "keterangan": projectData['keterangan'],
-                        },
-                      ),
-                    ),
-                  ).then((result) {
-                    if (result != null && result) {
-                      updateData();
-                    }
-                  });
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.delete),
-                onPressed: () {
-                  _showDeleteDialog(projectData['id_project'].toString());
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 

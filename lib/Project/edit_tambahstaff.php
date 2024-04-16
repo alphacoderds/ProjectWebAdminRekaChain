@@ -14,9 +14,7 @@ $nip = $_POST["nip"];
 $status = $_POST["status"];
 $password = $_POST["password"];
 $konfirmasi_password = $_POST["konfirmasi_password"];
-$hashedPassword = sha1($password);
-$hashedConfirmPassword = sha1($konfirmasi_password);
-$data = mysqli_query($conn, "insert into tbl_tambahstaff set no_tambahstaff='$no_tambahstaff', kode_staff='$kode_staff', nama='$nama', jabatan='$jabatan', unit_kerja='$unit_kerja', departemen='$departemen', divisi='$divisi', email='$email', no_telp='$no_telp', nip='$nip', status='$status', password='$password', konfirmasi_password='$konfirmasi_password' ");
+$data= mysqli_query($conn, "update tbl_tambahStaff set no_tambahstaff='$no_tambahstaff', kode_staff='$kode_staff', nama='$nama', jabatan='$jabatan', unit_kerja='$unit_kerja', departemen='$departemen', divisi='$divisi', email='$email', no_telp='$no_telp', nip='$nip', status='$status', password='$password', konfirmasi_password='$konfirmasi_password' where no_tambahstaff='$no_tambahstaff'");
 if ($data) {
     echo json_encode([
         'pesan' => 'Sukses'
@@ -27,4 +25,3 @@ if ($data) {
     ]);
 }
 ?>
-

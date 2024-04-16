@@ -44,11 +44,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.get(
         Uri.parse(
-<<<<<<< HEAD
-            'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/edit.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
-=======
-            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -233,13 +229,10 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.post(
         Uri.parse(
-<<<<<<< HEAD
-            'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/edit.php'),
-=======
-            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/edit.php'),
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php'),
         body: {
-          'no': widget.selectedProject['no'].toString(),
+          'no_tambahproject':
+              widget.selectedProject['no_tambahproject'].toString(),
           'kodeProject': kdprojectController.text,
           'namaProject': nmprojectController.text,
           'idProject': idprojectController.text,

@@ -43,11 +43,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-<<<<<<< HEAD
-          'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
-=======
-          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -80,11 +76,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.post(
         Uri.parse(
-<<<<<<< HEAD
-          'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/hapus.php',
-=======
-          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/hapus.php',
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/hapus_tambahstaff.php',
         ),
         body: {
           "kode_staff": id,
@@ -234,10 +226,10 @@ class _ListStaffState extends State<ListStaff> {
 
   Widget _buildMainTable() {
     List filteredData = _listdata.where((data) {
-      String kodeProject = data['kodeProject'] ?? '';
-      String namaProject = data['namaProject'] ?? '';
-      return kodeProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          namaProject.toLowerCase().contains(_searchQuery.toLowerCase());
+      String kode_staff = data['kode_staff'] ?? '';
+      String nama = data['nama'] ?? '';
+      return kode_staff.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          nama.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
     return Container(
       alignment: Alignment.center,
@@ -409,7 +401,9 @@ class _ListStaffState extends State<ListStaff> {
                                         MaterialPageRoute(
                                           builder: (context) => EditStaff(
                                             selectedStaff: {
-                                              "no": filteredData[index]['no'],
+                                              "no_tambahstaff":
+                                                  filteredData[index]
+                                                      ['no_tambahstaff'],
                                               "kode_staff": filteredData[index]
                                                   ['kode_staff'],
                                               "nama": filteredData[index]
@@ -444,6 +438,15 @@ class _ListStaffState extends State<ListStaff> {
                                       });
                                     },
                                   ),
+                                  SizedBox(width: 10),
+                                  IconButton(
+                                    icon: Icon(Icons.delete),
+                                    onPressed: () {
+                                      _showDeleteDialog(filteredData[index]
+                                              ['kode_staff']
+                                          .toString());
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
@@ -458,6 +461,35 @@ class _ListStaffState extends State<ListStaff> {
           ),
         ),
       ),
+    );
+  }
+
+  void _showDeleteDialog(String id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin menghapus data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _hapusData(id);
+                Navigator.of(context).pop();
+              },
+              child: Text("Hapus", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
     );
   }
 

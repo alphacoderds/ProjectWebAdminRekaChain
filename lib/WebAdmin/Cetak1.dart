@@ -1,6 +1,6 @@
+import 'dart:convert';
+
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
-import 'package:RekaChain/WebAdmin/Cetak.dart';
-import 'package:RekaChain/WebAdmin/DetailViewPerencanaan.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -11,10 +11,15 @@ import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-
+import 'package:RekaChain/WebAdmin/viewperencanaan.dart';
+import 'package:http/http.dart' as http;
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 
 class Cetak1 extends StatefulWidget {
+  final Map<String, dynamic> selectedProject;
+  const Cetak1({Key? key, this.selectedProject = const {}}) : super(key: key);
+
   @override
   State<Cetak1> createState() => _Cetak1State();
 }
@@ -22,16 +27,214 @@ class Cetak1 extends StatefulWidget {
 class _Cetak1State extends State<Cetak1> {
   int _selectedIndex = 0;
 
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue;
-
-  bool isViewVisible = false;
   late double screenWidth;
   late double screenHeight;
+
+  List _listdata = [];
+  bool _isloading = true;
+
+  TextEditingController idLotcontroller = TextEditingController();
+  TextEditingController noProdukcontroller = TextEditingController();
+  TextEditingController namaProjectcontroller = TextEditingController();
+  TextEditingController noIndukProdukcontroller = TextEditingController();
+  TextEditingController noSeriAwalcontroller = TextEditingController();
+  TextEditingController namaProdukcontroller = TextEditingController();
+  TextEditingController jumlahLotcontroller = TextEditingController();
+  TextEditingController kodeLotcontroller = TextEditingController();
+  TextEditingController noSeriAkhircontroller = TextEditingController();
+  TextEditingController tglMulaicontroller = TextEditingController();
+  TextEditingController tglSelesaicontroller = TextEditingController();
+
+  TextEditingController alurProses1controller = TextEditingController();
+  TextEditingController kategori1controller = TextEditingController();
+  TextEditingController detail1controller = TextEditingController();
+
+  TextEditingController alurProses2controller = TextEditingController();
+  TextEditingController kategori2controller = TextEditingController();
+  TextEditingController detail2controller = TextEditingController();
+
+  TextEditingController alurProses3controller = TextEditingController();
+  TextEditingController kategori3controller = TextEditingController();
+  TextEditingController detail3controller = TextEditingController();
+
+  TextEditingController alurProses4controller = TextEditingController();
+  TextEditingController kategori4controller = TextEditingController();
+  TextEditingController detail4controller = TextEditingController();
+
+  TextEditingController alurProses5controller = TextEditingController();
+  TextEditingController kategori5controller = TextEditingController();
+  TextEditingController detail5controller = TextEditingController();
+
+  TextEditingController alurProses6controller = TextEditingController();
+  TextEditingController kategori6controller = TextEditingController();
+  TextEditingController detail6controller = TextEditingController();
+
+  TextEditingController alurProses7controller = TextEditingController();
+  TextEditingController kategori7controller = TextEditingController();
+  TextEditingController detail7controller = TextEditingController();
+
+  TextEditingController alurProses8controller = TextEditingController();
+  TextEditingController kategori8controller = TextEditingController();
+  TextEditingController detail8controller = TextEditingController();
+
+  TextEditingController alurProses9controller = TextEditingController();
+  TextEditingController kategori9controller = TextEditingController();
+  TextEditingController detail9controller = TextEditingController();
+
+  TextEditingController alurProses10controller = TextEditingController();
+  TextEditingController kategori10controller = TextEditingController();
+  TextEditingController detail10controller = TextEditingController();
+
+  void fetchData() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+      );
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final kodeLot = responseData['kodeLot'];
+        setState(() {
+          kodeLotcontroller.text = kodeLot;
+        });
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  void _generateBarcode() async {
+    String idLot = idLotcontroller.text;
+
+    final widget = BarcodeWidget(
+      barcode: Barcode.qrCode(),
+      data: idLot,
+      color: Colors.black,
+      height: 200,
+      width: 200,
+    );
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('QR Code ID Lot'),
+        content: Container(
+          width: 200,
+          height: 200,
+          child: widget,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+
+    idLotcontroller =
+        TextEditingController(text: widget.selectedProject['id_lot'] ?? '');
+    noProdukcontroller =
+        TextEditingController(text: widget.selectedProject['noProduk'] ?? '');
+    noIndukProdukcontroller = TextEditingController(
+        text: widget.selectedProject['noIndukProduk'] ?? '');
+    namaProjectcontroller =
+        TextEditingController(text: widget.selectedProject['nama'] ?? '');
+    noSeriAwalcontroller =
+        TextEditingController(text: widget.selectedProject['noSeriAwal'] ?? '');
+    namaProdukcontroller =
+        TextEditingController(text: widget.selectedProject['namaProduk'] ?? '');
+    jumlahLotcontroller =
+        TextEditingController(text: widget.selectedProject['jumlahLot'] ?? '');
+    kodeLotcontroller =
+        TextEditingController(text: widget.selectedProject['kodeLot'] ?? '');
+    noSeriAkhircontroller = TextEditingController(
+        text: widget.selectedProject['noSeriAkhir'] ?? '');
+    tglMulaicontroller = TextEditingController(
+        text: widget.selectedProject['targetMulai'] ?? '');
+    tglSelesaicontroller = TextEditingController(
+        text: widget.selectedProject['targetSelesai'] ?? '');
+
+    alurProses1controller =
+        TextEditingController(text: widget.selectedProject['ap1'] ?? '');
+    kategori1controller =
+        TextEditingController(text: widget.selectedProject['kategori1'] ?? '');
+    detail1controller = TextEditingController(
+        text: widget.selectedProject['keterangan1'] ?? '');
+
+    alurProses2controller =
+        TextEditingController(text: widget.selectedProject['ap2'] ?? '');
+    kategori2controller =
+        TextEditingController(text: widget.selectedProject['kategori2'] ?? '');
+    detail2controller = TextEditingController(
+        text: widget.selectedProject['keterangan2'] ?? '');
+
+    alurProses3controller =
+        TextEditingController(text: widget.selectedProject['ap3'] ?? '');
+    kategori3controller =
+        TextEditingController(text: widget.selectedProject['kategori3'] ?? '');
+    detail3controller = TextEditingController(
+        text: widget.selectedProject['keterangan3'] ?? '');
+
+    alurProses4controller =
+        TextEditingController(text: widget.selectedProject['ap4'] ?? '');
+    kategori4controller =
+        TextEditingController(text: widget.selectedProject['kategori4'] ?? '');
+    detail4controller = TextEditingController(
+        text: widget.selectedProject['keterangan4'] ?? '');
+
+    alurProses5controller =
+        TextEditingController(text: widget.selectedProject['ap5'] ?? '');
+    kategori5controller =
+        TextEditingController(text: widget.selectedProject['kategori5'] ?? '');
+    detail5controller = TextEditingController(
+        text: widget.selectedProject['keterangan5'] ?? '');
+
+    alurProses6controller =
+        TextEditingController(text: widget.selectedProject['ap6'] ?? '');
+    kategori6controller =
+        TextEditingController(text: widget.selectedProject['kategori6'] ?? '');
+    detail6controller = TextEditingController(
+        text: widget.selectedProject['keterangan6'] ?? '');
+
+    alurProses7controller =
+        TextEditingController(text: widget.selectedProject['ap7'] ?? '');
+    kategori7controller =
+        TextEditingController(text: widget.selectedProject['kategori7'] ?? '');
+    detail7controller = TextEditingController(
+        text: widget.selectedProject['keterangan7'] ?? '');
+
+    alurProses8controller =
+        TextEditingController(text: widget.selectedProject['ap8'] ?? '');
+    kategori8controller =
+        TextEditingController(text: widget.selectedProject['kategori8'] ?? '');
+    detail8controller = TextEditingController(
+        text: widget.selectedProject['keterangan8'] ?? '');
+
+    alurProses9controller =
+        TextEditingController(text: widget.selectedProject['ap9'] ?? '');
+    kategori9controller =
+        TextEditingController(text: widget.selectedProject['kategori9'] ?? '');
+    detail9controller = TextEditingController(
+        text: widget.selectedProject['keterangan9'] ?? '');
+
+    alurProses10controller =
+        TextEditingController(text: widget.selectedProject['ap10'] ?? '');
+    kategori10controller =
+        TextEditingController(text: widget.selectedProject['kategori10'] ?? '');
+    detail10controller = TextEditingController(
+        text: widget.selectedProject['keterangan10'] ?? '');
+
+    TextEditingController(text: widget.selectedProject['kodeLot'] ?? '');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +265,14 @@ class _Cetak1State extends State<Cetak1> {
                   toolbarHeight: 65,
                   title: Padding(
                     padding: EdgeInsets.only(left: screenHeight * 0.02),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [],
+                    child: Text(
+                      'Cetak Barcode',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Donegal One',
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   actions: [
@@ -147,13 +355,15 @@ class _Cetak1State extends State<Cetak1> {
                                                   color: Colors.black45))),
                                       alignment: Alignment.center,
                                       child: Text(
-                                        'PT. Nugroho Jasa',
+                                        namaProjectcontroller.text,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600),
                                       ),
                                     ),
-                                    Container(child: _buildMainTable()),
+                                    Container(
+                                      child: _buildMainTable(),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -166,14 +376,7 @@ class _Cetak1State extends State<Cetak1> {
                       bottom: 150,
                       right: 150,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Cetak(),
-                            ),
-                          );
-                        },
+                        onPressed: _generateBarcode,
                         style: ElevatedButton.styleFrom(
                           primary: Color.fromARGB(255, 1, 46, 76),
                         ),
@@ -189,7 +392,7 @@ class _Cetak1State extends State<Cetak1> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => DetailP(),
+                              builder: (context) => Vperencanaan(),
                             ),
                           );
                         },
@@ -223,56 +426,96 @@ class _Cetak1State extends State<Cetak1> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
-            columnSpacing: 182.0,
-            horizontalMargin: 182.0,
-            columns: [
-              DataColumn(
-                label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 1.0),
-                  child: Text(
-                    'Nama Produk',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+              columnSpacing: 150.0,
+              horizontalMargin: 150.0,
+              columns: [
+                DataColumn(
+                  label: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 1.0),
+                    child: Text(
+                      'ID Lot',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'No Produk',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                DataColumn(
+                  label: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 1.0),
+                    child: Text(
+                      'Nama Produk',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Kode Lot',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          'No Produk',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              rows: [
+                DataRow(
+                  cells: [
+                    DataCell(
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(idLotcontroller.text),
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'QR Code',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    DataCell(
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(namaProdukcontroller.text),
+                        ),
                       ),
-                    ],
-                  ),
+                    ),
+                    DataCell(
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(kodeLotcontroller.text),
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(noProdukcontroller.text),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-            rows: [
-              DataRow(cells: [
-                DataCell(Text('xxxxxx xxx xxxx')),
-                DataCell(Text('xxxxxxxxxxxxxx')),
-                DataCell(Icon(
-                  Icons.qr_code_2,
-                  size: 50,
-                )),
               ]),
-            ],
-          ),
         ),
       ),
     );

@@ -80,7 +80,7 @@ class _InputDokumenState extends State<InputDokumen> {
 
       try {
         final response = await Dio().post(
-          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/create.php',
+          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/create_inputdokumen.php',
           data: formData,
           options: Options(
             contentType: 'multipart/form-data',
@@ -130,11 +130,7 @@ class _InputDokumenState extends State<InputDokumen> {
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-<<<<<<< HEAD
-        'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
-=======
-        'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+        'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);

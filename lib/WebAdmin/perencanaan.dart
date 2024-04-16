@@ -11,6 +11,7 @@ import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:RekaChain/WebAdmin/viewperencanaan.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class Perencanaan extends StatefulWidget {
@@ -26,18 +27,70 @@ class _PerencanaanState extends State<Perencanaan> {
   bool isViewVisible = false;
 
   int _selectedIndex = 0;
-  late List<String> dropdownItemsIdProject = [];
-  String? selectedValueIdProject;
+  late List<String> dropdownItemsnamaProject = [];
+  String? selectedValuenamaProject;
 
-  List<String> dropdownItemsAlurProses = ['PPC', 'Produksi'];
-  String? selectedValueAlurProses;
+  List<String> dropdownItemsAlurProses1 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses1;
 
-  List<String> dropdownItemsKategori = ['Produk', 'Material'];
-  String? selectedValueKategori;
+  List<String> dropdownItemsKategori1 = ['Produk', 'Material'];
+  String? selectedValueKategori1;
 
-  List<TableRowData> rowsData = [];
+  List<String> dropdownItemsAlurProses2 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses2;
 
-  TextEditingController idProjectcontroller = TextEditingController();
+  List<String> dropdownItemsKategori2 = ['Produk', 'Material'];
+  String? selectedValueKategori2;
+
+  List<String> dropdownItemsAlurProses3 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses3;
+
+  List<String> dropdownItemsKategori3 = ['Produk', 'Material'];
+  String? selectedValueKategori3;
+
+  List<String> dropdownItemsAlurProses4 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses4;
+
+  List<String> dropdownItemsKategori4 = ['Produk', 'Material'];
+  String? selectedValueKategori4;
+
+  List<String> dropdownItemsAlurProses5 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses5;
+
+  List<String> dropdownItemsKategori5 = ['Produk', 'Material'];
+  String? selectedValueKategori5;
+
+  List<String> dropdownItemsAlurProses6 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses6;
+
+  List<String> dropdownItemsKategori6 = ['Produk', 'Material'];
+  String? selectedValueKategori6;
+
+  List<String> dropdownItemsAlurProses7 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses7;
+
+  List<String> dropdownItemsKategori7 = ['Produk', 'Material'];
+  String? selectedValueKategori7;
+
+  List<String> dropdownItemsAlurProses8 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses8;
+
+  List<String> dropdownItemsKategori8 = ['Produk', 'Material'];
+  String? selectedValueKategori8;
+
+  List<String> dropdownItemsAlurProses9 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses9;
+
+  List<String> dropdownItemsKategori9 = ['Produk', 'Material'];
+  String? selectedValueKategori9;
+
+  List<String> dropdownItemsAlurProses10 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses10;
+
+  List<String> dropdownItemsKategori10 = ['Produk', 'Material'];
+  String? selectedValueKategori10;
+
+  TextEditingController namaProjectcontroller = TextEditingController();
   TextEditingController noProdukcontroller = TextEditingController();
   TextEditingController noSeriAwalcontroller = TextEditingController();
   TextEditingController namaProdukcontroller = TextEditingController();
@@ -46,26 +99,54 @@ class _PerencanaanState extends State<Perencanaan> {
   TextEditingController noSeriAkhircontroller = TextEditingController();
   TextEditingController tglMulaicontroller = TextEditingController();
   TextEditingController tglSelesaicontroller = TextEditingController();
-  TextEditingController alurProsescontroller = TextEditingController();
-  TextEditingController kategoricontroller = TextEditingController();
-  TextEditingController detailcontroller = TextEditingController();
+
+  TextEditingController alurProses1controller = TextEditingController();
+  TextEditingController kategori1controller = TextEditingController();
+  TextEditingController detail1controller = TextEditingController();
+
+  TextEditingController alurProses2controller = TextEditingController();
+  TextEditingController kategori2controller = TextEditingController();
+  TextEditingController detail2controller = TextEditingController();
+
+  TextEditingController alurProses3controller = TextEditingController();
+  TextEditingController kategori3controller = TextEditingController();
+  TextEditingController detail3controller = TextEditingController();
+
+  TextEditingController alurProses4controller = TextEditingController();
+  TextEditingController kategori4controller = TextEditingController();
+  TextEditingController detail4controller = TextEditingController();
+
+  TextEditingController alurProses5controller = TextEditingController();
+  TextEditingController kategori5controller = TextEditingController();
+  TextEditingController detail5controller = TextEditingController();
+
+  TextEditingController alurProses6controller = TextEditingController();
+  TextEditingController kategori6controller = TextEditingController();
+  TextEditingController detail6controller = TextEditingController();
+
+  TextEditingController alurProses7controller = TextEditingController();
+  TextEditingController kategori7controller = TextEditingController();
+  TextEditingController detail7controller = TextEditingController();
+
+  TextEditingController alurProses8controller = TextEditingController();
+  TextEditingController kategori8controller = TextEditingController();
+  TextEditingController detail8controller = TextEditingController();
+
+  TextEditingController alurProses9controller = TextEditingController();
+  TextEditingController kategori9controller = TextEditingController();
+  TextEditingController detail9controller = TextEditingController();
+
+  TextEditingController alurProses10controller = TextEditingController();
+  TextEditingController kategori10controller = TextEditingController();
+  TextEditingController detail10controller = TextEditingController();
 
   Future<void> _simpan(BuildContext context) async {
-    List<Map<String, String>> maintableData = [];
-    for (TableRowData rowData in rowsData) {
-      maintableData.add({
-        "alurProses": rowData.selectedValueAlurProses ?? '',
-        "kategori": rowData.selectedValueKategori ?? '',
-        "keterangan": rowData.detailcontroller.text,
-      });
-    }
-
     final response = await http.post(
       Uri.parse(
-        "http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/create.php",
+        "http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
       ),
       body: {
-        "id_project": selectedValueIdProject ?? '',
+        "nama": selectedValuenamaProject ?? '',
         "noIndukProduk": noProdukcontroller.text,
         "noSeriAwal": noSeriAwalcontroller.text,
         "targetMulai": tglMulaicontroller.text,
@@ -74,16 +155,43 @@ class _PerencanaanState extends State<Perencanaan> {
         "kodeLot": kodeLotcontroller.text,
         "noSeriAkhir": noSeriAkhircontroller.text,
         "targetSelesai": tglSelesaicontroller.text,
-        "maintableData": jsonEncode(maintableData),
-        "alurProses": selectedValueAlurProses ?? '',
-        "kategori": selectedValueKategori ?? '',
-        "keterangan": detailcontroller.text,
+        "ap1": selectedValueAlurProses1 ?? '',
+        "kategori1": selectedValueKategori1 ?? '',
+        "keterangan1": detail1controller.text,
+        "ap2": selectedValueAlurProses2 ?? '',
+        "kategori2": selectedValueKategori2 ?? '',
+        "keterangan2": detail2controller.text,
+        "ap3": selectedValueAlurProses3 ?? '',
+        "kategori3": selectedValueKategori3 ?? '',
+        "keterangan3": detail3controller.text,
+        "ap4": selectedValueAlurProses4 ?? '',
+        "kategori4": selectedValueKategori4 ?? '',
+        "keterangan4": detail4controller.text,
+        "ap5": selectedValueAlurProses5 ?? '',
+        "kategori5": selectedValueKategori5 ?? '',
+        "keterangan5": detail5controller.text,
+        "ap6": selectedValueAlurProses6 ?? '',
+        "kategori6": selectedValueKategori6 ?? '',
+        "keterangan6": detail6controller.text,
+        "ap7": selectedValueAlurProses7 ?? '',
+        "kategori7": selectedValueKategori7 ?? '',
+        "keterangan7": detail7controller.text,
+        "ap8": selectedValueAlurProses8 ?? '',
+        "kategori8": selectedValueKategori8 ?? '',
+        "keterangan8": detail8controller.text,
+        "ap9": selectedValueAlurProses9 ?? '',
+        "kategori9": selectedValueKategori9 ?? '',
+        "keterangan9": detail9controller.text,
+        "ap10": selectedValueAlurProses10 ?? '',
+        "kategori10": selectedValueKategori10 ?? '',
+        "keterangan10": detail10controller.text,
       },
     );
 
     if (response.statusCode == 200) {
       final newProjectData = {
-        "id_project": idProjectcontroller.text,
+        "id": response.body,
+        "nama": namaProjectcontroller.text,
         "noIndukProduk": noProdukcontroller.text,
         "noSeriAwal": noSeriAwalcontroller.text,
         "targetMulai": tglMulaicontroller.text,
@@ -92,9 +200,36 @@ class _PerencanaanState extends State<Perencanaan> {
         "kodeLot": kodeLotcontroller.text,
         "noSeriAkhir": noSeriAkhircontroller.text,
         "targetSelesai": tglSelesaicontroller.text,
-        "alurProses": alurProsescontroller.text,
-        "kategori": kategoricontroller.text,
-        "keterangan": detailcontroller.text,
+        "ap1": alurProses1controller.text,
+        "kategori1": kategori1controller.text,
+        "keterangan1": detail1controller.text,
+        "ap2": alurProses2controller.text,
+        "kategori2": kategori2controller.text,
+        "keterangan2": detail2controller.text,
+        "ap3": alurProses3controller.text,
+        "kategori3": kategori3controller.text,
+        "keterangan3": detail3controller.text,
+        "ap4": alurProses4controller.text,
+        "kategori4": kategori4controller.text,
+        "keterangan4": detail4controller.text,
+        "ap5": alurProses5controller.text,
+        "kategori5": kategori5controller.text,
+        "keterangan5": detail5controller.text,
+        "ap6": alurProses6controller.text,
+        "kategori6": kategori6controller.text,
+        "keterangan6": detail6controller.text,
+        "ap7": alurProses7controller.text,
+        "kategori7": kategori7controller.text,
+        "keterangan7": detail7controller.text,
+        "ap8": alurProses8controller.text,
+        "kategori8": kategori8controller.text,
+        "keterangan8": detail8controller.text,
+        "ap9": alurProses9controller.text,
+        "kategori9": kategori9controller.text,
+        "keterangan9": detail9controller.text,
+        "ap10": alurProses10controller.text,
+        "kategori10": kategori10controller.text,
+        "keterangan10": detail10controller.text,
       };
 
       _showFinishDialog();
@@ -112,39 +247,26 @@ class _PerencanaanState extends State<Perencanaan> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
 
       setState(() {
-        dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
-        dropdownItemsIdProject
-            .addAll(data.map((e) => e['namaProject'].toString()));
+        dropdownItemsnamaProject = ['--Pilih Nama/Kode Project--'];
+        dropdownItemsnamaProject
+            .addAll(data.map((e) => e['idProject'].toString()));
       });
     } else {
       print('Failed to load project names: ${response.statusCode}');
     }
   }
 
-//===========================================================Widget Tambah Table Alur===========================================================//
-  void addRow() {
-    setState(() {
-      // Inisialisasi controller baru untuk setiap baris baru
-      TextEditingController newController = TextEditingController();
-      rowsData.add(TableRowData(
-        selectedValueAlurProses: null,
-        selectedValueKategori: null,
-        detailcontroller: newController,
-      ));
-    });
-  }
-
   void initState() {
     super.initState();
     fetchProjectNames();
 
-    idProjectcontroller = TextEditingController();
+    namaProjectcontroller = TextEditingController();
     noProdukcontroller = TextEditingController();
     noSeriAwalcontroller = TextEditingController();
     namaProdukcontroller = TextEditingController();
@@ -153,48 +275,99 @@ class _PerencanaanState extends State<Perencanaan> {
     noSeriAkhircontroller = TextEditingController();
     tglMulaicontroller = TextEditingController();
     tglSelesaicontroller = TextEditingController();
-    alurProsescontroller = TextEditingController();
-    kategoricontroller = TextEditingController();
-    detailcontroller = TextEditingController();
+
+    alurProses1controller = TextEditingController();
+    kategori1controller = TextEditingController();
+    detail1controller = TextEditingController();
+
+    alurProses2controller = TextEditingController();
+    kategori2controller = TextEditingController();
+    detail2controller = TextEditingController();
+
+    alurProses3controller = TextEditingController();
+    kategori3controller = TextEditingController();
+    detail3controller = TextEditingController();
+
+    alurProses4controller = TextEditingController();
+    kategori4controller = TextEditingController();
+    detail4controller = TextEditingController();
+
+    alurProses5controller = TextEditingController();
+    kategori5controller = TextEditingController();
+    detail5controller = TextEditingController();
+
+    alurProses6controller = TextEditingController();
+    kategori6controller = TextEditingController();
+    detail6controller = TextEditingController();
+
+    alurProses7controller = TextEditingController();
+    kategori7controller = TextEditingController();
+    detail7controller = TextEditingController();
+
+    alurProses8controller = TextEditingController();
+    kategori8controller = TextEditingController();
+    detail8controller = TextEditingController();
+
+    alurProses9controller = TextEditingController();
+    kategori9controller = TextEditingController();
+    detail9controller = TextEditingController();
+
+    alurProses10controller = TextEditingController();
+    kategori10controller = TextEditingController();
+    detail10controller = TextEditingController();
+
+    jumlahLotcontroller.addListener(_batasiNoSeriAkhir);
 
     noProdukcontroller.addListener(_calculateKodeLot);
-    jumlahLotcontroller.addListener(_calculateKodeLot);
-    addRow(); // Pemanggilan addRow untuk menambahkan baris awal
-  }
-
-  // Fungsi untuk memperbarui nilai dropdown Alur Proses
-  void onAlurProsesChanged(String? newValue) {
-    setState(() {
-      selectedValueAlurProses = newValue;
-    });
-  }
-
-// Fungsi untuk memperbarui nilai dropdown Kategori
-  void onKategoriChanged(String? newValue) {
-    setState(() {
-      selectedValueKategori = newValue;
-    });
-  }
-
-  void onDetailChanged(String? newValue, int index) {
-    setState(() {
-      rowsData[index].detailcontroller.text = newValue ?? '';
-    });
+    noSeriAwalcontroller.addListener(_calculateKodeLot);
+    noSeriAkhircontroller.addListener(_calculateKodeLot);
+    tglMulaicontroller.addListener(_calculateKodeLot);
   }
 
   @override
   void dispose() {
     noProdukcontroller.dispose();
-    jumlahLotcontroller.dispose();
+    noSeriAwalcontroller.dispose();
+    noSeriAkhircontroller.dispose();
+    tglMulaicontroller.dispose();
     kodeLotcontroller.dispose();
     super.dispose();
   }
 
   void _calculateKodeLot() {
     setState(() {
+      final tahun = tglMulaicontroller.text.substring(6);
+
       kodeLotcontroller.text =
-          '${noProdukcontroller.text} - ${jumlahLotcontroller.text}';
+          '${noProdukcontroller.text} - ${noSeriAwalcontroller.text} - ${noSeriAkhircontroller.text} / $tahun';
     });
+  }
+
+//===========================================================Widget DatePicker===========================================================//
+  Future<void> _selectDate(TextEditingController controller) async {
+    DateTime? _picked = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (_picked != null) {
+      setState(() {
+        final formattedDate = DateFormat('dd-MM-yy').format(_picked);
+        controller.text = formattedDate;
+      });
+    }
+  }
+
+  void _batasiNoSeriAkhir() {
+    int jumlahLot = int.tryParse(jumlahLotcontroller.text) ?? 0;
+    int noSeriAkhir = int.tryParse(noSeriAkhircontroller.text) ?? 0;
+
+    if (noSeriAkhir > jumlahLot) {
+      setState(() {
+        noSeriAkhircontroller.text = jumlahLot.toString();
+      });
+    }
   }
 
   @override
@@ -249,32 +422,21 @@ class _PerencanaanState extends State<Perencanaan> {
                                     EdgeInsets.only(right: screenHeight * 0.13),
                                 child: Row(
                                   children: [
-                                    ElevatedButton(
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.list,
+                                        size: 38,
+                                        color:
+                                            Color.fromARGB(255, 255, 255, 255),
+                                      ),
                                       onPressed: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                Vperencanaan(),
-                                          ),
+                                              builder: (context) =>
+                                                  Vperencanaan()),
                                         );
                                       },
-                                      child: Text(
-                                        'View',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        backgroundColor:
-                                            Color.fromARGB(255, 89, 100, 122),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 3),
-                                      ),
                                     ),
                                     SizedBox(
                                       width: screenWidth * 0.005,
@@ -371,17 +533,17 @@ class _PerencanaanState extends State<Perencanaan> {
                                                       child: DropdownButton<
                                                           String>(
                                                         value:
-                                                            selectedValueIdProject,
+                                                            selectedValuenamaProject,
                                                         hint: Text(
                                                             '--Pilih Nama Project--'),
                                                         onChanged: (newValue) {
                                                           setState(() {
-                                                            selectedValueIdProject =
+                                                            selectedValuenamaProject =
                                                                 newValue;
                                                           });
                                                         },
                                                         items:
-                                                            dropdownItemsIdProject
+                                                            dropdownItemsnamaProject
                                                                 .map((String
                                                                     value) {
                                                           return DropdownMenuItem<
@@ -632,7 +794,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                                     ),
                                                     SizedBox(
                                                       height: 40,
-                                                      width: 150,
+                                                      width: 220,
                                                       child: TextFormField(
                                                         controller:
                                                             kodeLotcontroller,
@@ -767,30 +929,692 @@ class _PerencanaanState extends State<Perencanaan> {
                                       border: Border.all(color: Colors.black),
                                       borderRadius: BorderRadius.circular(5.0),
                                     ),
-                                    child: _buildMainTable(),
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: DataTable(
+                                          columnSpacing: 100.0,
+                                          horizontalMargin: 30.0,
+                                          columns: [
+                                            DataColumn(
+                                              label: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10.0),
+                                                child: Text(
+                                                  'Alur Proses',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20.0),
+                                                child: Text(
+                                                  'Kategori',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10.0),
+                                                child: Text(
+                                                  'Detail/Keterangan',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                          rows: [
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses1,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses1
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses1 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori1,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori1
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori1 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail1controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail1controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses2,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses2
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses2 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori2,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori2
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori2 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail2controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail2controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses3,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses3
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses3 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori3,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori3
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori3 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail3controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail3controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses4,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses4
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses4 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori4,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori4
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori4 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail4controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail4controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses5,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses5
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses5 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori5,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori5
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori5 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail5controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail5controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses6,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses6
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses6 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori6,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori6
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori6 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail6controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail6controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses7,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses7
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses7 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori7,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori7
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori7 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail7controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail7controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses8,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses8
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses8 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori8,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori8
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori8 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail8controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail8controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses9,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses9
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses9 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori9,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori9
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori9 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail9controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail9controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value:
+                                                    selectedValueAlurProses10,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses10
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses10 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori10,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori10
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori10 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller:
+                                                      detail10controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail10controller
+                                                                .text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                          ]),
+                                    ),
                                   ),
                                   Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            addRow();
-                                          },
-                                          child: Text(
-                                            'Tambah Kolom',
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            foregroundColor: Colors.white,
-                                            backgroundColor:
-                                                const Color.fromRGBO(
-                                                    43, 56, 86, 1),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 20),
                                         ElevatedButton(
                                           onPressed: () {
                                             _simpan(context);
@@ -820,127 +1644,6 @@ class _PerencanaanState extends State<Perencanaan> {
           ),
         );
       },
-    );
-  }
-
-//===========================================================Widget DatePicker===========================================================//
-  Future<void> _selectDate(TextEditingController controller) async {
-    DateTime? _picked = await showDatePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2100),
-    );
-
-    if (_picked != null) {
-      setState(() {
-        controller.text = _picked.toString().split(" ")[0];
-      });
-    }
-  }
-
-//===========================================================Widget Table Alur===========================================================//
-  Widget _buildMainTable() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 50,
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 100.0,
-            horizontalMargin: 30.0,
-            columns: [
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    'Alur Proses',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'Kategori',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    'Detail/Keterangan',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-            ],
-            rows: rowsData.map((TableRowData rowData) {
-              return DataRow(cells: [
-                DataCell(DropdownButton<String>(
-                  value: rowData.selectedValueAlurProses,
-                  hint: Text('--Pilih Alur Proses--'),
-                  items: dropdownItemsAlurProses.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      rowData.selectedValueAlurProses = newValue;
-                    });
-                  },
-                  focusColor: Colors.white,
-                )),
-                DataCell(DropdownButton<String>(
-                  value: rowData.selectedValueKategori,
-                  hint: Text('--Pilih Kategori--'),
-                  items: dropdownItemsKategori.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      rowData.selectedValueKategori = newValue;
-                    });
-                  },
-                  focusColor: Colors.white,
-                )),
-                DataCell(Container(
-                  height: 100,
-                  width: 300,
-                  child: TextFormField(
-                    controller: rowData.detailcontroller,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.all(8),
-                    ),
-                    onChanged: (newValue) {
-                      if (newValue.isNotEmpty) {
-                        setState(() {
-                          rowData.detailcontroller.text =
-                              newValue.substring(0, 100000);
-                        });
-                      }
-                    },
-                  ),
-                )),
-              ]);
-            }).toList(),
-          ),
-        ),
-      ),
     );
   }
 
@@ -1185,15 +1888,4 @@ class _PerencanaanState extends State<Perencanaan> {
       },
     );
   }
-}
-
-class TableRowData {
-  String? selectedValueAlurProses;
-  String? selectedValueKategori;
-  TextEditingController detailcontroller;
-  TableRowData({
-    this.selectedValueAlurProses,
-    this.selectedValueKategori,
-    required this.detailcontroller,
-  });
 }

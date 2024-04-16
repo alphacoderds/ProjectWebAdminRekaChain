@@ -43,11 +43,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final response = await http.get(
         Uri.parse(
-<<<<<<< HEAD
-          'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/readproject.php',
-=======
-          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/readproject.php',
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readproject.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -82,11 +78,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final response = await http.post(
         Uri.parse(
-<<<<<<< HEAD
-          'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/hapus.php',
-=======
-          'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/hapus.php',
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/hapus_tambahproject.php',
         ),
         body: {
           "kodeProject": id,
@@ -337,7 +329,9 @@ class _ListProjectState extends State<ListProject> {
                                         MaterialPageRoute(
                                           builder: (context) => EditProject(
                                             selectedProject: {
-                                              "no": filteredData[index]['no'],
+                                              "no_tambahproject":
+                                                  filteredData[index]
+                                                      ['no_tambahproject'],
                                               "kodeProject": filteredData[index]
                                                   ['kodeProject'],
                                               "namaProject": filteredData[index]
@@ -348,7 +342,7 @@ class _ListProjectState extends State<ListProject> {
                                       ).then((result) {
                                         if (result != null && result) {
                                           updateData();
-                                        }  
+                                        }
                                       });
                                     },
                                   ),

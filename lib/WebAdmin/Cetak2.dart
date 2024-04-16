@@ -12,14 +12,14 @@ import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
 
-class Cetak extends StatefulWidget {
-  const Cetak({super.key});
+class Cetak2 extends StatefulWidget {
+  const Cetak2({super.key});
 
   @override
-  State<Cetak> createState() => _CetakState();
+  State<Cetak2> createState() => _Cetak2State();
 }
 
-class _CetakState extends State<Cetak> {
+class _Cetak2State extends State<Cetak2> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
@@ -43,7 +43,7 @@ class _CetakState extends State<Cetak> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const Cetak(),
+                  builder: (context) => const Cetak2(),
                 );
               default:
                 return null;
@@ -107,34 +107,34 @@ class _CetakState extends State<Cetak> {
                         child: Column(
                           children: [
                             _buildMainTable(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Cetak1()),
-                                    );
-                                  },
-                                  child: Text(
-                                    'Back',
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    backgroundColor:
-                                        const Color.fromRGBO(43, 56, 86, 1),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: screenWidth * 0.04,
-                                )
-                              ],
-                            ),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.end,
+                            //   children: [
+                            //     ElevatedButton(
+                            //       onPressed: () {
+                            //         Navigator.push(
+                            //           context,
+                            //           MaterialPageRoute(
+                            //               builder: (context) => Cetak1()),
+                            //         );
+                            //       },
+                            //       child: Text(
+                            //         'Back',
+                            //       ),
+                            //       style: ElevatedButton.styleFrom(
+                            //         foregroundColor: Colors.white,
+                            //         backgroundColor:
+                            //             const Color.fromRGBO(43, 56, 86, 1),
+                            //         shape: RoundedRectangleBorder(
+                            //           borderRadius: BorderRadius.circular(10.0),
+                            //         ),
+                            //       ),
+                            //     ),
+                            //     SizedBox(
+                            //       width: screenWidth * 0.04,
+                            //     )
+                            //   ],
+                            // ),
                           ],
                         ),
                       ),
@@ -425,7 +425,7 @@ class _CetakState extends State<Cetak> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const Cetak()),
+                  MaterialPageRoute(builder: (context) => const Cetak2()),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),

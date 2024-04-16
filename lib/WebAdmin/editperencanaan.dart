@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
-import 'package:RekaChain/WebAdmin/Cetak.dart';
+import 'package:RekaChain/WebAdmin/Cetak1.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -53,7 +53,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/edit.php?id_project=${widget.selectedProject['id_project']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit.php?id_project=${widget.selectedProject['id_project']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -723,29 +723,29 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                                   Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => Cetak(),
-                                              ),
-                                            );
-                                          },
-                                          child: Text(
-                                            'Cetak',
-                                          ),
-                                          style: ElevatedButton.styleFrom(
-                                            foregroundColor: Colors.white,
-                                            backgroundColor:
-                                                const Color.fromRGBO(
-                                                    43, 56, 86, 1),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                            ),
-                                          ),
-                                        ),
+                                        // ElevatedButton(
+                                        //   onPressed: () {
+                                        //     Navigator.push(
+                                        //       context,
+                                        //       MaterialPageRoute(
+                                        //         builder: (context) => Cetak1(),
+                                        //       ),
+                                        //     );
+                                        //   },
+                                        //   child: Text(
+                                        //     'Cetak',
+                                        //   ),
+                                        //   style: ElevatedButton.styleFrom(
+                                        //     foregroundColor: Colors.white,
+                                        //     backgroundColor:
+                                        //         const Color.fromRGBO(
+                                        //             43, 56, 86, 1),
+                                        //     shape: RoundedRectangleBorder(
+                                        //       borderRadius:
+                                        //           BorderRadius.circular(10.0),
+                                        //     ),
+                                        //   ),
+                                        // ),
                                         SizedBox(width: 20),
                                         ElevatedButton(
                                           onPressed: () {
@@ -802,7 +802,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           "id_project": idProjectcontroller.text,
           "noIndukProduk": noProdukcontroller.text,

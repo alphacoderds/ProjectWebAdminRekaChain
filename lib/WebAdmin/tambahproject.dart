@@ -19,12 +19,15 @@ class Project {
   final String namaProject;
   final String idProject;
 
-  Project({required this.kodeProject, required this.namaProject, required this.idProject});
+  Project(
+      {required this.kodeProject,
+      required this.namaProject,
+      required this.idProject});
 }
 
 class ProjectProvider extends ChangeNotifier {
   List<Project> _projects = [];
- 
+
   List<Project> get projects => _projects;
 
   void addProject(Project project) {
@@ -55,11 +58,7 @@ class _TambahProjectState extends State<TambahProject> {
 
       final response = await http.post(
         Uri.parse(
-<<<<<<< HEAD
-            'http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/create_tambahproject.php'),
-=======
-            'http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/create.php'),
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/create_tambahproject.php'),
         body: {
           "kodeProject": kdprojectController.text,
           "namaProject": nmprojectController.text,
@@ -69,7 +68,7 @@ class _TambahProjectState extends State<TambahProject> {
 
       if (response.statusCode == 200) {
         final newProjectData = {
-          "no": response.body,
+          "no_tambahproject": response.body,
           "kodeProject": kdprojectController.text,
           "namaProject": nmprojectController.text,
           "idProject": idProject,

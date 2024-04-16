@@ -124,11 +124,7 @@ class _TambahStaffState extends State<TambahStaff> {
 
     final response = await http.post(
       Uri.parse(
-<<<<<<< HEAD
-        "http://192.168.9.3/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php",
-=======
-        "http://192.168.11.5/ProjectWebAdminRekaChain/lib/Project/create.php",
->>>>>>> fb7c7b17eb8cafd737d2c4090d5a7bc445479176
+        "http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php",
       ),
       body: {
         "kode_staff": kodestaffController.text,
@@ -602,14 +598,10 @@ class _TambahStaffState extends State<TambahStaff> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                    );
+                    _simpan(context);
                   },
                   child: SizedBox(
-                    width:
-                        100, // Atur lebar tombol sesuai kebutuhan, misalnya 200 piksel
+                    width: 100,
                     child: Center(
                       child: Text(
                         'Simpan',
