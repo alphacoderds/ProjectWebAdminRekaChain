@@ -43,7 +43,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/readproject.php',
         ),
       );
       if (response.statusCode == 200) {

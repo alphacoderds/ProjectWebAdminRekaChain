@@ -12,7 +12,6 @@ import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 class Project {
   final String kodeProject;
@@ -58,7 +57,7 @@ class _TambahProjectState extends State<TambahProject> {
 
       final response = await http.post(
         Uri.parse(
-            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/create_tambahproject.php'),
+            'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/create_tambahproject.php'),
         body: {
           "kodeProject": kdprojectController.text,
           "namaProject": nmprojectController.text,
@@ -68,7 +67,7 @@ class _TambahProjectState extends State<TambahProject> {
 
       if (response.statusCode == 200) {
         final newProjectData = {
-          "no_tambahproject": response.body,
+          "no": response.body,
           "kodeProject": kdprojectController.text,
           "namaProject": nmprojectController.text,
           "idProject": idProject,
@@ -233,15 +232,17 @@ class _TambahProjectState extends State<TambahProject> {
             floatingActionButton: Padding(
               padding: EdgeInsets.only(right: 0.02, bottom: 8),
               child: SizedBox(
-                width: 100.0,
+                width: 110.0,
                 height: 40.0,
                 child: ElevatedButton(
                   onPressed: () {
                     _simpan();
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: const Color.fromRGBO(43, 56, 86, 1),
-                  ),
+                      primary: const Color.fromRGBO(43, 56, 86, 1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      )),
                   child: Text(
                     'Simpan',
                     style: TextStyle(
@@ -268,7 +269,7 @@ class _TambahProjectState extends State<TambahProject> {
               Center(
                 child: Container(
                   width: screenWidth * 0.73,
-                  height: screenHeight * 0.75,
+                  height: screenHeight * 0.78,
                   decoration: BoxDecoration(
                       border: Border.all(),
                       borderRadius: BorderRadius.circular(10)),

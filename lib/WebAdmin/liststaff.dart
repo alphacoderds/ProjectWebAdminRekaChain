@@ -76,7 +76,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/hapus_tambahstaff.php',
+          'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/hapus_tambahstaff.php',
         ),
         body: {
           "kode_staff": id,

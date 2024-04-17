@@ -56,7 +56,7 @@ class _EditStaffState extends State<EditStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php'),
+            'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php'),
       );
       if (response.statusCode == 200) {
         final List<Map<String, dynamic>> fetchedData =

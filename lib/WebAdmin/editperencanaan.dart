@@ -802,7 +802,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           "id_project": idProjectcontroller.text,
           "noIndukProduk": noProdukcontroller.text,

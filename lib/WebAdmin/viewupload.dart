@@ -43,7 +43,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
+          'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
         ),
       );
       if (response.statusCode == 200) {

@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
-import 'package:provider/provider.dart';
 
 class Project {
   final String kode_staff;
@@ -112,7 +111,7 @@ class _TambahStaffState extends State<TambahStaff> {
     return digest.toString(); // Mengembalikan hash sebagai string
   }
 
-  Future<void> _simpan(BuildContext context) async {
+  Future<void> _simpan() async {
     final hashedPassword = hashPassword(passwordController.text);
     final hashedKonfirmasiPassword =
         hashPassword(konfirmasiPasswordController.text);
@@ -124,7 +123,7 @@ class _TambahStaffState extends State<TambahStaff> {
 
     final response = await http.post(
       Uri.parse(
-        "http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php",
+        "http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php",
       ),
       body: {
         "kode_staff": kodestaffController.text,
@@ -321,7 +320,7 @@ class _TambahStaffState extends State<TambahStaff> {
               width: screenWidth * 0.8,
               height: screenHeight * 0.88,
               decoration: BoxDecoration(
-                border: Border.all(),
+                border: Border.all(color: Colors.black54),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
@@ -354,7 +353,7 @@ class _TambahStaffState extends State<TambahStaff> {
                                   width: 400,
                                   decoration: BoxDecoration(
                                       border: Border.all(color: Colors.black54),
-                                      borderRadius: BorderRadius.circular(3)),
+                                      borderRadius: BorderRadius.circular(5)),
                                   child: Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 10),
@@ -397,7 +396,7 @@ class _TambahStaffState extends State<TambahStaff> {
                                   width: 400,
                                   decoration: BoxDecoration(
                                       border: Border.all(color: Colors.black54),
-                                      borderRadius: BorderRadius.circular(3)),
+                                      borderRadius: BorderRadius.circular(5)),
                                   child: Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 10),
@@ -598,10 +597,11 @@ class _TambahStaffState extends State<TambahStaff> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _simpan(context);
+                    _simpan();
                   },
                   child: SizedBox(
-                    width: 100,
+                    width:
+                        100, // Atur lebar tombol sesuai kebutuhan, misalnya 200 piksel
                     child: Center(
                       child: Text(
                         'Simpan',

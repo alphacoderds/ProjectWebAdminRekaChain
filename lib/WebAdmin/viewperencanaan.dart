@@ -79,7 +79,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
+          'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
         ),
         body: {
           "kodeLot": id,
