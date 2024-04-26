@@ -5,7 +5,11 @@ header("Content-Type: application/json");
 // Header untuk mengizinkan akses dari berbagai domain (CORS)
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+header("Access-Cross-Origin Resource Sharing");
+header("Access-Control-Allow-Methods: POST");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Origin: *");
+
 
 // Cek metode request yang diterima
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
