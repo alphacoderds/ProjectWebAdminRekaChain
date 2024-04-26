@@ -10,8 +10,15 @@ import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
 
 class Viewkm extends StatefulWidget {
+  final Map<String, dynamic>? newProject;
+
+  const Viewkm({Key? key, this.newProject}) : super(key: key);
   @override
   State<Viewkm> createState() => _ViewkmState();
 }
@@ -51,46 +58,14 @@ class _ViewkmState extends State<Viewkm> {
                       backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                       toolbarHeight: 65,
                       title: Padding(
-                        padding:
-                            EdgeInsets.only(left: screenHeight * 0.02, top: 2),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 7),
-                                width: 250,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(width: 8),
-                                    Expanded(
-                                      child: TextField(
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: 'Kode Lot',
-                                        ),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.search,
-                                        size: 30,
-                                      ),
-                                      onPressed: () {},
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 20),
-                            ],
+                        padding: EdgeInsets.only(left: screenHeight * 0.01),
+                        child: Text(
+                          'Daftar Kebutuhan Material',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Donegal One',
+                            color: Colors.white,
                           ),
                         ),
                       ),

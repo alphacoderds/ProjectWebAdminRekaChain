@@ -11,26 +11,26 @@ import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
+import 'package:RekaChain/WebAdmin/viewikm.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
-class ViewUpload extends StatefulWidget {
+class ViewMaterial extends StatefulWidget {
   final Map<String, dynamic>? newProject;
 
-  const ViewUpload({Key? key, this.newProject}) : super(key: key);
+  const ViewMaterial({Key? key, this.newProject}) : super(key: key);
   @override
-  State<ViewUpload> createState() => _ViewUploadState();
+  State<ViewMaterial> createState() => _ViewMaterialState();
 }
 
-class _ViewUploadState extends State<ViewUpload> {
+class _ViewMaterialState extends State<ViewMaterial> {
   int _selectedIndex = 0;
   bool isViewVisible = false;
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-
-  late final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey;
 
   List _listdata = [];
   bool _isloading = true;
@@ -47,7 +47,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
+          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -71,7 +71,6 @@ class _ViewUploadState extends State<ViewUpload> {
     }
     _getdata();
     super.initState();
-    _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   }
 
   Future<void> updateData() async {
@@ -83,10 +82,10 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php',
+          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/hapus.php',
         ),
         body: {
-          "no": id,
+          "id_project": id,
         },
       );
 
@@ -102,31 +101,28 @@ class _ViewUploadState extends State<ViewUpload> {
     }
   }
 
-  Future<void> _downloadFileFromDatabase(Map<String, dynamic> data) async {
-    if (data['file'] != null) {
-      String fileUrl = data['file'];
-      String fileName = data['file'].split('/').last;
+  Future<void> _downloadFile(String url, String fileName) async {
+    final response = await http.get(Uri.parse(url));
 
-      try {
-        // Mendapatkan direktori penyimpanan eksternal
-        Directory? directory = await getExternalStorageDirectory();
-        String path = directory!.path;
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+      final permissionStatus = await Permission.storage.request();
 
-        // Mendownload file
-        var response = await http.get(Uri.parse(fileUrl));
-        File file = File('$path/$fileName');
-        await file.writeAsBytes(response.bodyBytes);
+      if (permissionStatus.isGranted) {
+        final directory = await getExternalStorageDirectory();
+        final filePath = '${directory!.path}/$fileName';
+        final file = File(filePath);
+        await file.writeAsBytes(bytes);
 
-        // Memberi notifikasi kepada pengguna bahwa file telah didownload
-        _scaffoldMessengerKey.currentState?.showSnackBar(
-          SnackBar(content: Text('File $fileName telah berhasil didownload')),
-        );
-      } catch (e) {
-        print('Error downloading file: $e');
-        _scaffoldMessengerKey.currentState?.showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        // Berhasil mengunduh file
+        print('File berhasil diunduh ke: $filePath');
+      } else {
+        // Izin akses penyimpanan ditolak
+        print('Izin akses penyimpanan ditolak');
       }
+    } else {
+      // Gagal mengunduh file
+      print('Gagal mengunduh file');
     }
   }
 
@@ -142,14 +138,13 @@ class _ViewUploadState extends State<ViewUpload> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => ViewUpload(),
+                  builder: (context) => ViewMaterial(),
                 );
               default:
                 return null;
             }
           },
           home: Scaffold(
-            key: _scaffoldMessengerKey,
             body: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -160,21 +155,12 @@ class _ViewUploadState extends State<ViewUpload> {
                       backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                       toolbarHeight: 65,
                       title: Padding(
-                        padding: EdgeInsets.only(left: screenHeight * 0.02),
-                        child: Text(
-                          'Daftar Dokumen',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Donegal One',
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      actions: [
-                        Padding(
-                          padding: EdgeInsets.only(right: screenHeight * 0.11),
+                        padding:
+                            EdgeInsets.only(left: screenHeight * 0.02, top: 2),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 7),
@@ -206,6 +192,16 @@ class _ViewUploadState extends State<ViewUpload> {
                                   ],
                                 ),
                               ),
+                              SizedBox(width: 20),
+                            ],
+                          ),
+                        ),
+                      ),
+                      actions: [
+                        Padding(
+                          padding: EdgeInsets.only(right: screenHeight * 0.11),
+                          child: Row(
+                            children: [
                               SizedBox(
                                 width: screenWidth * 0.005,
                               ),
@@ -338,14 +334,6 @@ class _ViewUploadState extends State<ViewUpload> {
               DataColumn(
                 label: Center(
                   child: Text(
-                    'Tanggal Upload',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
                     'Aksi',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
@@ -398,30 +386,17 @@ class _ViewUploadState extends State<ViewUpload> {
                         DataCell(
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['tanggal'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
                             child: Center(
                               child: Row(
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.file_download_outlined),
+                                    icon: Icon(Icons.visibility),
                                     onPressed: () {
-                                      _downloadFileFromDatabase(data);
-                                    },
-                                  ),
-                                  SizedBox(width: 10),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      _showDeleteDialog(
-                                          filteredData[index]['no'].toString());
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Viewkm()),
+                                      );
                                     },
                                   ),
                                 ],
@@ -643,35 +618,6 @@ class _ViewUploadState extends State<ViewUpload> {
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDeleteDialog(String id) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Delete", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin menghapus data?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () async {
-                await _hapusData(id);
-                Navigator.of(context).pop();
-              },
-              child: Text("Hapus", style: TextStyle(color: Colors.white)),
             ),
           ],
         );

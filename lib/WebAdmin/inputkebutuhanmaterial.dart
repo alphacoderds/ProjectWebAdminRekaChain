@@ -12,11 +12,14 @@ import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:RekaChain/WebAdmin/viewikm.dart';
+import 'package:RekaChain/WebAdmin/viewmaterial.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 
 class InputMaterial extends StatefulWidget {
   const InputMaterial({super.key});
@@ -29,11 +32,15 @@ class _InputMaterialState extends State<InputMaterial> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
+  TextEditingController idprojectcontroller = TextEditingController();
+  TextEditingController kodelotcontroller = TextEditingController();
+  TextEditingController filecontroller = TextEditingController();
+
   int _selectedIndex = 0;
-  List<String> dropdownItemsIdProject = [];
+  late List<String> dropdownItemsIdProject = [];
   String? selectedValueIdProject;
 
-  List<String> dropdownItemsKodeLot = [];
+  late List<String> dropdownItemsKodeLot = [];
   String? selectedValueKodeLot;
 
   List<PlatformFile> uploadFiles = [];
@@ -52,17 +59,72 @@ class _InputMaterialState extends State<InputMaterial> {
     }
   }
 
+  Future<void> _simpan() async {
+    if (selectedValueIdProject != null && selectedValueKodeLot != null) {
+      List<MultipartFile> filesToUpload = [];
+      for (var file in uploadFiles) {
+        // Buat objek MultipartFile dari file yang diunggah
+        filesToUpload.add(
+          MultipartFile.fromBytes(
+            file.bytes!,
+            filename: file.name,
+            contentType: MediaType('application',
+                'pdf'), // Sesuaikan tipe konten dengan tipe file yang diunggah
+          ),
+        );
+      }
+
+      var formData = FormData.fromMap({
+        'id_project': selectedValueIdProject,
+        'kodeLot': selectedValueKodeLot,
+        'file': filesToUpload,
+      });
+
+      try {
+        final response = await Dio().post(
+          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/create_material.php',
+          data: formData,
+          options: Options(
+            contentType: 'multipart/form-data',
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          final newProjectData = {
+            'id_project': idprojectcontroller.text,
+            'file': filecontroller.text,
+            'kodeLot': kodelotcontroller.text,
+          };
+
+          _showFinishDialog();
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ViewMaterial(newProject: newProjectData),
+            ),
+          );
+        } else {
+          print('Gagal menyimpan data: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      print('Mohon lengkapi nama project.');
+    }
+  }
+
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+        'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
 
       setState(() {
         dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
-        dropdownItemsIdProject
-            .addAll(data.map((e) => e['id_project'].toString()));
+        dropdownItemsIdProject.addAll(data.map((e) => e['nama'].toString()));
         dropdownItemsKodeLot = ['--Pilih Kode Lot--'];
         dropdownItemsKodeLot.addAll(data.map((e) => e['kodeLot'].toString()));
       });
@@ -133,7 +195,7 @@ class _InputMaterialState extends State<InputMaterial> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Viewkm()),
+                                          builder: (context) => ViewMaterial()),
                                     );
                                   },
                                   child: Text(
@@ -202,7 +264,7 @@ class _InputMaterialState extends State<InputMaterial> {
                 height: 40.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    _showFinishDialog();
+                    _simpan();
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color.fromRGBO(43, 56, 86, 1),

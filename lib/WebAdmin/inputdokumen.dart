@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
-import 'dart:io';
 
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
@@ -14,6 +12,7 @@ import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:RekaChain/WebAdmin/viewupload.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
@@ -62,11 +61,12 @@ class _InputDokumenState extends State<InputDokumen> {
     if (selectedValueIdProject != null && selectedValueKodeLot != null) {
       List<MultipartFile> filesToUpload = [];
       for (var file in uploadFiles) {
+        // Buat objek MultipartFile dari file yang diunggah
         filesToUpload.add(
           MultipartFile.fromBytes(
             file.bytes!,
             filename: file.name,
-            contentType: MediaType('application', 'octet-stream'),
+            contentType: MediaType('application', 'pdf'),
           ),
         );
       }
@@ -80,7 +80,7 @@ class _InputDokumenState extends State<InputDokumen> {
 
       try {
         final response = await Dio().post(
-          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/create_inputdokumen.php',
+          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/create_inputdokumen.php',
           data: formData,
           options: Options(
             contentType: 'multipart/form-data',
@@ -123,22 +123,22 @@ class _InputDokumenState extends State<InputDokumen> {
 
     if (_picked != null) {
       setState(() {
-        controller.text = _picked.toString().split(" ")[0];
+        final formattedDate = DateFormat('dd-MM-yyyy').format(_picked);
+        controller.text = formattedDate;
       });
     }
   }
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+        'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
 
       setState(() {
         dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
-        dropdownItemsIdProject
-            .addAll(data.map((e) => e['id_project'].toString()));
+        dropdownItemsIdProject.addAll(data.map((e) => e['nama'].toString()));
         dropdownItemsKodeLot = ['--Pilih Kode Lot--'];
         dropdownItemsKodeLot.addAll(data.map((e) => e['kodeLot'].toString()));
       });

@@ -13,7 +13,6 @@ import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-import 'package:RekaChain/WebAdmin/editperencanaan.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -45,7 +44,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readlistproject.php',
+          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -79,17 +78,16 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
+          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
         ),
         body: {
-          "kodeLot": id,
+          "id_lot": id,
         },
       );
 
       print('Delete response: ${response.statusCode} - ${response.body}');
 
       if (response.statusCode == 200) {
-        await updateData();
       } else {
         print('Failed to delete data: ${response.statusCode}');
       }
@@ -352,104 +350,13 @@ class _VperencanaanState extends State<Vperencanaan> {
                               child: Row(
                                 children: [
                                   IconButton(
-                                    icon: Icon(Icons.visibility),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              DetailViewPerencanaan(
-                                            selectedProject: {
-                                              "nama": filteredData[index]
-                                                  ['nama'],
-                                              "noIndukProduk":
-                                                  filteredData[index]
-                                                      ['noIndukProduk'],
-                                              "noSeriAwal": filteredData[index]
-                                                  ['noSeriAwal'],
-                                              "targetMulai": filteredData[index]
-                                                  ['targetMulai'],
-                                              "namaProduk": filteredData[index]
-                                                  ['namaProduk'],
-                                              "jumlahLot": filteredData[index]
-                                                  ['jumlahLot'],
-                                              "kodeLot": filteredData[index]
-                                                  ['kodeLot'],
-                                              "noSeriAkhir": filteredData[index]
-                                                  ['noSeriAkhir'],
-                                              "targetSelesai":
-                                                  filteredData[index]
-                                                      ['targetSelesai'],
-                                              "ap1": filteredData[index]['ap1'],
-                                              "kategori1": filteredData[index]
-                                                  ['kategori1'],
-                                              "keterangan1": filteredData[index]
-                                                  ['keterangan1'],
-                                              "ap2": filteredData[index]['ap2'],
-                                              "kategori2": filteredData[index]
-                                                  ['kategori2'],
-                                              "keterangan2": filteredData[index]
-                                                  ['keterangan2'],
-                                              "ap3": filteredData[index]['ap3'],
-                                              "kategori3": filteredData[index]
-                                                  ['kategori3'],
-                                              "keterangan3": filteredData[index]
-                                                  ['keterangan3'],
-                                              "ap4": filteredData[index]['ap4'],
-                                              "kategori4": filteredData[index]
-                                                  ['kategori4'],
-                                              "keterangan4": filteredData[index]
-                                                  ['keterangan4'],
-                                              "ap5": filteredData[index]['ap5'],
-                                              "kategori5": filteredData[index]
-                                                  ['kategori5'],
-                                              "keterangan5": filteredData[index]
-                                                  ['keterangan5'],
-                                              "ap6": filteredData[index]['ap6'],
-                                              "kategori6": filteredData[index]
-                                                  ['kategori6'],
-                                              "keterangan6": filteredData[index]
-                                                  ['keterangan6'],
-                                              "ap7": filteredData[index]['ap7'],
-                                              "kategori7": filteredData[index]
-                                                  ['kategori7'],
-                                              "keterangan7": filteredData[index]
-                                                  ['keterangan7'],
-                                              "ap8": filteredData[index]['ap8'],
-                                              "kategori8": filteredData[index]
-                                                  ['kategori8'],
-                                              "keterangan8": filteredData[index]
-                                                  ['keterangan8'],
-                                              "ap9": filteredData[index]['ap9'],
-                                              "kategori9": filteredData[index]
-                                                  ['kategori9'],
-                                              "keterangan9": filteredData[index]
-                                                  ['keterangan9'],
-                                              "ap10": filteredData[index]
-                                                  ['ap10'],
-                                              "kategori10": filteredData[index]
-                                                  ['kategori10'],
-                                              "keterangan10":
-                                                  filteredData[index]
-                                                      ['keterangan10'],
-                                            },
-                                          ),
-                                        ),
-                                      ).then((result) {
-                                        if (result != null && result) {
-                                          updateData();
-                                        }
-                                      });
-                                    },
-                                  ),
-                                  SizedBox(width: 10),
-                                  IconButton(
                                     icon: Icon(Icons.local_print_shop),
                                     onPressed: () async {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => Cetak1(
+                                          builder: (context) =>
+                                              DetailViewPerencanaan(
                                             selectedProject: {
                                               "id_lot": filteredData[index]
                                                   ['id_lot'],
@@ -542,7 +449,7 @@ class _VperencanaanState extends State<Vperencanaan> {
                                     icon: Icon(Icons.delete),
                                     onPressed: () {
                                       _showDeleteDialog(filteredData[index]
-                                              ['kodeLot']
+                                              ['id_lot']
                                           .toString());
                                     },
                                   ),
@@ -748,7 +655,7 @@ class _VperencanaanState extends State<Vperencanaan> {
           title: Text("Logout", style: TextStyle(color: Colors.white)),
           content: Text("Apakah Anda yakin ingin logout?",
               style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(255, 6, 37, 55),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
           actions: [
             TextButton(
               onPressed: () {

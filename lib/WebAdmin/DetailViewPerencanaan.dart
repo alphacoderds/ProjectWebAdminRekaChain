@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
-import 'package:RekaChain/WebAdmin/Cetak1.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -13,8 +16,9 @@ import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:RekaChain/WebAdmin/viewperencanaan.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:barcode_widget/barcode_widget.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 class DetailViewPerencanaan extends StatefulWidget {
   final Map<String, dynamic> selectedProject;
@@ -30,12 +34,16 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
   late double screenHeight = MediaQuery.of(context).size.height;
   bool isViewVisible = false;
 
+  Widget? qrCodeWidget;
+
   int _selectedIndex = 0;
 
   List<Map<String, dynamic>> _listdata = [];
 
+  TextEditingController idLotcontroller = TextEditingController();
   TextEditingController namaProjectcontroller = TextEditingController();
   TextEditingController noProdukcontroller = TextEditingController();
+  TextEditingController noIndukProdukcontroller = TextEditingController();
   TextEditingController noSeriAwalcontroller = TextEditingController();
   TextEditingController namaProdukcontroller = TextEditingController();
   TextEditingController jumlahLotcontroller = TextEditingController();
@@ -88,7 +96,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -110,7 +118,12 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
   void initState() {
     super.initState();
     fetchData();
-    noProdukcontroller = TextEditingController(
+
+    idLotcontroller =
+        TextEditingController(text: widget.selectedProject['id_lot'] ?? '');
+    noProdukcontroller =
+        TextEditingController(text: widget.selectedProject['noProduk'] ?? '');
+    noIndukProdukcontroller = TextEditingController(
         text: widget.selectedProject['noIndukProduk'] ?? '');
     namaProjectcontroller =
         TextEditingController(text: widget.selectedProject['nama'] ?? '');
@@ -198,58 +211,95 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
         TextEditingController(text: widget.selectedProject['kategori10'] ?? '');
     detail10controller = TextEditingController(
         text: widget.selectedProject['keterangan10'] ?? '');
-
-    jumlahLotcontroller.addListener(_batasiNoSeriAkhir);
-
-    noProdukcontroller.addListener(_calculateKodeLot);
-    noSeriAwalcontroller.addListener(_calculateKodeLot);
-    noSeriAkhircontroller.addListener(_calculateKodeLot);
-    tglMulaicontroller.addListener(_calculateKodeLot);
   }
 
-  @override
-  void dispose() {
-    noProdukcontroller.dispose();
-    noSeriAwalcontroller.dispose();
-    noSeriAkhircontroller.dispose();
-    tglMulaicontroller.dispose();
-    kodeLotcontroller.dispose();
-    super.dispose();
-  }
+  GlobalKey _qrCodeWidgetKey = GlobalKey();
+  bool _qrCodeGenerated = false;
 
-  void _calculateKodeLot() {
+  void _generateBarcode() async {
+    String idLot = idLotcontroller.text;
+    String noProduk = noProdukcontroller.text;
+    String namaProject = namaProjectcontroller.text;
+
     setState(() {
-      final tahun = tglMulaicontroller.text.substring(6);
+      qrCodeWidget = Builder(
+        builder: (context) => RepaintBoundary(
+          key: _qrCodeWidgetKey,
+          child: Column(
+            children: [
+              BarcodeWidget(
+                barcode: Barcode.qrCode(),
+                data: idLot,
+                color: Colors.black,
+                height: 200,
+                width: 200,
+              ),
+              SizedBox(height: 10),
+              Text(
+                '$namaProject - $noProduk',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+    _qrCodeGenerated = true;
+  }
 
-      kodeLotcontroller.text =
-          '${noProdukcontroller.text} - ${noSeriAwalcontroller.text} - ${noSeriAkhircontroller.text} / $tahun';
+  void _downloadQRCode() async {
+    if (!_qrCodeGenerated) {
+      _generateBarcode();
+    }
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+      if (_qrCodeWidgetKey.currentContext != null) {
+        Uint8List imageBytes = await _captureWidgetToImage(_qrCodeWidgetKey);
+
+        final result = await ImageGallerySaver.saveImage(imageBytes);
+        if (result['isSuccess']) {
+          print('Image saved to gallery.');
+        } else {
+          print('Failed to save image: ${result['errorMessage']}');
+        }
+      } else {
+        print('Error: QR code widget has not been rendered yet.');
+      }
     });
   }
 
-  //===========================================================Widget DatePicker===========================================================//
-  Future<void> _selectDate(TextEditingController controller) async {
-    DateTime? _picked = await showDatePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2100),
-    );
-
-    if (_picked != null) {
-      setState(() {
-        final formattedDate = DateFormat('dd-MM-yy').format(_picked);
-        controller.text = formattedDate;
-      });
+  Future<Uint8List> _captureWidgetToImage(GlobalKey key) async {
+    try {
+      final boundary =
+          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      return byteData!.buffer.asUint8List();
+    } catch (e) {
+      print('Error capturing widget to image: $e');
+      return Uint8List(0);
     }
   }
 
-  void _batasiNoSeriAkhir() {
-    int jumlahLot = int.tryParse(jumlahLotcontroller.text) ?? 0;
-    int noSeriAkhir = int.tryParse(noSeriAkhircontroller.text) ?? 0;
-
-    if (noSeriAkhir > jumlahLot) {
-      setState(() {
-        noSeriAkhircontroller.text = jumlahLot.toString();
-      });
+  Future<ByteData> _capturePng(Widget? widget) async {
+    try {
+      final RenderRepaintBoundary boundary = RenderRepaintBoundary();
+      final RenderObject? root =
+          _qrCodeWidgetKey.currentContext?.findRenderObject();
+      if (root != null && boundary != null) {
+        final double pixelRatio = ui.window.devicePixelRatio;
+        final Offset layerOffset = Offset.zero;
+        final Size logicalSize = ui.window.physicalSize / pixelRatio;
+        final Rect renderBounds = layerOffset & logicalSize;
+        final ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
+        final ByteData? byteData =
+            await image.toByteData(format: ui.ImageByteFormat.png);
+        return byteData!;
+      }
+      return ByteData(0);
+    } catch (e) {
+      print('Error capturing widget to image: $e');
+      return ByteData(0);
     }
   }
 
@@ -337,6 +387,16 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                     ),
                                     IconButton(
                                       icon: Icon(
+                                        Icons.file_download_outlined,
+                                        size: 33,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        _downloadQRCode();
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
                                         Icons.notifications_active,
                                         size: 33,
                                         color: Colors.white,
@@ -419,6 +479,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                       width: 220,
                                                       height: 40,
                                                       child: TextFormField(
+                                                        readOnly: true,
                                                         controller:
                                                             namaProjectcontroller,
                                                         decoration:
@@ -445,13 +506,13 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(height: 40),
+                                                SizedBox(height: 30),
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      'No Induk Finish Produk',
+                                                      'No Produk',
                                                       style: TextStyle(
                                                         fontWeight:
                                                             FontWeight.w600,
@@ -462,6 +523,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                       width: 220,
                                                       height: 40,
                                                       child: TextFormField(
+                                                        readOnly: true,
                                                         controller:
                                                             noProdukcontroller,
                                                         decoration:
@@ -488,7 +550,51 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(height: 120),
+                                                SizedBox(height: 30),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'No Induk Finish Produk',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 220,
+                                                      height: 40,
+                                                      child: TextFormField(
+                                                        readOnly: true,
+                                                        controller:
+                                                            noIndukProdukcontroller,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 30),
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -505,6 +611,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                       width: 220,
                                                       height: 40,
                                                       child: TextFormField(
+                                                        readOnly: true,
                                                         controller:
                                                             noSeriAwalcontroller,
                                                         decoration:
@@ -556,8 +663,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                               tglMulaicontroller,
                                                           readOnly: true,
                                                           onTap: () {
-                                                            _selectDate(
-                                                                tglMulaicontroller);
+                                                            (tglMulaicontroller);
                                                           },
                                                           decoration: InputDecoration(
                                                               contentPadding:
@@ -580,7 +686,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                 )
                                               ],
                                             ),
-                                            SizedBox(width: screenWidth * 0.2),
+                                            SizedBox(width: screenWidth * 0.07),
                                             Column(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
@@ -600,6 +706,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                       width: 220,
                                                       height: 40,
                                                       child: TextFormField(
+                                                        readOnly: true,
                                                         controller:
                                                             namaProdukcontroller,
                                                         decoration:
@@ -626,7 +733,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                     ),
                                                   ],
                                                 ),
-                                                SizedBox(height: 40),
+                                                SizedBox(height: 30),
                                                 Column(
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
@@ -642,6 +749,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                       width: 220,
                                                       height: 40,
                                                       child: TextFormField(
+                                                        readOnly: true,
                                                         controller:
                                                             jumlahLotcontroller,
                                                         decoration:
@@ -676,15 +784,15 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                     Text(
                                                       'Kode Lot',
                                                       style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 15,
-                                                      ),
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 15),
                                                     ),
                                                     SizedBox(
-                                                      height: 40,
                                                       width: 220,
+                                                      height: 40,
                                                       child: TextFormField(
+                                                        readOnly: true,
                                                         controller:
                                                             kodeLotcontroller,
                                                         decoration:
@@ -693,16 +801,18 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                               EdgeInsets
                                                                   .symmetric(
                                                                       horizontal:
-                                                                          15),
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
                                                           border:
                                                               OutlineInputBorder(
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
-                                                                        20),
-                                                            borderSide: BorderSide(
-                                                                color: Colors
-                                                                    .black45),
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1),
                                                           ),
                                                         ),
                                                       ),
@@ -725,6 +835,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                       width: 220,
                                                       height: 40,
                                                       child: TextFormField(
+                                                        readOnly: true,
                                                         controller:
                                                             noSeriAkhircontroller,
                                                         decoration:
@@ -776,8 +887,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                               tglSelesaicontroller,
                                                           readOnly: true,
                                                           onTap: () {
-                                                            _selectDate(
-                                                                tglSelesaicontroller);
+                                                            (tglSelesaicontroller);
                                                           },
                                                           decoration: InputDecoration(
                                                               contentPadding:
@@ -797,9 +907,95 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                                               1)))),
                                                     )
                                                   ],
-                                                )
+                                                ),
                                               ],
-                                            )
+                                            ),
+                                            SizedBox(width: screenWidth * 0.07),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'ID Lot',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 220,
+                                                      height: 40,
+                                                      child: TextFormField(
+                                                        readOnly: true,
+                                                        controller:
+                                                            idLotcontroller,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    ElevatedButton(
+                                                      onPressed:
+                                                          _generateBarcode,
+                                                      child: Text(
+                                                        'Generate QR Code',
+                                                      ),
+                                                      style: ElevatedButton
+                                                          .styleFrom(
+                                                        foregroundColor:
+                                                            Colors.white,
+                                                        backgroundColor:
+                                                            const Color
+                                                                .fromRGBO(
+                                                                43, 56, 86, 1),
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10.0),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 30,
+                                                ),
+                                                qrCodeWidget ?? Container(),
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -1245,7 +1441,12 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                         SizedBox(width: 20),
                                         ElevatedButton(
                                           onPressed: () {
-                                            _updateData();
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Vperencanaan()),
+                                            );
                                           },
                                           child: Text(
                                             'Kembali',
@@ -1273,64 +1474,6 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
         );
       },
     );
-  }
-
-  void _updateData() async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-            'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php'),
-        body: {
-          "nama": namaProjectcontroller.text,
-          "noIndukProduk": noProdukcontroller.text,
-          "noSeriAwal": noSeriAwalcontroller.text,
-          "targetMulai": tglMulaicontroller.text,
-          "namaProduk": namaProdukcontroller.text,
-          "jumlahLot": jumlahLotcontroller.text,
-          "kodeLot": kodeLotcontroller.text,
-          "noSeriAkhir": noSeriAkhircontroller.text,
-          "targetSelesai": tglSelesaicontroller.text,
-          "ap1": alurProses1controller.text,
-          "kategori1": kategori1controller.text,
-          "keterangan1": detail1controller.text,
-          "ap2": alurProses2controller.text,
-          "kategori2": kategori2controller.text,
-          "keterangan2": detail2controller.text,
-          "ap3": alurProses3controller.text,
-          "kategori3": kategori3controller.text,
-          "keterangan3": detail3controller.text,
-          "ap4": alurProses4controller.text,
-          "kategori4": kategori4controller.text,
-          "keterangan4": detail4controller.text,
-          "ap5": alurProses5controller.text,
-          "kategori5": kategori5controller.text,
-          "keterangan5": detail5controller.text,
-          "ap6": alurProses6controller.text,
-          "kategori6": kategori6controller.text,
-          "keterangan6": detail6controller.text,
-          "ap7": alurProses7controller.text,
-          "kategori7": kategori7controller.text,
-          "keterangan7": detail7controller.text,
-          "ap8": alurProses8controller.text,
-          "kategori8": kategori8controller.text,
-          "keterangan8": detail8controller.text,
-          "ap9": alurProses9controller.text,
-          "kategori9": kategori9controller.text,
-          "keterangan9": detail9controller.text,
-          "ap10": alurProses10controller.text,
-          "kategori10": kategori10controller.text,
-          "keterangan10": detail10controller.text,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        _showFinishDialog();
-      } else {
-        print('Failed to update data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error updating data: $e');
-    }
   }
 
 //===========================================================Widget Sidebar===========================================================//

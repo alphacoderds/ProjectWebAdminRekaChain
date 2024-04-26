@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -10,25 +12,79 @@ import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:RekaChain/WebAdmin/viewaftersales.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class AfterSales extends StatefulWidget {
+  final Map<String, dynamic>? newProject;
+
+  const AfterSales({Key? key, this.newProject}) : super(key: key);
   @override
   State<AfterSales> createState() => _AfterSalesState();
 }
 
 class _AfterSalesState extends State<AfterSales> {
   int _selectedIndex = 0;
-
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue;
-
   bool isViewVisible = false;
   late double screenWidth;
   late double screenHeight;
+
+  List _listdata = [];
+  bool _isloading = true;
+
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+
+  Future<void> _getdata() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/readaftersales.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          _listdata = data;
+          _isloading = false;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    _getdata();
+    super.initState();
+  }
+
+  Future<void> _hapusData(String id) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
+        ),
+        body: {
+          "noProduk": id,
+        },
+      );
+
+      print('Delete response: ${response.statusCode} - ${response.body}');
+
+      if (response.statusCode == 200) {
+      } else {
+        print('Failed to delete data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error deleting data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,38 +114,15 @@ class _AfterSalesState extends State<AfterSales> {
                   backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                   toolbarHeight: 65,
                   title: Padding(
-                    padding: EdgeInsets.only(left: screenHeight * 0.02, top: 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 300,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                          ),
-                          child: DropdownButton<String>(
-                            alignment: Alignment.center,
-                            hint: Text('--Pilih Nama/Kode Project--'),
-                            value: selectedValue,
-                            underline: SizedBox(),
-                            borderRadius: BorderRadius.circular(5),
-                            items: dropdownItems.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedValue = newValue;
-                              });
-                            },
-                          ),
-                        ),
-                      ],
+                    padding: EdgeInsets.only(left: screenHeight * 0.02),
+                    child: Text(
+                      'After Sales',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Donegal One',
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   actions: [
@@ -99,6 +132,36 @@ class _AfterSalesState extends State<AfterSales> {
                         children: [
                           SizedBox(
                             width: screenWidth * 0.005,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            width: 250,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: TextField(
+                                    onChanged: _updateSearchQuery,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Cari',
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
                           ),
                           IconButton(
                             icon: Icon(
@@ -149,6 +212,14 @@ class _AfterSalesState extends State<AfterSales> {
   }
 
   Widget _buildMainTable() {
+    List filteredData = _listdata.where((data) {
+      String nama = data['nama'] ?? '';
+      String noProduk = data['noProduk'] ?? '';
+      String targetMulai = data['targetMulai'] ?? '';
+      return nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          noProduk.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          targetMulai.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
     return Container(
       alignment: Alignment.center,
       child: SingleChildScrollView(
@@ -209,67 +280,112 @@ class _AfterSalesState extends State<AfterSales> {
                   ),
                 ),
               ],
-              rows: [
-                DataRow(cells: [
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('abc'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewAfterSales()),
-                                );
-                              },
+              rows: filteredData
+                  .asMap()
+                  .map(
+                    (index, data) => MapEntry(
+                      index,
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text((index + 1).toString()),
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(data['nama'] ?? ''),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(data['noProduk'] ?? ''),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(data['targetMulai'] ?? ''),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.visibility),
+                                      onPressed: () async {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ViewAfterSales(
+                                              selectedProject: {
+                                                "no_aftersales":
+                                                    filteredData[index]
+                                                        ['no_aftersales'],
+                                                "noProduk": filteredData[index]
+                                                    ['noProduk'],
+                                                "nama": filteredData[index]
+                                                    ['nama'],
+                                                "targetMulai":
+                                                    filteredData[index]
+                                                        ['targetMulai'],
+                                                "dtlKekurangan":
+                                                    filteredData[index]
+                                                        ['dtlKekurangan'],
+                                                "item": filteredData[index]
+                                                    ['item'],
+                                                "keterangan":
+                                                    filteredData[index]
+                                                        ['keterangan'],
+                                                "saran": filteredData[index]
+                                                    ['saran'],
+                                              },
+                                            ),
+                                          ),
+                                        ).then((result) {
+                                          if (result != null && result) {}
+                                        });
+                                      },
+                                    ),
+                                    SizedBox(width: 10),
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () {
+                                        _showDeleteDialog(filteredData[index]
+                                                ['noProduk']
+                                            .toString());
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ]),
-              ],
+                  )
+                  .values
+                  .toList(),
             ),
           ),
         ),
@@ -479,6 +595,35 @@ class _AfterSalesState extends State<AfterSales> {
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteDialog(String id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Delete", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin menghapus data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () async {
+                await _hapusData(id);
+                Navigator.of(context).pop();
+              },
+              child: Text("Hapus", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
