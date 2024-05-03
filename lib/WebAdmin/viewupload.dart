@@ -1,5 +1,6 @@
 import 'dart:convert';
-
+import 'dart:typed_data';
+import 'dart:html' as html;
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
@@ -13,8 +14,6 @@ import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 
 class ViewUpload extends StatefulWidget {
   final Map<String, dynamic>? newProject;
@@ -47,7 +46,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
+          'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -65,25 +64,16 @@ class _ViewUploadState extends State<ViewUpload> {
 
   @override
   void initState() {
-    if (widget.newProject != null) {
-      _listdata.add(widget.newProject!);
-      updateData();
-    }
     _getdata();
     super.initState();
     _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-  }
-
-  Future<void> updateData() async {
-    await _getdata();
-    setState(() {});
   }
 
   Future<void> _hapusData(String id) async {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php',
+          'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php',
         ),
         body: {
           "no": id,
@@ -93,7 +83,6 @@ class _ViewUploadState extends State<ViewUpload> {
       print('Delete response: ${response.statusCode} - ${response.body}');
 
       if (response.statusCode == 200) {
-        await updateData();
       } else {
         print('Failed to delete data: ${response.statusCode}');
       }
@@ -102,24 +91,25 @@ class _ViewUploadState extends State<ViewUpload> {
     }
   }
 
-  Future<void> _downloadFileFromDatabase(Map<String, dynamic> data) async {
+  Future<void> _downloadFileFromDatabase(
+      Map<String, dynamic> data, String fileName) async {
     if (data['file'] != null) {
       String fileUrl = data['file'];
-      String fileName = data['file'].split('/').last;
 
       try {
-        // Mendapatkan direktori penyimpanan eksternal
-        Directory? directory = await getExternalStorageDirectory();
-        String path = directory!.path;
-
-        // Mendownload file
         var response = await http.get(Uri.parse(fileUrl));
-        File file = File('$path/$fileName');
-        await file.writeAsBytes(response.bodyBytes);
+        Uint8List fileBytes = response.bodyBytes;
 
-        // Memberi notifikasi kepada pengguna bahwa file telah didownload
+        final blob = html.Blob([fileBytes]);
+        final url = html.Url.createObjectUrlFromBlob(blob);
+        final anchor = html.AnchorElement(href: url)
+          ..setAttribute('download', fileName)
+          ..click();
+
+        html.Url.revokeObjectUrl(url);
+
         _scaffoldMessengerKey.currentState?.showSnackBar(
-          SnackBar(content: Text('File $fileName telah berhasil didownload')),
+          SnackBar(content: Text('File $fileName berhasil didownload')),
         );
       } catch (e) {
         print('Error downloading file: $e');
@@ -413,7 +403,8 @@ class _ViewUploadState extends State<ViewUpload> {
                                   IconButton(
                                     icon: Icon(Icons.file_download_outlined),
                                     onPressed: () {
-                                      _downloadFileFromDatabase(data);
+                                      _downloadFileFromDatabase(
+                                          data, data['file'].split('/').last);
                                     },
                                   ),
                                   SizedBox(width: 10),

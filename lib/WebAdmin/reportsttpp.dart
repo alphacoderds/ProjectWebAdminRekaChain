@@ -31,8 +31,6 @@ class _ReportSTTPState extends State<ReportSTTPP> {
   bool _isloading = true;
 
   int _selectedIndex = 0;
-  List<String> dropdownItems = [];
-  String? selectedValue;
 
   String _searchQuery = '';
 
@@ -42,27 +40,11 @@ class _ReportSTTPState extends State<ReportSTTPP> {
     });
   }
 
-  Future<void> fetchProjectNames() async {
-    final response = await http.get(Uri.parse(
-        'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = jsonDecode(response.body);
-
-      setState(() {
-        dropdownItems = ['--Pilih Nama/Kode Project--'];
-        dropdownItems.addAll(data.map((e) => e['namaProject'].toString()));
-      });
-    } else {
-      throw Exception('Failed to load project names');
-    }
-  }
-
   Future _getdata() async {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -78,18 +60,9 @@ class _ReportSTTPState extends State<ReportSTTPP> {
     }
   }
 
-  Future<void> updateData() async {
-    await _getdata();
-    setState(() {});
-  }
-
   @override
   void initState() {
     super.initState();
-    fetchProjectNames();
-    if (widget.newProject != null) {
-      _listdata.add(widget.newProject!);
-    }
     _getdata();
   }
 
@@ -123,40 +96,14 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                       toolbarHeight: 65,
                       title: Padding(
                         padding: EdgeInsets.only(left: screenHeight * 0.02),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 300,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 8),
-                                  Expanded(
-                                    child: TextField(
-                                      onChanged: _updateSearchQuery,
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: 'Cari',
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                      Icons.search,
-                                      size: 30,
-                                    ),
-                                    onPressed: () {},
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                        child: Text(
+                          'Report STTPP',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Donegal One',
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       actions: [
@@ -166,6 +113,36 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                             children: [
                               SizedBox(
                                 width: screenWidth * 0.005,
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 7),
+                                width: 250,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      child: TextField(
+                                        onChanged: _updateSearchQuery,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: 'Cari',
+                                        ),
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.search,
+                                        size: 30,
+                                      ),
+                                      onPressed: () {},
+                                    ),
+                                  ],
+                                ),
                               ),
                               IconButton(
                                 icon: Icon(
@@ -218,6 +195,12 @@ class _ReportSTTPState extends State<ReportSTTPP> {
   }
 
   Widget _buildMainTable() {
+    List filteredData = _listdata.where((data) {
+      String nama = data['nama'] ?? '';
+      String kodeLot = data['kodelot'] ?? '';
+      return nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
     return Container(
       alignment: Alignment.center,
       child: SingleChildScrollView(
@@ -230,7 +213,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columnSpacing: 200.0,
-              horizontalMargin: 200.0,
+              horizontalMargin: 100.0,
               columns: [
                 DataColumn(
                   label: Center(
@@ -269,58 +252,173 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                   ),
                 ),
               ],
-              rows: [
-                DataRow(cells: [
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Center(
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.visibility),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ViewReportSTTPP()),
-                                );
-                              },
+              rows: filteredData
+                  .asMap()
+                  .map(
+                    (index, data) => MapEntry(
+                      index,
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text((index + 1).toString()),
+                              ),
                             ),
-                          ],
-                        ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(data['nama'] ?? ''),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(data['kodeLot'] ?? ''),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.visibility),
+                                      onPressed: () async {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ViewReportSTTPP(
+                                              selectedProject: {
+                                                "id_lot": filteredData[index]
+                                                    ['id_lot'],
+                                                "noProduk": filteredData[index]
+                                                    ['noProduk'],
+                                                "nama": filteredData[index]
+                                                    ['nama'],
+                                                "noIndukProduk":
+                                                    filteredData[index]
+                                                        ['noIndukProduk'],
+                                                "noSeriAwal":
+                                                    filteredData[index]
+                                                        ['noSeriAwal'],
+                                                "targetMulai":
+                                                    filteredData[index]
+                                                        ['targetMulai'],
+                                                "namaProduk":
+                                                    filteredData[index]
+                                                        ['namaProduk'],
+                                                "jumlahLot": filteredData[index]
+                                                    ['jumlahLot'],
+                                                "kodeLot": filteredData[index]
+                                                    ['kodeLot'],
+                                                "noSeriAkhir":
+                                                    filteredData[index]
+                                                        ['noSeriAkhir'],
+                                                "targetSelesai":
+                                                    filteredData[index]
+                                                        ['targetSelesai'],
+                                                "ap1": filteredData[index]
+                                                    ['ap1'],
+                                                "kategori1": filteredData[index]
+                                                    ['kategori1'],
+                                                "keterangan1":
+                                                    filteredData[index]
+                                                        ['keterangan1'],
+                                                "ap2": filteredData[index]
+                                                    ['ap2'],
+                                                "kategori2": filteredData[index]
+                                                    ['kategori2'],
+                                                "keterangan2":
+                                                    filteredData[index]
+                                                        ['keterangan2'],
+                                                "ap3": filteredData[index]
+                                                    ['ap3'],
+                                                "kategori3": filteredData[index]
+                                                    ['kategori3'],
+                                                "keterangan3":
+                                                    filteredData[index]
+                                                        ['keterangan3'],
+                                                "ap4": filteredData[index]
+                                                    ['ap4'],
+                                                "kategori4": filteredData[index]
+                                                    ['kategori4'],
+                                                "keterangan4":
+                                                    filteredData[index]
+                                                        ['keterangan4'],
+                                                "ap5": filteredData[index]
+                                                    ['ap5'],
+                                                "kategori5": filteredData[index]
+                                                    ['kategori5'],
+                                                "keterangan5":
+                                                    filteredData[index]
+                                                        ['keterangan5'],
+                                                "ap6": filteredData[index]
+                                                    ['ap6'],
+                                                "kategori6": filteredData[index]
+                                                    ['kategori6'],
+                                                "keterangan6":
+                                                    filteredData[index]
+                                                        ['keterangan6'],
+                                                "ap7": filteredData[index]
+                                                    ['ap7'],
+                                                "kategori7": filteredData[index]
+                                                    ['kategori7'],
+                                                "keterangan7":
+                                                    filteredData[index]
+                                                        ['keterangan7'],
+                                                "ap8": filteredData[index]
+                                                    ['ap8'],
+                                                "kategori8": filteredData[index]
+                                                    ['kategori8'],
+                                                "keterangan8":
+                                                    filteredData[index]
+                                                        ['keterangan8'],
+                                                "ap9": filteredData[index]
+                                                    ['ap9'],
+                                                "kategori9": filteredData[index]
+                                                    ['kategori9'],
+                                                "keterangan9":
+                                                    filteredData[index]
+                                                        ['keterangan9'],
+                                                "ap10": filteredData[index]
+                                                    ['ap10'],
+                                                "kategori10":
+                                                    filteredData[index]
+                                                        ['kategori10'],
+                                                "keterangan10":
+                                                    filteredData[index]
+                                                        ['keterangan10'],
+                                              },
+                                            ),
+                                          ),
+                                        ).then((result) {
+                                          if (result != null && result) {}
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ]),
-              ],
+                  )
+                  .values
+                  .toList(),
             ),
           ),
         ),

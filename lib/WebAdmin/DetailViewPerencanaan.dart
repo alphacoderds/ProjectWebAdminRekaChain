@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'dart:html' as html;
+import 'dart:async';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
@@ -18,7 +20,7 @@ import 'package:RekaChain/WebAdmin/viewperencanaan.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:barcode_widget/barcode_widget.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:barcode_image/barcode_image.dart';
 
 class DetailViewPerencanaan extends StatefulWidget {
   final Map<String, dynamic> selectedProject;
@@ -96,7 +98,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -211,10 +213,10 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
         TextEditingController(text: widget.selectedProject['kategori10'] ?? '');
     detail10controller = TextEditingController(
         text: widget.selectedProject['keterangan10'] ?? '');
+    _generateBarcode();
   }
 
-  GlobalKey _qrCodeWidgetKey = GlobalKey();
-  bool _qrCodeGenerated = false;
+  GlobalKey _qrCodeKey = GlobalKey();
 
   void _generateBarcode() async {
     String idLot = idLotcontroller.text;
@@ -224,82 +226,57 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
     setState(() {
       qrCodeWidget = Builder(
         builder: (context) => RepaintBoundary(
-          key: _qrCodeWidgetKey,
           child: Column(
             children: [
-              BarcodeWidget(
-                barcode: Barcode.qrCode(),
-                data: idLot,
-                color: Colors.black,
-                height: 200,
-                width: 200,
-              ),
-              SizedBox(height: 10),
-              Text(
-                '$namaProject - $noProduk',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              RepaintBoundary(
+                key: _qrCodeKey,
+                child: Column(
+                  children: [
+                    BarcodeWidget(
+                      barcode: Barcode.qrCode(),
+                      data: idLot,
+                      color: Colors.black,
+                      height: 200,
+                      width: 200,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      '$namaProject - $noProduk',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
       );
     });
-    _qrCodeGenerated = true;
-  }
 
-  void _downloadQRCode() async {
-    if (!_qrCodeGenerated) {
-      _generateBarcode();
-    }
-
-    WidgetsBinding.instance?.addPostFrameCallback((_) async {
-      if (_qrCodeWidgetKey.currentContext != null) {
-        Uint8List imageBytes = await _captureWidgetToImage(_qrCodeWidgetKey);
-
-        final result = await ImageGallerySaver.saveImage(imageBytes);
-        if (result['isSuccess']) {
-          print('Image saved to gallery.');
-        } else {
-          print('Failed to save image: ${result['errorMessage']}');
-        }
-      } else {
-        print('Error: QR code widget has not been rendered yet.');
-      }
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      saveQRCodeAsImage(_qrCodeKey, noProdukcontroller.text);
     });
   }
 
-  Future<Uint8List> _captureWidgetToImage(GlobalKey key) async {
+  Future<void> saveQRCodeAsImage(GlobalKey qrKey, String noProduk) async {
     try {
-      final boundary =
-          key.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      final image = await boundary.toImage(pixelRatio: 3.0);
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      return byteData!.buffer.asUint8List();
-    } catch (e) {
-      print('Error capturing widget to image: $e');
-      return Uint8List(0);
-    }
-  }
+      RenderRepaintBoundary boundary =
+          qrKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData? byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      Uint8List pngBytes = byteData!.buffer.asUint8List();
 
-  Future<ByteData> _capturePng(Widget? widget) async {
-    try {
-      final RenderRepaintBoundary boundary = RenderRepaintBoundary();
-      final RenderObject? root =
-          _qrCodeWidgetKey.currentContext?.findRenderObject();
-      if (root != null && boundary != null) {
-        final double pixelRatio = ui.window.devicePixelRatio;
-        final Offset layerOffset = Offset.zero;
-        final Size logicalSize = ui.window.physicalSize / pixelRatio;
-        final Rect renderBounds = layerOffset & logicalSize;
-        final ui.Image image = await boundary.toImage(pixelRatio: pixelRatio);
-        final ByteData? byteData =
-            await image.toByteData(format: ui.ImageByteFormat.png);
-        return byteData!;
-      }
-      return ByteData(0);
+      final blob = html.Blob([pngBytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.AnchorElement(href: url)
+        ..setAttribute('download', '$noProduk.png')
+        ..click();
+
+      html.Url.revokeObjectUrl(url);
     } catch (e) {
-      print('Error capturing widget to image: $e');
-      return ByteData(0);
+      print("Error saving QR code: $e");
     }
   }
 
@@ -392,7 +369,8 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                         color: Colors.white,
                                       ),
                                       onPressed: () {
-                                        _downloadQRCode();
+                                        saveQRCodeAsImage(_qrCodeKey,
+                                            noProdukcontroller.text);
                                       },
                                     ),
                                     IconButton(
@@ -953,38 +931,6 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                                                 BorderSide(
                                                                     width: 1),
                                                           ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 30,
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  children: [
-                                                    ElevatedButton(
-                                                      onPressed:
-                                                          _generateBarcode,
-                                                      child: Text(
-                                                        'Generate QR Code',
-                                                      ),
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        foregroundColor:
-                                                            Colors.white,
-                                                        backgroundColor:
-                                                            const Color
-                                                                .fromRGBO(
-                                                                43, 56, 86, 1),
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10.0),
                                                         ),
                                                       ),
                                                     ),

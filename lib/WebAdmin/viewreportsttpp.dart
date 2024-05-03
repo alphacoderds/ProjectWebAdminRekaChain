@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:html';
 
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
@@ -12,8 +13,13 @@ import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:barcode_widget/barcode_widget.dart';
 
 class ViewReportSTTPP extends StatefulWidget {
+  final Map<String, dynamic> selectedProject;
+  const ViewReportSTTPP({Key? key, this.selectedProject = const {}})
+      : super(key: key);
   @override
   State<ViewReportSTTPP> createState() => _ViewReportSTTPState();
 }
@@ -24,12 +30,105 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
   late double screenHeight = MediaQuery.of(context).size.height;
 
   int _selectedIndex = 0;
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue;
+
+  TextEditingController idLotcontroller = TextEditingController();
+  TextEditingController namaProjectcontroller = TextEditingController();
+  TextEditingController noProdukcontroller = TextEditingController();
+  TextEditingController noIndukProdukcontroller = TextEditingController();
+  TextEditingController noSeriAwalcontroller = TextEditingController();
+  TextEditingController namaProdukcontroller = TextEditingController();
+  TextEditingController jumlahLotcontroller = TextEditingController();
+  TextEditingController kodeLotcontroller = TextEditingController();
+  TextEditingController noSeriAkhircontroller = TextEditingController();
+  TextEditingController tglMulaicontroller = TextEditingController();
+  TextEditingController tglSelesaicontroller = TextEditingController();
+  TextEditingController alurProses1controller = TextEditingController();
+  TextEditingController kategori1controller = TextEditingController();
+  TextEditingController detail1controller = TextEditingController();
+
+  void fetchData() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
+      );
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final noProduk = responseData['noProduk'];
+        setState(() {
+          noProdukcontroller.text = noProduk;
+        });
+      } else {
+        print('Failed to fetch data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+
+    idLotcontroller =
+        TextEditingController(text: widget.selectedProject['id_lot'] ?? '');
+    noProdukcontroller =
+        TextEditingController(text: widget.selectedProject['noProduk'] ?? '');
+    noIndukProdukcontroller = TextEditingController(
+        text: widget.selectedProject['noIndukProduk'] ?? '');
+    namaProjectcontroller =
+        TextEditingController(text: widget.selectedProject['nama'] ?? '');
+    noSeriAwalcontroller =
+        TextEditingController(text: widget.selectedProject['noSeriAwal'] ?? '');
+    namaProdukcontroller =
+        TextEditingController(text: widget.selectedProject['namaProduk'] ?? '');
+    jumlahLotcontroller =
+        TextEditingController(text: widget.selectedProject['jumlahLot'] ?? '');
+    kodeLotcontroller =
+        TextEditingController(text: widget.selectedProject['kodeLot'] ?? '');
+    noSeriAkhircontroller = TextEditingController(
+        text: widget.selectedProject['noSeriAkhir'] ?? '');
+    tglMulaicontroller = TextEditingController(
+        text: widget.selectedProject['targetMulai'] ?? '');
+    tglSelesaicontroller = TextEditingController(
+        text: widget.selectedProject['targetSelesai'] ?? '');
+
+    alurProses1controller =
+        TextEditingController(text: widget.selectedProject['ap1'] ?? '');
+    kategori1controller =
+        TextEditingController(text: widget.selectedProject['kategori1'] ?? '');
+    detail1controller = TextEditingController(
+        text: widget.selectedProject['keterangan1'] ?? '');
+
+    _generateBarcode();
+  }
+
+  Widget? qrCodeWidget;
+  void _generateBarcode() async {
+    String idLot = idLotcontroller.text;
+    String namaProject = namaProjectcontroller.text;
+    String noProduk = noProdukcontroller.text;
+
+    setState(() {
+      qrCodeWidget = Column(
+        children: [
+          BarcodeWidget(
+            barcode: Barcode.qrCode(),
+            data: idLot,
+            color: Colors.black,
+            height: 37,
+            width: 37,
+          ),
+          SizedBox(height: 5),
+          Text(
+            '$namaProject - $noProduk',
+            style: TextStyle(fontSize: 4, fontWeight: FontWeight.bold),
+          ),
+        ],
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +249,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columnSpacing: 200.0,
-              horizontalMargin: 50.0,
+              horizontalMargin: 100.0,
               columns: [
                 DataColumn(
                   label: Center(
@@ -223,7 +322,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                       scrollDirection: Axis.horizontal,
                       child: Container(
                         alignment: Alignment.center,
-                        child: Text('1'),
+                        child: Text((1).toString()),
                       ),
                     ),
                   ),
@@ -232,7 +331,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                       scrollDirection: Axis.horizontal,
                       child: Container(
                         alignment: Alignment.center,
-                        child: Text('1'),
+                        child: qrCodeWidget ?? Container(),
                       ),
                     ),
                   ),
@@ -241,7 +340,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                       scrollDirection: Axis.horizontal,
                       child: Container(
                         alignment: Alignment.center,
-                        child: Text('1'),
+                        child: Text(alurProses1controller.text),
                       ),
                     ),
                   ),
@@ -250,7 +349,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                       scrollDirection: Axis.horizontal,
                       child: Container(
                         alignment: Alignment.center,
-                        child: Text('1'),
+                        child: Text(tglMulaicontroller.text),
                       ),
                     ),
                   ),
@@ -259,7 +358,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                       scrollDirection: Axis.horizontal,
                       child: Container(
                         alignment: Alignment.center,
-                        child: Text('1'),
+                        child: Text(tglSelesaicontroller.text),
                       ),
                     ),
                   ),
