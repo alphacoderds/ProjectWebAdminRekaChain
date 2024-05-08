@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:crypto/crypto.dart';
 import 'package:RekaChain/WebAdmin/liststaff.dart';
+import 'package:RekaChain/WebAdmin/profile.dart';
+import 'package:RekaChain/WebAdmin/dbLogin.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -44,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> validateLogin(String nip, String password) async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.10.99/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
+          'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
       body: {
         'nip': nip,
         'password': hashPassword(password),
@@ -71,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<String?> getUserRole(String nip) async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.10.99/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
+          'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
       body: {
         'nip': nip,
       },
@@ -95,6 +97,15 @@ class _LoginPageState extends State<LoginPage> {
           'Login Failed', 'Please enter both username and password.');
       return;
     }
+
+    final response = await http.post(
+      Uri.parse(
+          'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
+      body: {
+        'nip': nip,
+        'password': password,
+      },
+    );
 
     bool isValid = await validateLogin(nip, password);
 
@@ -148,14 +159,15 @@ class _LoginPageState extends State<LoginPage> {
     final hashedPassword = hashPassword(passwordController.text);
     var response = await http.post(
         Uri.parse(
-            'http://192.168.10.99/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
+            'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
         body: {"nip": nipController.text, "password": hashedPassword});
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data['status'] == "Success") {
         String role = data['role']; // Mengambil peran pengguna dari respons
-
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('username', data['username ']);
         if (role == 'admin') {
           Navigator.pushReplacement(
             context,

@@ -1,5 +1,7 @@
 import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -18,6 +20,34 @@ class _EditProfileState extends State<EditProfile> {
   TextEditingController nipController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController statusController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    namaLengkapController = TextEditingController();
+    jabatanController = TextEditingController();
+    unitKerjaController = TextEditingController();
+    departemenController = TextEditingController();
+    divisiController = TextEditingController();
+    nomorTeleponController = TextEditingController();
+    nipController = TextEditingController();
+    passwordController = TextEditingController();
+    statusController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    namaLengkapController.dispose();
+    jabatanController.dispose();
+    unitKerjaController.dispose();
+    departemenController.dispose();
+    divisiController.dispose();
+    nomorTeleponController.dispose();
+    nipController.dispose();
+    passwordController.dispose();
+    statusController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +236,7 @@ class _EditProfileState extends State<EditProfile> {
         image: const DecorationImage(
           fit: BoxFit.cover,
           alignment: Alignment.center,
-          image: AssetImage('assets/images/profile-illustration.png'),
+          image: AssetImage('assets/images/profil.png'),
         ),
       ),
     );

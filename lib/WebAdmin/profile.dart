@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:RekaChain/WebAdmin/editprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   final Map<String, dynamic>? newStaff;
@@ -17,7 +17,6 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-
   List _listdata = [];
   bool _isloading = true;
 
@@ -25,13 +24,14 @@ class _ProfileState extends State<Profile> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/read.php',
+          'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
         ),
       );
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {
           _listdata = data;
+          _isloading = false;
         });
       }
     } catch (e) {
@@ -249,7 +249,7 @@ class _ProfileState extends State<Profile> {
         image: const DecorationImage(
           fit: BoxFit.cover,
           alignment: Alignment.center,
-          image: AssetImage('assets/images/profile-illustration.png'),
+          image: AssetImage('assets/images/profil.png'),
         ),
       ),
     );
