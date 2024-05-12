@@ -3,7 +3,7 @@
 header("Content-Type: application/json");
 
 // Header untuk mengizinkan akses dari berbagai domain (CORS)
-header("Access-Control-Allow-Origin:");
+header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: POST");
 
@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = $conn->prepare($sql);
 
     // Bind parameter ke statement
-    $stmt->bind_param("i", $nip);
+    $stmt->bind_param("s", $nip);
 
     // Eksekusi statement
     $stmt->execute();

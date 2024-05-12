@@ -10,6 +10,7 @@ class Profile extends StatefulWidget {
 
   const Profile({Key? key, this.newStaff, this.tambahStaffData})
       : super(key: key);
+
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -19,23 +20,30 @@ class _ProfileState extends State<Profile> {
   late double screenHeight = MediaQuery.of(context).size.height;
   List _listdata = [];
   bool _isloading = true;
+  Map<String, dynamic> _userData = {};
 
   Future<void> _getdata() async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
-        ),
-      );
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        setState(() {
-          _listdata = data;
-          _isloading = false;
-        });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? nip = prefs.getString('nip');
+    if (nip != null) {
+      try {
+        final response = await http.get(
+          Uri.parse(
+            'http://10.208.32.215/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
+          ),
+        );
+        if (response.statusCode == 200) {
+          final List<dynamic> data = jsonDecode(response.body);
+          setState(() { 
+            _userData = data[0];
+            _isloading = false;
+          });
+        } else {
+          print('Failed to load user data: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error: $e');
       }
-    } catch (e) {
-      print('Error: $e');
     }
   }
 

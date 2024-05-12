@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> validateLogin(String nip, String password) async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
+          'http://10.208.32.215/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
       body: {
         'nip': nip,
         'password': hashPassword(password),
@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<String?> getUserRole(String nip) async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
+          'http://localhost/ProjectWebAdminRekaChain/lib/Project/test.php'),
       body: {
         'nip': nip,
       },
@@ -100,37 +100,32 @@ class _LoginPageState extends State<LoginPage> {
 
     final response = await http.post(
       Uri.parse(
-          'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
+          'http://localhost/ProjectWebAdminRekaChain/lib/Project/test.php'),
       body: {
         'nip': nip,
         'password': password,
       },
     );
-
-    bool isValid = await validateLogin(nip, password);
-
-    if (isValid) {
-      String? userRole = await getUserRole(nip);
-      if (userRole == null) {
-        _showAlertDialog('Login Failed', 'Failed to retrieve user role.');
-        return;
-      }
-
-      if (userRole == 'admin') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => AdminDashboard()),
-        );
-      } else if (userRole == 'user') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => UserDashboard()),
-        );
-      } else {
-        _showAlertDialog('Login Failed', 'Invalid user role.');
-      }
+    if (response.statusCode != 200) {
+      _showAlertDialog('Login Failed', 'User Not Found');
     } else {
-      _showAlertDialog('Login Failed', 'Invalid username or password.');
+      var jsonData = json.decode(response.body);
+      dynamic data = (jsonData as Map<String, dynamic>);
+      String role = data['role'];
+
+      if (role == 'admin') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => AdminDashboard()),
+          );
+        } else if (role == 'user') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => UserDashboard()),
+          );
+        } else {
+          _showAlertDialog('Login Failed', 'Invalid user role.');
+        }
     }
   }
 
@@ -159,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
     final hashedPassword = hashPassword(passwordController.text);
     var response = await http.post(
         Uri.parse(
-            'http://192.168.11.9/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
+            'http://10.208.32.215/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
         body: {"nip": nipController.text, "password": hashedPassword});
 
     if (response.statusCode == 200) {
