@@ -14,7 +14,7 @@ class Notifikasi extends StatefulWidget {
   final DataModel data;
   final String nip;
   const Notifikasi({Key? key, required this.data, required this.nip});
-  
+
   @override
   State<Notifikasi> createState() => _NotifikasiState();
 }
@@ -99,7 +99,9 @@ class _NotifikasiState extends State<Notifikasi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile()),
+                                  builder: (context) => Profile(
+                                      data: widget.data, nip: widget.nip),
+                                ),
                               );
                             },
                           ),
@@ -176,7 +178,8 @@ class _NotifikasiState extends State<Notifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           } else {
@@ -232,28 +235,32 @@ class _NotifikasiState extends State<Notifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -299,50 +306,50 @@ class _NotifikasiState extends State<Notifikasi> {
   }
 
   Widget ListViewItem(BuildContext context, int index) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Subnotifikasi(data: widget.data,nip: widget.nip),
-        ),
-      );
-    },
-    child: Container(
-      margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          prefixIcon(),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  message(index),
-                ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                Subnotifikasi(data: widget.data, nip: widget.nip),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            prefixIcon(),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    message(index),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-Widget _ListView() {
-  return ListView.separated(
-    itemBuilder: (context, index) {
-      return ListViewItem(context, index);
-    },
-    separatorBuilder: (context, index) {
-      return Divider(height: 0);
-    },
-    itemCount: 15,
-  );
-}
-
+  Widget _ListView() {
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return ListViewItem(context, index);
+      },
+      separatorBuilder: (context, index) {
+        return Divider(height: 0);
+      },
+      itemCount: 15,
+    );
+  }
 }
 
 Widget prefixIcon() {

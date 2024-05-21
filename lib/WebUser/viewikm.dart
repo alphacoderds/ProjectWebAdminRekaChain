@@ -39,7 +39,7 @@ class _ViewkmState extends State<Viewkm> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Viewkm(data: widget.data,nip: widget.nip),
+              builder: (context) => Viewkm(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -152,7 +152,8 @@ class _ViewkmState extends State<Viewkm> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi(data: widget.data,nip: widget.nip)),
+                                    builder: (context) => Notifikasi(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -166,7 +167,8 @@ class _ViewkmState extends State<Viewkm> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile()),
+                                    builder: (context) => Profile(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -200,7 +202,9 @@ class _ViewkmState extends State<Viewkm> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => InputMaterial(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          InputMaterial(data: widget.data, nip: widget.nip)),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -405,7 +409,8 @@ class _ViewkmState extends State<Viewkm> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           } else {
@@ -461,28 +466,32 @@ class _ViewkmState extends State<Viewkm> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -512,7 +521,9 @@ class _ViewkmState extends State<Viewkm> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

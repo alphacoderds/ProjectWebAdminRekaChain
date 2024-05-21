@@ -1,5 +1,7 @@
-import 'package:RekaChain/WebAdmin/data_model.dart';
+import 'dart:convert';
+import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebUser/login.dart';
@@ -8,11 +10,13 @@ import 'package:RekaChain/WebUser/profile.dart';
 import 'package:RekaChain/WebUser/reportsttpp.dart';
 import 'package:RekaChain/WebUser/viewperencanaan.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class Perencanaan extends StatefulWidget {
-  const Perencanaan({super.key, required this.nip, required this.data});
-  final String nip;
   final DataModel data;
+  final String nip;
+  const Perencanaan({super.key, required this.data, required this.nip});
 
   @override
   State<Perencanaan> createState() => _PerencanaanState();
@@ -24,672 +28,321 @@ class _PerencanaanState extends State<Perencanaan> {
   bool isViewVisible = false;
 
   int _selectedIndex = 0;
-  late List<String> dropdownItems;
-  String? selectedValue;
+  late List<String> dropdownItemsnamaProject = [];
+  String? selectedValuenamaProject;
 
-  late List<String> dropdownItemsAlurProses;
-  String? selectedValueAlurProses;
+  List<String> dropdownItemsAlurProses1 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses1;
 
-  late List<String> dropdownItemsKategori;
-  String? selectedValueKategori;
+  List<String> dropdownItemsKategori1 = ['Produk', 'Material'];
+  String? selectedValueKategori1;
 
-  List<DataRow> rowsData = [];
+  List<String> dropdownItemsAlurProses2 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses2;
 
-//===========================================================Widget Tambah Table Alur===========================================================//
-  void addRow() {
-    setState(() {
-      rowsData.add(DataRow(cells: [
-        DataCell(DropdownButton<String>(
-          alignment: Alignment.center,
-          hint: Text('--Pilih Alur Proses--', style: TextStyle(fontSize: 15)),
-          value: selectedValueAlurProses,
-          borderRadius: BorderRadius.circular(5),
-          focusColor: Colors.white,
-          items: dropdownItemsAlurProses.map((String value) {
-            return DropdownMenuItem<String>(value: value, child: Text(value));
-          }).toList(),
-          onChanged: onAlurProsesChanged,
-          dropdownColor: Colors.white,
-        )),
-        DataCell(DropdownButton<String>(
-          alignment: Alignment.center,
-          hint: Text('--Pilih Kategori--', style: TextStyle(fontSize: 15)),
-          value: selectedValueKategori,
-          borderRadius: BorderRadius.circular(5),
-          focusColor: Colors.white,
-          items: dropdownItemsKategori.map((String value) {
-            return DropdownMenuItem<String>(value: value, child: Text(value));
-          }).toList(),
-          onChanged: onKategoriChanged,
-          dropdownColor: Colors.white,
-        )),
-        DataCell(Container(
-          height: 100,
-          width: 300,
-          child: TextField(
-            maxLines: 5,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(
-                vertical: screenHeight * 0.005,
-                horizontal: screenWidth * 0.005,
-              ),
-            ),
-          ),
-        )),
-      ]));
-    });
+  List<String> dropdownItemsKategori2 = ['Produk', 'Material'];
+  String? selectedValueKategori2;
+
+  List<String> dropdownItemsAlurProses3 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses3;
+
+  List<String> dropdownItemsKategori3 = ['Produk', 'Material'];
+  String? selectedValueKategori3;
+
+  List<String> dropdownItemsAlurProses4 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses4;
+
+  List<String> dropdownItemsKategori4 = ['Produk', 'Material'];
+  String? selectedValueKategori4;
+
+  List<String> dropdownItemsAlurProses5 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses5;
+
+  List<String> dropdownItemsKategori5 = ['Produk', 'Material'];
+  String? selectedValueKategori5;
+
+  List<String> dropdownItemsAlurProses6 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses6;
+
+  List<String> dropdownItemsKategori6 = ['Produk', 'Material'];
+  String? selectedValueKategori6;
+
+  List<String> dropdownItemsAlurProses7 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses7;
+
+  List<String> dropdownItemsKategori7 = ['Produk', 'Material'];
+  String? selectedValueKategori7;
+
+  List<String> dropdownItemsAlurProses8 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses8;
+
+  List<String> dropdownItemsKategori8 = ['Produk', 'Material'];
+  String? selectedValueKategori8;
+
+  List<String> dropdownItemsAlurProses9 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses9;
+
+  List<String> dropdownItemsKategori9 = ['Produk', 'Material'];
+  String? selectedValueKategori9;
+
+  List<String> dropdownItemsAlurProses10 = ['PPC', 'Produksi'];
+  String? selectedValueAlurProses10;
+
+  List<String> dropdownItemsKategori10 = ['Produk', 'Material'];
+  String? selectedValueKategori10;
+
+  TextEditingController namaProjectcontroller = TextEditingController();
+  TextEditingController noProdukcontroller = TextEditingController();
+  TextEditingController noSeriAwalcontroller = TextEditingController();
+  TextEditingController namaProdukcontroller = TextEditingController();
+  TextEditingController jumlahLotcontroller = TextEditingController();
+  TextEditingController kodeLotcontroller = TextEditingController();
+  TextEditingController noSeriAkhircontroller = TextEditingController();
+  TextEditingController tglMulaicontroller = TextEditingController();
+  TextEditingController tglSelesaicontroller = TextEditingController();
+
+  TextEditingController alurProses1controller = TextEditingController();
+  TextEditingController kategori1controller = TextEditingController();
+  TextEditingController detail1controller = TextEditingController();
+
+  TextEditingController alurProses2controller = TextEditingController();
+  TextEditingController kategori2controller = TextEditingController();
+  TextEditingController detail2controller = TextEditingController();
+
+  TextEditingController alurProses3controller = TextEditingController();
+  TextEditingController kategori3controller = TextEditingController();
+  TextEditingController detail3controller = TextEditingController();
+
+  TextEditingController alurProses4controller = TextEditingController();
+  TextEditingController kategori4controller = TextEditingController();
+  TextEditingController detail4controller = TextEditingController();
+
+  TextEditingController alurProses5controller = TextEditingController();
+  TextEditingController kategori5controller = TextEditingController();
+  TextEditingController detail5controller = TextEditingController();
+
+  TextEditingController alurProses6controller = TextEditingController();
+  TextEditingController kategori6controller = TextEditingController();
+  TextEditingController detail6controller = TextEditingController();
+
+  TextEditingController alurProses7controller = TextEditingController();
+  TextEditingController kategori7controller = TextEditingController();
+  TextEditingController detail7controller = TextEditingController();
+
+  TextEditingController alurProses8controller = TextEditingController();
+  TextEditingController kategori8controller = TextEditingController();
+  TextEditingController detail8controller = TextEditingController();
+
+  TextEditingController alurProses9controller = TextEditingController();
+  TextEditingController kategori9controller = TextEditingController();
+  TextEditingController detail9controller = TextEditingController();
+
+  TextEditingController alurProses10controller = TextEditingController();
+  TextEditingController kategori10controller = TextEditingController();
+  TextEditingController detail10controller = TextEditingController();
+
+  Future<void> _simpan(BuildContext context) async {
+    final response = await http.post(
+      Uri.parse(
+        "http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
+      ),
+      body: {
+        "nama": selectedValuenamaProject ?? '',
+        "noIndukProduk": noProdukcontroller.text,
+        "noSeriAwal": noSeriAwalcontroller.text,
+        "targetMulai": tglMulaicontroller.text,
+        "namaProduk": namaProdukcontroller.text,
+        "jumlahLot": jumlahLotcontroller.text,
+        "kodeLot": kodeLotcontroller.text,
+        "noSeriAkhir": noSeriAkhircontroller.text,
+        "targetSelesai": tglSelesaicontroller.text,
+        "ap1": selectedValueAlurProses1 ?? '',
+        "kategori1": selectedValueKategori1 ?? '',
+        "keterangan1": detail1controller.text,
+        "ap2": selectedValueAlurProses2 ?? '',
+        "kategori2": selectedValueKategori2 ?? '',
+        "keterangan2": detail2controller.text,
+        "ap3": selectedValueAlurProses3 ?? '',
+        "kategori3": selectedValueKategori3 ?? '',
+        "keterangan3": detail3controller.text,
+        "ap4": selectedValueAlurProses4 ?? '',
+        "kategori4": selectedValueKategori4 ?? '',
+        "keterangan4": detail4controller.text,
+        "ap5": selectedValueAlurProses5 ?? '',
+        "kategori5": selectedValueKategori5 ?? '',
+        "keterangan5": detail5controller.text,
+        "ap6": selectedValueAlurProses6 ?? '',
+        "kategori6": selectedValueKategori6 ?? '',
+        "keterangan6": detail6controller.text,
+        "ap7": selectedValueAlurProses7 ?? '',
+        "kategori7": selectedValueKategori7 ?? '',
+        "keterangan7": detail7controller.text,
+        "ap8": selectedValueAlurProses8 ?? '',
+        "kategori8": selectedValueKategori8 ?? '',
+        "keterangan8": detail8controller.text,
+        "ap9": selectedValueAlurProses9 ?? '',
+        "kategori9": selectedValueKategori9 ?? '',
+        "keterangan9": detail9controller.text,
+        "ap10": selectedValueAlurProses10 ?? '',
+        "kategori10": selectedValueKategori10 ?? '',
+        "keterangan10": detail10controller.text,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final newProjectData = {
+        "id": response.body,
+        "nama": namaProjectcontroller.text,
+        "noIndukProduk": noProdukcontroller.text,
+        "noSeriAwal": noSeriAwalcontroller.text,
+        "targetMulai": tglMulaicontroller.text,
+        "namaProduk": namaProdukcontroller.text,
+        "jumlahLot": jumlahLotcontroller.text,
+        "kodeLot": kodeLotcontroller.text,
+        "noSeriAkhir": noSeriAkhircontroller.text,
+        "targetSelesai": tglSelesaicontroller.text,
+        "ap1": alurProses1controller.text,
+        "kategori1": kategori1controller.text,
+        "keterangan1": detail1controller.text,
+        "ap2": alurProses2controller.text,
+        "kategori2": kategori2controller.text,
+        "keterangan2": detail2controller.text,
+        "ap3": alurProses3controller.text,
+        "kategori3": kategori3controller.text,
+        "keterangan3": detail3controller.text,
+        "ap4": alurProses4controller.text,
+        "kategori4": kategori4controller.text,
+        "keterangan4": detail4controller.text,
+        "ap5": alurProses5controller.text,
+        "kategori5": kategori5controller.text,
+        "keterangan5": detail5controller.text,
+        "ap6": alurProses6controller.text,
+        "kategori6": kategori6controller.text,
+        "keterangan6": detail6controller.text,
+        "ap7": alurProses7controller.text,
+        "kategori7": kategori7controller.text,
+        "keterangan7": detail7controller.text,
+        "ap8": alurProses8controller.text,
+        "kategori8": kategori8controller.text,
+        "keterangan8": detail8controller.text,
+        "ap9": alurProses9controller.text,
+        "kategori9": kategori9controller.text,
+        "keterangan9": detail9controller.text,
+        "ap10": alurProses10controller.text,
+        "kategori10": kategori10controller.text,
+        "keterangan10": detail10controller.text,
+      };
+
+      _showFinishDialog();
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Vperencanaan(
+              newProject: newProjectData, nip: widget.nip, data: widget.data),
+        ),
+      );
+    } else {
+      print('Gagal menyimpan data: ${response.statusCode}');
+    }
+  }
+
+  Future<void> fetchProjectNames() async {
+    final response = await http.get(Uri.parse(
+        'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+
+      setState(() {
+        dropdownItemsnamaProject = ['--Pilih Nama/Kode Project--'];
+        dropdownItemsnamaProject
+            .addAll(data.map((e) => e['idProject'].toString()));
+      });
+    } else {
+      print('Failed to load project names: ${response.statusCode}');
+    }
   }
 
   void initState() {
     super.initState();
-    // Tambahkan satu baris awal
-    rowsData.add(DataRow(cells: [
-      DataCell(Text('Alur Proses')),
-      DataCell(Text('Kategori')),
-      DataCell(Text('Detail/Keterangan')),
-    ]));
-  }
+    fetchProjectNames();
 
-  // Fungsi untuk memperbarui nilai dropdown Alur Proses
-  void onAlurProsesChanged(String? newValue) {
-    setState(() {
-      selectedValueAlurProses = newValue;
-    });
-  }
+    namaProjectcontroller = TextEditingController();
+    noProdukcontroller = TextEditingController();
+    noSeriAwalcontroller = TextEditingController();
+    namaProdukcontroller = TextEditingController();
+    jumlahLotcontroller = TextEditingController();
+    kodeLotcontroller = TextEditingController();
+    noSeriAkhircontroller = TextEditingController();
+    tglMulaicontroller = TextEditingController();
+    tglSelesaicontroller = TextEditingController();
 
-// Fungsi untuk memperbarui nilai dropdown Kategori
-  void onKategoriChanged(String? newValue) {
-    setState(() {
-      selectedValueKategori = newValue;
-    });
-  }
+    alurProses1controller = TextEditingController();
+    kategori1controller = TextEditingController();
+    detail1controller = TextEditingController();
 
-  TextEditingController tglMulaicontroller = TextEditingController();
-  TextEditingController tglSelesaicontroller = TextEditingController();
+    alurProses2controller = TextEditingController();
+    kategori2controller = TextEditingController();
+    detail2controller = TextEditingController();
+
+    alurProses3controller = TextEditingController();
+    kategori3controller = TextEditingController();
+    detail3controller = TextEditingController();
+
+    alurProses4controller = TextEditingController();
+    kategori4controller = TextEditingController();
+    detail4controller = TextEditingController();
+
+    alurProses5controller = TextEditingController();
+    kategori5controller = TextEditingController();
+    detail5controller = TextEditingController();
+
+    alurProses6controller = TextEditingController();
+    kategori6controller = TextEditingController();
+    detail6controller = TextEditingController();
+
+    alurProses7controller = TextEditingController();
+    kategori7controller = TextEditingController();
+    detail7controller = TextEditingController();
+
+    alurProses8controller = TextEditingController();
+    kategori8controller = TextEditingController();
+    detail8controller = TextEditingController();
+
+    alurProses9controller = TextEditingController();
+    kategori9controller = TextEditingController();
+    detail9controller = TextEditingController();
+
+    alurProses10controller = TextEditingController();
+    kategori10controller = TextEditingController();
+    detail10controller = TextEditingController();
+
+    jumlahLotcontroller.addListener(_batasiNoSeriAkhir);
+
+    noProdukcontroller.addListener(_calculateKodeLot);
+    noSeriAwalcontroller.addListener(_calculateKodeLot);
+    noSeriAkhircontroller.addListener(_calculateKodeLot);
+    tglMulaicontroller.addListener(_calculateKodeLot);
+  }
 
   @override
-  Widget build(BuildContext context) {
-    dropdownItems = ['R22-PT. Nugraha Jasa', 'PT. INDAH JAYA'];
+  void dispose() {
+    noProdukcontroller.dispose();
+    noSeriAwalcontroller.dispose();
+    noSeriAkhircontroller.dispose();
+    tglMulaicontroller.dispose();
+    kodeLotcontroller.dispose();
+    super.dispose();
+  }
 
-    dropdownItemsAlurProses = ['PPC', 'Produksi'];
+  void _calculateKodeLot() {
+    setState(() {
+      final tahun = tglMulaicontroller.text.substring(6);
 
-    dropdownItemsKategori = ['Produk', 'Material'];
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: (settings) {
-        switch (settings.name) {
-          case '/':
-            return MaterialPageRoute(
-              builder: (context) => Perencanaan(nip: widget.nip, data: widget.data),
-            );
-          default:
-            return null;
-        }
-      },
-      home: Scaffold(
-        backgroundColor: Color.fromARGB(255, 244, 249, 255),
-        body: Padding(
-          padding: EdgeInsets.only(left: screenWidth * 0.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDrawer(),
-              Expanded(
-                  child: Scaffold(
-//===========================================================Appbar===========================================================//
-                      appBar: AppBar(
-                        backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-                        toolbarHeight: 65,
-                        title: Padding(
-                          padding: EdgeInsets.only(left: screenHeight * 0.01),
-                          child: Text(
-                            'Input Proses',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Donegal One',
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                        actions: [
-                          Padding(
-                            padding:
-                                EdgeInsets.only(right: screenHeight * 0.13),
-                            child: Row(
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Vperencanaan(data: widget.data,nip: widget.nip),
-                                      ),
-                                    );
-                                  },
-                                  child: Text(
-                                    'View',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                    foregroundColor: Colors.white,
-                                    backgroundColor:
-                                        Color.fromARGB(255, 89, 100, 122),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 3),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: screenWidth * 0.005,
-                                ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.notifications_active,
-                                    size: 33,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
-                                      ),
-                                    );
-                                  },
-                                ),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.account_circle_rounded,
-                                    size: 35,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Profile(),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-
-//===========================================================Body Tambah Project===========================================================//
-                      body: SingleChildScrollView(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: screenHeight * 0.05,
-                              horizontal: screenWidth * 0.02),
-                          child: Column(
-                            children: [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                width: screenWidth * 0.6,
-                                height: screenHeight * 0.8,
-                                decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: screenHeight * 0.05,
-                                      horizontal: screenWidth * 0.05),
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Project',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                Container(
-                                                  width: 225,
-                                                  height: 40,
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color:
-                                                              Colors.black54),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              3)),
-                                                  child: DropdownButton<String>(
-                                                    alignment: Alignment.center,
-                                                    hint: Text(
-                                                        '--Pilih Nama/Kode Project--',
-                                                        style: TextStyle(
-                                                            fontSize: 15)),
-                                                    value: selectedValue,
-                                                    underline: SizedBox(),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    items: dropdownItems
-                                                        .map((String value) {
-                                                      return DropdownMenuItem<
-                                                              String>(
-                                                          value: value,
-                                                          child: Text(value));
-                                                    }).toList(),
-                                                    onChanged: (newValue) {
-                                                      setState(() {
-                                                        selectedValue =
-                                                            newValue;
-                                                      });
-                                                    },
-                                                    dropdownColor: Colors.white,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                            SizedBox(height: 40),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'No Induk Finish Produk',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                SizedBox(
-                                                  width: 220,
-                                                  height: 40,
-                                                  child: TextField(
-                                                    decoration: InputDecoration(
-                                                        contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        2,
-                                                                    vertical:
-                                                                        2),
-                                                        border: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        3),
-                                                            borderSide:
-                                                                BorderSide(
-                                                                    width: 1))),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 120),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'No Seri Awal',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                SizedBox(
-                                                  width: 150,
-                                                  height: 40,
-                                                  child: TextField(
-                                                    decoration: InputDecoration(
-                                                        contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        15,
-                                                                    vertical:
-                                                                        2),
-                                                        border: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20),
-                                                            borderSide:
-                                                                BorderSide(
-                                                                    width: 1))),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 30),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Target Mulai',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                SizedBox(
-                                                  height: 40,
-                                                  width: 150,
-                                                  child: TextField(
-                                                      textAlignVertical:
-                                                          TextAlignVertical
-                                                              .center,
-                                                      textAlign: TextAlign
-                                                          .center,
-                                                      controller:
-                                                          tglSelesaicontroller,
-                                                      readOnly: true,
-                                                      onTap: () {
-                                                        _selectDate(
-                                                            tglMulaicontroller);
-                                                      },
-                                                      decoration: InputDecoration(
-                                                          contentPadding:
-                                                              EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          15,
-                                                                      vertical:
-                                                                          2),
-                                                          border: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                      width:
-                                                                          1)))),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(width: screenWidth * 0.2),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Nama Produk',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                SizedBox(
-                                                  width: 220,
-                                                  height: 40,
-                                                  child: TextField(
-                                                    decoration: InputDecoration(
-                                                        contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        2,
-                                                                    vertical:
-                                                                        2),
-                                                        border: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        3),
-                                                            borderSide:
-                                                                BorderSide(
-                                                                    width: 1))),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 40),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Jumlah dalam 1 lot',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                SizedBox(
-                                                  width: 220,
-                                                  height: 40,
-                                                  child: TextField(
-                                                    decoration: InputDecoration(
-                                                        contentPadding:
-                                                            EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        2,
-                                                                    vertical:
-                                                                        2),
-                                                        border: OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        3),
-                                                            borderSide:
-                                                                BorderSide(
-                                                                    width: 1))),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 30),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Kode Lot',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                Container(
-                                                    height: 40,
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 15),
-                                                    width: 150,
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            color:
-                                                                Colors.black45),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(20)),
-                                                    child: Text(''))
-                                              ],
-                                            ),
-                                            SizedBox(height: 30),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'No Seri Akhir',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                SizedBox(
-                                                  height: 40,
-                                                  width: 150,
-                                                  child: TextField(
-                                                      decoration: InputDecoration(
-                                                          contentPadding:
-                                                              EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          15,
-                                                                      vertical:
-                                                                          2),
-                                                          border: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                      width:
-                                                                          1)))),
-                                                )
-                                              ],
-                                            ),
-                                            SizedBox(height: 30),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Target Selesai',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 15),
-                                                ),
-                                                SizedBox(
-                                                  height: 40,
-                                                  width: 150,
-                                                  child: TextField(
-                                                      textAlignVertical:
-                                                          TextAlignVertical
-                                                              .center,
-                                                      textAlign: TextAlign
-                                                          .center,
-                                                      controller:
-                                                          tglSelesaicontroller,
-                                                      readOnly: true,
-                                                      onTap: () {
-                                                        _selectDate(
-                                                            tglSelesaicontroller);
-                                                      },
-                                                      decoration: InputDecoration(
-                                                          contentPadding:
-                                                              EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          15,
-                                                                      vertical:
-                                                                          2),
-                                                          border: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          20),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                      width:
-                                                                          1)))),
-                                                )
-                                              ],
-                                            )
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-
-//===========================================================Body Tambah Kolom dan Button===========================================================//
-
-                              SizedBox(width: 40),
-                              Container(
-                                width: screenWidth * 0.6,
-                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                margin: EdgeInsets.all(50.0),
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(5.0),
-                                ),
-                                child: _buildMainTable(),
-                              ),
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        addRow();
-                                      },
-                                      child: Text(
-                                        'Tambah Kolom',
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        backgroundColor:
-                                            const Color.fromRGBO(43, 56, 86, 1),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 20),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                Vperencanaan(data: widget.data,nip: widget.nip),
-                                          ),
-                                        );
-                                      },
-                                      child: Text(
-                                        'Simpan',
-                                      ),
-                                      style: ElevatedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        backgroundColor:
-                                            const Color.fromRGBO(43, 56, 86, 1),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                      ),
-                                    ),
-                                  ])
-                            ],
-                          ),
-                        ),
-                      )))
-            ],
-          ),
-        ),
-      ),
-    );
+      kodeLotcontroller.text =
+          '${noProdukcontroller.text} - ${noSeriAwalcontroller.text} - ${noSeriAkhircontroller.text} / $tahun';
+    });
   }
 
 //===========================================================Widget DatePicker===========================================================//
@@ -702,135 +355,1301 @@ class _PerencanaanState extends State<Perencanaan> {
 
     if (_picked != null) {
       setState(() {
-        controller.text = _picked.toString().split(" ")[0];
+        final formattedDate = DateFormat('dd-MM-yy').format(_picked);
+        controller.text = formattedDate;
       });
     }
   }
 
-//===========================================================Widget Table Alur===========================================================//
-  Widget _buildMainTable() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 50,
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 100.0,
-            horizontalMargin: 60.0,
-            columns: [
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    'Alur Proses',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    'Kategori',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    'Detail/Keterangan',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
-            rows: rowsData.map((DataRow row) {
-              return DataRow(cells: [
-                DataCell(DropdownButton<String>(
-                  alignment: Alignment.center,
-                  hint: Text(
-                    '--Pilih Alur Proses--',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  value: selectedValueAlurProses,
-                  borderRadius: BorderRadius.circular(5),
-                  focusColor: Colors.white,
-                  items: dropdownItemsAlurProses.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: onAlurProsesChanged,
-                  dropdownColor: Colors.white,
-                )),
-                DataCell(DropdownButton<String>(
-                  alignment: Alignment.center,
-                  hint: Text(
-                    '--Pilih Kategori--',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                  value: selectedValueKategori,
-                  borderRadius: BorderRadius.circular(5),
-                  focusColor: Colors.white,
-                  items: dropdownItemsKategori.map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: onKategoriChanged,
-                  dropdownColor: Colors.white,
-                )),
-                DataCell(Container(
-                  height: 100,
-                  width: 300,
-                  child: TextField(
-                    maxLines: 5,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
-                        vertical: screenHeight * 0.005,
-                        horizontal: screenWidth * 0.005,
-                      ),
-                    ),
-                  ),
-                )),
-              ]);
-            }).toList(),
-          ),
-        ),
-      ),
-    );
+  void _batasiNoSeriAkhir() {
+    int jumlahLot = int.tryParse(jumlahLotcontroller.text) ?? 0;
+    int noSeriAkhir = int.tryParse(noSeriAkhircontroller.text) ?? 0;
+
+    if (noSeriAkhir > jumlahLot) {
+      setState(() {
+        noSeriAkhircontroller.text = jumlahLot.toString();
+      });
+    }
   }
 
-  Widget _buildViewTable() {
-    return DataTable(
-      columnSpacing: 70.0,
-      horizontalMargin: 90.0,
-      columns: [
-        DataColumn(label: Text('Item')),
-        DataColumn(label: Text('Item')),
-        DataColumn(label: Text('Keterangan')),
-      ],
-      rows: [
-        DataRow(cells: [
-          DataCell(Text('')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-        ]),
-        DataRow(cells: [
-          DataCell(Text('')),
-          DataCell(Text('')),
-          DataCell(Text('')),
-        ]),
-      ],
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        screenWidth = constraints.maxWidth;
+        screenHeight = constraints.maxHeight;
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: (settings) {
+            switch (settings.name) {
+              case '/':
+                return MaterialPageRoute(
+                  builder: (context) =>
+                      Perencanaan(data: widget.data, nip: widget.nip),
+                );
+              default:
+                return null;
+            }
+          },
+          home: Scaffold(
+            backgroundColor: Color.fromARGB(255, 244, 249, 255),
+            body: Padding(
+              padding: EdgeInsets.only(left: screenWidth * 0.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDrawer(),
+                  Expanded(
+                      child: Scaffold(
+//===========================================================Appbar===========================================================//
+                          appBar: AppBar(
+                            backgroundColor:
+                                const Color.fromRGBO(43, 56, 86, 1),
+                            toolbarHeight: 65,
+                            title: Padding(
+                              padding:
+                                  EdgeInsets.only(left: screenHeight * 0.01),
+                              child: Text(
+                                'Input Proses',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Donegal One',
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            actions: [
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(right: screenHeight * 0.13),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.list,
+                                        size: 38,
+                                        color:
+                                            Color.fromARGB(255, 255, 255, 255),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Vperencanaan(
+                                                      data: widget.data,
+                                                      nip: widget.nip)),
+                                        );
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: screenWidth * 0.005,
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.notifications_active,
+                                        size: 33,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Notifikasi(
+                                                data: widget.data,
+                                                nip: widget.nip),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.account_circle_rounded,
+                                        size: 35,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Profile(
+                                                data: widget.data,
+                                                nip: widget.nip),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+
+//===========================================================Body Tambah Project===========================================================//
+                          body: SingleChildScrollView(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: screenHeight * 0.05,
+                                  horizontal: screenWidth * 0.02),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Container(
+                                    width: screenWidth * 0.7,
+                                    height: screenHeight * 0.8,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: screenHeight * 0.05,
+                                          horizontal: screenWidth * 0.05),
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Project',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 15),
+                                                    ),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                      ),
+                                                      child: DropdownButton<
+                                                          String>(
+                                                        value:
+                                                            selectedValuenamaProject,
+                                                        hint: Text(
+                                                            '--Pilih Nama Project--'),
+                                                        onChanged: (newValue) {
+                                                          setState(() {
+                                                            selectedValuenamaProject =
+                                                                newValue;
+                                                          });
+                                                        },
+                                                        items:
+                                                            dropdownItemsnamaProject
+                                                                .map((String
+                                                                    value) {
+                                                          return DropdownMenuItem<
+                                                              String>(
+                                                            value: value,
+                                                            child: Text(value),
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(height: 40),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'No Induk Finish Produk',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 220,
+                                                      height: 40,
+                                                      child: TextFormField(
+                                                        controller:
+                                                            noProdukcontroller,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 30),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'No Seri Awal',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 220,
+                                                      height: 40,
+                                                      child: TextFormField(
+                                                        controller:
+                                                            noSeriAwalcontroller,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 30),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Target Mulai',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 15),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 40,
+                                                      width: 225,
+                                                      child: TextField(
+                                                          textAlignVertical:
+                                                              TextAlignVertical
+                                                                  .center,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          controller:
+                                                              tglMulaicontroller,
+                                                          readOnly: true,
+                                                          onTap: () {
+                                                            _selectDate(
+                                                                tglMulaicontroller);
+                                                          },
+                                                          decoration: InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          15,
+                                                                      vertical:
+                                                                          2),
+                                                              border: OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20),
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          width:
+                                                                              1)))),
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            SizedBox(width: screenWidth * 0.2),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Nama Produk',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 15),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 220,
+                                                      height: 40,
+                                                      child: TextFormField(
+                                                        controller:
+                                                            namaProdukcontroller,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 40),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Jumlah dalam 1 lot',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 15),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 220,
+                                                      height: 40,
+                                                      child: TextFormField(
+                                                        controller:
+                                                            jumlahLotcontroller,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 30),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'No Seri Akhir',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 15),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 220,
+                                                      height: 40,
+                                                      child: TextFormField(
+                                                        controller:
+                                                            noSeriAkhircontroller,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        3),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                    width: 1),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 30),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Target Selesai',
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 15),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 40,
+                                                      width: 225,
+                                                      child: TextField(
+                                                          textAlignVertical:
+                                                              TextAlignVertical
+                                                                  .center,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          controller:
+                                                              tglSelesaicontroller,
+                                                          readOnly: true,
+                                                          onTap: () {
+                                                            _selectDate(
+                                                                tglSelesaicontroller);
+                                                          },
+                                                          decoration: InputDecoration(
+                                                              contentPadding:
+                                                                  EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          15,
+                                                                      vertical:
+                                                                          2),
+                                                              border: OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20),
+                                                                  borderSide:
+                                                                      BorderSide(
+                                                                          width:
+                                                                              1)))),
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(height: 30),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Kode Lot',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 40,
+                                                      width: 220,
+                                                      child: TextFormField(
+                                                        controller:
+                                                            kodeLotcontroller,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          15),
+                                                          border:
+                                                              OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20),
+                                                            borderSide: BorderSide(
+                                                                color: Colors
+                                                                    .black45),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+//===========================================================Body Tambah Kolom dan Button===========================================================//
+
+                                  SizedBox(width: 40),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: screenWidth * 0.6,
+                                    padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                    margin: EdgeInsets.all(50.0),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.black),
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: DataTable(
+                                          columnSpacing: 100.0,
+                                          horizontalMargin: 30.0,
+                                          columns: [
+                                            DataColumn(
+                                              label: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10.0),
+                                                child: Text(
+                                                  'Alur Proses',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20.0),
+                                                child: Text(
+                                                  'Kategori',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                            DataColumn(
+                                              label: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10.0),
+                                                child: Text(
+                                                  'Detail/Keterangan',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                          rows: [
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses1,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses1
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses1 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori1,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori1
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori1 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail1controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail1controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses2,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses2
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses2 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori2,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori2
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori2 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail2controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail2controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses3,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses3
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses3 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori3,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori3
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori3 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail3controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail3controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses4,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses4
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses4 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori4,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori4
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori4 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail4controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail4controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses5,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses5
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses5 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori5,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori5
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori5 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail5controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail5controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses6,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses6
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses6 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori6,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori6
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori6 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail6controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail6controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses7,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses7
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses7 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori7,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori7
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori7 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail7controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail7controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses8,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses8
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses8 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori8,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori8
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori8 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail8controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail8controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueAlurProses9,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses9
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses9 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori9,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori9
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori9 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller: detail9controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail9controller.text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                            DataRow(cells: [
+                                              DataCell(DropdownButton<String>(
+                                                value:
+                                                    selectedValueAlurProses10,
+                                                hint: Text(
+                                                    '--Pilih Alur Proses--'),
+                                                items: dropdownItemsAlurProses10
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueAlurProses10 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(DropdownButton<String>(
+                                                value: selectedValueKategori10,
+                                                hint:
+                                                    Text('--Pilih Kategori--'),
+                                                items: dropdownItemsKategori10
+                                                    .map((String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Text(value),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (newValue) {
+                                                  setState(() {
+                                                    selectedValueKategori10 =
+                                                        newValue;
+                                                  });
+                                                },
+                                                focusColor: Colors.white,
+                                              )),
+                                              DataCell(Container(
+                                                height: 100,
+                                                width: 300,
+                                                child: TextFormField(
+                                                  controller:
+                                                      detail10controller,
+                                                  decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.all(8),
+                                                  ),
+                                                  onChanged: (newValue) {
+                                                    if (newValue.isNotEmpty) {
+                                                      setState(() {
+                                                        detail10controller
+                                                                .text =
+                                                            newValue.substring(
+                                                                0, 100000);
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )),
+                                            ]),
+                                          ]),
+                                    ),
+                                  ),
+                                  Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            _simpan(context);
+                                          },
+                                          child: Text(
+                                            'Simpan',
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Colors.white,
+                                            backgroundColor:
+                                                const Color.fromRGBO(
+                                                    43, 56, 86, 1),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ])
+                                ],
+                              ),
+                            ),
+                          )))
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -860,7 +1679,7 @@ class _PerencanaanState extends State<Perencanaan> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
     );
@@ -870,12 +1689,12 @@ class _PerencanaanState extends State<Perencanaan> {
     return ListTile(
       title: Text(title),
       leading: Icon(
-        color: Color.fromARGB(255, 6, 37, 55),
         icon,
         size: size.toDouble(),
+        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -889,15 +1708,14 @@ class _PerencanaanState extends State<Perencanaan> {
                     UserDashboard(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 3) {
+          } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -937,9 +1755,10 @@ class _PerencanaanState extends State<Perencanaan> {
       leading: Icon(
         icon,
         size: size.toDouble(),
+        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -949,33 +1768,70 @@ class _PerencanaanState extends State<Perencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
-            Navigator.pop(context);
           }
         }
+      },
+    );
+  }
+
+  void _showFinishDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin simpan data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Vperencanaan(data: widget.data, nip: widget.nip)),
+                );
+              },
+              child: Text("Ya", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
       },
     );
   }
@@ -1002,10 +1858,8 @@ class _PerencanaanState extends State<Perencanaan> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => LoginPage(
-                            nip: widget.nip,
-                            data: widget.data,
-                          )),
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

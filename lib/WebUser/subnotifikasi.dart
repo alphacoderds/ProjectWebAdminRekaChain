@@ -35,7 +35,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Subnotifikasi(data: widget.data,nip: widget.nip),
+              builder: (context) =>
+                  Subnotifikasi(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -81,7 +82,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi(data: widget.data,nip: widget.nip)),
+                                    builder: (context) => Notifikasi(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -95,7 +97,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile()),
+                                    builder: (context) => Profile(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -172,7 +175,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           } else {
@@ -229,28 +233,32 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -280,7 +288,9 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
@@ -292,49 +302,50 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   }
 
   Widget _ListView() {
-  return ListView.separated(
-    itemBuilder: (context, index) {
-      return ListViewItem(context, index);
-    },
-    separatorBuilder: (context, index) {
-      return Divider(height: 0);
-    },
-    itemCount: 15,
-  );
-}
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return ListViewItem(context, index);
+      },
+      separatorBuilder: (context, index) {
+        return Divider(height: 0);
+      },
+      itemCount: 15,
+    );
+  }
 
-Widget ListViewItem(BuildContext context, int index) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PesanNotifikasi(data: widget.data,nip: widget.nip),
-        ),
-      );
-    },
-    child: Container(
-      margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          prefixIcon(),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  message(index),
-                ],
+  Widget ListViewItem(BuildContext context, int index) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                PesanNotifikasi(data: widget.data, nip: widget.nip),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            prefixIcon(),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    message(index),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
 Widget prefixIcon() {

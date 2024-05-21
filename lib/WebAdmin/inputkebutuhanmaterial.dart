@@ -1,6 +1,12 @@
 import 'dart:convert';
-import 'dart:html';
-
+import 'dart:io' as io;
+import 'package:csv/csv.dart';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+import 'dart:html' as html;
+import 'dart:async';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
@@ -12,7 +18,6 @@ import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-import 'package:RekaChain/WebAdmin/viewikm.dart';
 import 'package:RekaChain/WebAdmin/viewmaterial.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +26,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:barcode_widget/barcode_widget.dart';
+import 'package:barcode_image/barcode_image.dart';
 
 class InputMaterial extends StatefulWidget {
   final DataModel data;
@@ -39,6 +46,9 @@ class _InputMaterialState extends State<InputMaterial> {
   TextEditingController kodelotcontroller = TextEditingController();
   TextEditingController filecontroller = TextEditingController();
 
+  Widget? qrCodeWidget;
+  String? savedKodeLot;
+
   int _selectedIndex = 0;
   late List<String> dropdownItemsIdProject = [];
   String? selectedValueIdProject;
@@ -47,6 +57,8 @@ class _InputMaterialState extends State<InputMaterial> {
   String? selectedValueKodeLot;
 
   List<PlatformFile> uploadFiles = [];
+
+  Map<String, List<String>> projectMap = {};
 
   Future<void> _uploadDocument() async {
     FilePickerResult? result =
@@ -62,17 +74,24 @@ class _InputMaterialState extends State<InputMaterial> {
     }
   }
 
+  Future<List<List<dynamic>>> parseCSV(io.File file) async {
+    final input = file.openRead();
+    final fields = await input
+        .transform(utf8.decoder)
+        .transform(const CsvToListConverter())
+        .toList();
+    return fields;
+  }
+
   Future<void> _simpan() async {
     if (selectedValueIdProject != null && selectedValueKodeLot != null) {
       List<MultipartFile> filesToUpload = [];
       for (var file in uploadFiles) {
-        // Buat objek MultipartFile dari file yang diunggah
         filesToUpload.add(
           MultipartFile.fromBytes(
             file.bytes!,
             filename: file.name,
-            contentType: MediaType('application',
-                'pdf'), // Sesuaikan tipe konten dengan tipe file yang diunggah
+            contentType: MediaType('text', 'csv'),
           ),
         );
       }
@@ -85,7 +104,7 @@ class _InputMaterialState extends State<InputMaterial> {
 
       try {
         final response = await Dio().post(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/create_material.php',
+          'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/create_material.php',
           data: formData,
           options: Options(
             contentType: 'multipart/form-data',
@@ -93,20 +112,10 @@ class _InputMaterialState extends State<InputMaterial> {
         );
 
         if (response.statusCode == 200) {
-          final newProjectData = {
-            'id_project': idprojectcontroller.text,
-            'file': filecontroller.text,
-            'kodeLot': kodelotcontroller.text,
-          };
-
-          _showFinishDialog();
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ViewMaterial(newProject: newProjectData, data: widget.data, nip: widget.nip,),
-            ),
-          );
+          setState(() {
+            savedKodeLot = selectedValueKodeLot;
+          });
+          _generateBarcode(savedKodeLot!);
         } else {
           print('Gagal menyimpan data: ${response.statusCode}');
         }
@@ -120,16 +129,31 @@ class _InputMaterialState extends State<InputMaterial> {
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+        'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
 
+      Map<String, List<String>> projectMap = {};
+
+      for (var project in data) {
+        String nama = project['nama'].toString();
+        String kodeLot = project['kodeLot'].toString();
+
+        if (projectMap.containsKey(nama)) {
+          projectMap[nama]!.add(kodeLot);
+        } else {
+          projectMap[nama] = [kodeLot];
+        }
+      }
+
       setState(() {
         dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
-        dropdownItemsIdProject.addAll(data.map((e) => e['nama'].toString()));
+        dropdownItemsIdProject.addAll(projectMap.keys);
+
+        this.projectMap = projectMap;
+
         dropdownItemsKodeLot = ['--Pilih Kode Lot--'];
-        dropdownItemsKodeLot.addAll(data.map((e) => e['kodeLot'].toString()));
       });
     } else {
       throw Exception('Failed to load project names');
@@ -140,6 +164,107 @@ class _InputMaterialState extends State<InputMaterial> {
   void initState() {
     super.initState();
     fetchProject();
+  }
+
+  GlobalKey _qrCodeKey = GlobalKey();
+
+  void _generateBarcode(String kodeLot) async {
+    String kodeLot = selectedValueKodeLot ?? "";
+    String id_project = selectedValueIdProject ?? "";
+
+    setState(() {
+      qrCodeWidget = Builder(
+        builder: (context) => RepaintBoundary(
+          key: _qrCodeKey,
+          child: Column(
+            children: [
+              BarcodeWidget(
+                barcode: Barcode.qrCode(),
+                data: kodeLot,
+                color: Colors.black,
+                height: 200,
+                width: 200,
+              ),
+              SizedBox(height: 10),
+              Text(
+                '$id_project - $kodeLot',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      saveQRCodeAsImage(_qrCodeKey, kodeLot);
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+          title: Text('QR Code Kode Lot'),
+          content: Container(
+            width: 245,
+            height: 245,
+            child: qrCodeWidget,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                saveQRCodeAsImage(_qrCodeKey, kodeLot);
+              },
+              child: Text("Download",
+                  style: TextStyle(color: ui.Color.fromRGBO(43, 56, 86, 1))),
+            ),
+            SizedBox(width: 40),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                final newProjectData = {
+                  'id_project': idprojectcontroller.text,
+                  'file': filecontroller.text,
+                  'kodeLot': kodelotcontroller.text,
+                };
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewMaterial(
+                      newProject: newProjectData,
+                      data: widget.data,
+                      nip: widget.nip,
+                    ),
+                  ),
+                );
+              },
+              child: Text("Selesai",
+                  style: TextStyle(color: ui.Color.fromRGBO(43, 56, 86, 1))),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Future<void> saveQRCodeAsImage(GlobalKey qrKey, String kodeLot) async {
+    try {
+      RenderRepaintBoundary boundary =
+          qrKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ByteData? byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      Uint8List pngBytes = byteData!.buffer.asUint8List();
+
+      final blob = html.Blob([pngBytes]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.AnchorElement(href: url)
+        ..setAttribute('download', '$kodeLot.png')
+        ..click();
+
+      html.Url.revokeObjectUrl(url);
+    } catch (e) {
+      print("Error saving QR code: $e");
+    }
   }
 
   @override
@@ -154,7 +279,8 @@ class _InputMaterialState extends State<InputMaterial> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                  builder: (context) =>
+                      InputMaterial(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -198,7 +324,9 @@ class _InputMaterialState extends State<InputMaterial> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ViewMaterial(nip: widget.nip, data: widget.data)),
+                                          builder: (context) => ViewMaterial(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                   child: Text(
@@ -227,7 +355,9 @@ class _InputMaterialState extends State<InputMaterial> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                          builder: (context) => Notifikasi(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                 ),
@@ -241,7 +371,9 @@ class _InputMaterialState extends State<InputMaterial> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Profile(data: widget.data,nip: widget.nip)),
+                                          builder: (context) => Profile(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                 ),
@@ -329,13 +461,11 @@ class _InputMaterialState extends State<InputMaterial> {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: DropdownButton<String>(
-                                      value: selectedValueIdProject,
+                                      alignment: Alignment.center,
                                       hint: Text('--Pilih Nama Project--'),
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          selectedValueIdProject = newValue;
-                                        });
-                                      },
+                                      value: selectedValueIdProject,
+                                      underline: SizedBox(),
+                                      borderRadius: BorderRadius.circular(5),
                                       items: dropdownItemsIdProject
                                           .map((String value) {
                                         return DropdownMenuItem<String>(
@@ -343,6 +473,25 @@ class _InputMaterialState extends State<InputMaterial> {
                                           child: Text(value),
                                         );
                                       }).toList(),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          selectedValueIdProject = newValue;
+                                          if (projectMap
+                                              .containsKey(newValue)) {
+                                            dropdownItemsKodeLot = [
+                                              '--Pilih Kode Lot--'
+                                            ];
+                                            dropdownItemsKodeLot
+                                                .addAll(projectMap[newValue]!);
+                                          } else {
+                                            dropdownItemsKodeLot = [
+                                              '--Pilih Kode Lot--'
+                                            ];
+                                          }
+
+                                          selectedValueKodeLot = null;
+                                        });
+                                      },
                                     ),
                                   ),
                                 ],
@@ -411,7 +560,7 @@ class _InputMaterialState extends State<InputMaterial> {
                                   RichText(
                                     text: TextSpan(children: [
                                       TextSpan(
-                                        text: 'Download Template Excel',
+                                        text: 'Download Template',
                                       ),
                                       TextSpan(
                                         style: TextStyle(
@@ -421,7 +570,7 @@ class _InputMaterialState extends State<InputMaterial> {
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () async {
                                             final uri = Uri.parse(
-                                                'https://drive.google.com/drive/folders/1i6OxoJ8IHlSI5zso79puxtYLK4rO1Ns7?usp=sharing');
+                                                'https://drive.google.com/drive/folders/1i6OxoJ8IHlSI5zso79puxtYLK4rO1Ns7?usp=drive_link');
                                             if (uri != null &&
                                                 await canLaunchUrl(uri)) {
                                               await launchUrl(uri);
@@ -545,14 +694,16 @@ class _InputMaterialState extends State<InputMaterial> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AdminDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -607,42 +758,48 @@ class _InputMaterialState extends State<InputMaterial> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -674,6 +831,7 @@ class _InputMaterialState extends State<InputMaterial> {
   void _showFinishDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
@@ -692,7 +850,9 @@ class _InputMaterialState extends State<InputMaterial> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => Viewkm(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ViewMaterial(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
@@ -706,6 +866,7 @@ class _InputMaterialState extends State<InputMaterial> {
   void _showLogoutDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Logout", style: TextStyle(color: Colors.white)),
@@ -724,7 +885,9 @@ class _InputMaterialState extends State<InputMaterial> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

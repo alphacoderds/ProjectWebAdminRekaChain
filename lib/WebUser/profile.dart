@@ -1,8 +1,11 @@
 import 'package:RekaChain/WebUser/editprofile.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  final DataModel data;
+  final String nip;
+  const Profile({super.key, required this.data, required this.nip});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -17,7 +20,7 @@ class _ProfileState extends State<Profile> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => const Profile(),
+              builder: (context) => Profile(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -54,7 +57,8 @@ class _ProfileState extends State<Profile> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const EditProfile(),
+                              builder: (context) => EditProfile(
+                                  data: widget.data, nip: widget.nip),
                             ),
                           );
                         },

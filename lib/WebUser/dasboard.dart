@@ -13,7 +13,8 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 class UserDashboard extends StatefulWidget {
   final DataModel data;
   final String nip;
-  const UserDashboard({Key? key, required this.data, required this.nip }) : super(key: key);
+  const UserDashboard({Key? key, required this.data, required this.nip})
+      : super(key: key);
   @override
   State<UserDashboard> createState() => _DashboardState();
 }
@@ -48,7 +49,8 @@ class _DashboardState extends State<UserDashboard> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => UserDashboard(data: widget.data,nip: widget.nip),
+              builder: (context) =>
+                  UserDashboard(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -82,7 +84,8 @@ class _DashboardState extends State<UserDashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Notifikasi(data: widget.data,nip: widget.nip),
+                                  builder: (context) => Notifikasi(
+                                      data: widget.data, nip: widget.nip),
                                 ),
                               );
                             },
@@ -97,7 +100,8 @@ class _DashboardState extends State<UserDashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Profile(),
+                                  builder: (context) => Profile(
+                                      data: widget.data, nip: widget.nip),
                                 ),
                               );
                             },
@@ -197,14 +201,16 @@ class _DashboardState extends State<UserDashboard> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    UserDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           } else {
@@ -261,28 +267,32 @@ class _DashboardState extends State<UserDashboard> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -312,7 +322,9 @@ class _DashboardState extends State<UserDashboard> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

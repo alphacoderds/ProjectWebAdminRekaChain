@@ -1,6 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-$conn=new mysqli("localhost","root","","db_rekachain");
+$conn = new mysqli("localhost", "root", "", "db_rekachain");
 
 // Data dari form pertama
 $id = $_POST["id"];
@@ -77,20 +77,18 @@ $result1 = $conn->query($query1);
 if (!$result1) {
     $conn->rollback();
     echo json_encode([
-        'pesan' => 'Gagal menambahkan data project'
+        'pesan' => 'Gagal menambahkan data project',
+        'error' => $conn->error
     ]);
     exit;
 }
 
 for ($i = 0; $i < $jumlahLot; $i++) {
-    // Menghitung noProduk untuk setiap iterasi
-    $noProduk_iterasi = $noProduk + $i+1;
-
+    $noProduk_iterasi = $noProduk + $i + 1;
     $tahun = substr($targetMulai, 6);
-
     $noProduk_combined = "${noIndukProduk}.${noProduk_iterasi}/${tahun}";
 
-    $query2 = "INSERT INTO tbl_lot (kodeLot, id_lot, noProduk, nama, namaProduk, targetMulai, targetSelesai, 
+    $query2 = "INSERT INTO tbl_lot (kodeLot, id_lot, noProduk, noIndukProduk, nama, namaProduk, noSeriAwal, jumlahLot, noSeriAkhir, targetMulai, targetSelesai, 
     ap1, kategori1, keterangan1, 
     ap2, kategori2, keterangan2, 
     ap3, kategori3, keterangan3, 
@@ -100,23 +98,26 @@ for ($i = 0; $i < $jumlahLot; $i++) {
     ap7, kategori7, keterangan7, 
     ap8, kategori8, keterangan8, 
     ap9, kategori9, keterangan9, 
-    ap10, kategori10, keterangan10) VALUES ('$kodeLot', '$id_lot', '$noProduk_combined', '$nama', '$namaProduk', '$targetMulai', '$targetSelesai', 
-'$ap1', '$kategori1', '$keterangan1', 
-'$ap2', '$kategori2', '$keterangan2', 
-'$ap3', '$kategori3', '$keterangan3', 
-'$ap4', '$kategori4', '$keterangan4', 
-'$ap5', '$kategori5', '$keterangan5', 
-'$ap6', '$kategori6', '$keterangan6', 
-'$ap7', '$kategori7', '$keterangan7', 
-'$ap8', '$kategori8', '$keterangan8', 
-'$ap9', '$kategori9', '$keterangan9', 
-'$ap10', '$kategori10', '$keterangan10')";
+    ap10, kategori10, keterangan10) VALUES ('$kodeLot', '$id_lot', '$noProduk_combined', '$noIndukProduk', '$nama', '$namaProduk', '$noSeriAwal', '$jumlahLot', '$noSeriAkhir', '$targetMulai', '$targetSelesai', 
+    '$ap1', '$kategori1', '$keterangan1', 
+    '$ap2', '$kategori2', '$keterangan2', 
+    '$ap3', '$kategori3', '$keterangan3', 
+    '$ap4', '$kategori4', '$keterangan4', 
+    '$ap5', '$kategori5', '$keterangan5', 
+    '$ap6', '$kategori6', '$keterangan6', 
+    '$ap7', '$kategori7', '$keterangan7', 
+    '$ap8', '$kategori8', '$keterangan8', 
+    '$ap9', '$kategori9', '$keterangan9', 
+    '$ap10', '$kategori10', '$keterangan10')";
+
     $result2 = $conn->query($query2);
 
     if (!$result2) {
         $conn->rollback();
         echo json_encode([
-            'pesan' => 'Gagal menambahkan data lot'
+            'pesan' => 'Gagal menambahkan data lot',
+            'query' => $query2,
+            'error' => $conn->error
         ]);
         exit;
     }

@@ -5,13 +5,11 @@ import 'package:RekaChain/WebUser/cetak.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebUser/login.dart';
 import 'package:RekaChain/WebUser/notification.dart';
 import 'package:RekaChain/WebUser/perencanaan.dart';
 import 'package:RekaChain/WebUser/profile.dart';
 import 'package:RekaChain/WebUser/reportsttpp.dart';
-import 'package:RekaChain/WebUser/viewaftersales.dart';
 import 'package:flutter/material.dart';
 
 class Cetak1 extends StatefulWidget {
@@ -47,7 +45,7 @@ class _Cetak1State extends State<Cetak1> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Cetak1(data: widget.data,nip: widget.nip),
+              builder: (context) => Cetak1(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -112,7 +110,9 @@ class _Cetak1State extends State<Cetak1> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile()),
+                                  builder: (context) => Profile(
+                                      data: widget.data, nip: widget.nip),
+                                ),
                               );
                             },
                             padding: EdgeInsets.only(
@@ -197,8 +197,8 @@ class _Cetak1State extends State<Cetak1> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  DetailP(data: widget.data, nip: widget.nip),
+                              builder: (context) => DetailViewPerencanaan(
+                                  data: widget.data, nip: widget.nip),
                             ),
                           );
                         },
@@ -213,8 +213,8 @@ class _Cetak1State extends State<Cetak1> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  DetailP(data: widget.data, nip: widget.nip),
+                              builder: (context) => DetailViewPerencanaan(
+                                  data: widget.data, nip: widget.nip),
                             ),
                           );
                         },

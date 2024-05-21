@@ -22,7 +22,8 @@ import 'package:http_parser/http_parser.dart';
 class InputDokumen extends StatefulWidget {
   final DataModel data;
   final String nip;
-  const InputDokumen({Key? key, required this.data, required this.nip}) : super(key: key);
+  const InputDokumen({Key? key, required this.data, required this.nip})
+      : super(key: key);
 
   @override
   State<InputDokumen> createState() => _InputDokumenState();
@@ -33,7 +34,7 @@ class _InputDokumenState extends State<InputDokumen> {
   late double screenHeight = MediaQuery.of(context).size.height;
 
   TextEditingController idprojectcontroller = TextEditingController();
-  TextEditingController kodelotcontroller = TextEditingController();
+  TextEditingController noProdukcontroller = TextEditingController();
   TextEditingController filecontroller = TextEditingController();
   TextEditingController tanggalcontroller = TextEditingController();
 
@@ -41,30 +42,60 @@ class _InputDokumenState extends State<InputDokumen> {
   late List<String> dropdownItemsIdProject = [];
   String? selectedValueIdProject;
 
-  late List<String> dropdownItemsKodeLot = [];
-  String? selectedValueKodeLot;
+  late List<String> dropdownItemsNoProduk = [];
+  String? selectedValueNoProduk;
 
   List<PlatformFile> uploadFiles = [];
+  Map<String, List<String>> projectMap = {};
 
   Future<void> _uploadDocument() async {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
+      List<PlatformFile> validFiles = [];
+      for (var file in result.files) {
+        if (file.size <= 5242880 && file.extension == 'pdf') {
+          validFiles.add(file);
+        } else {
+          _showErrorDialog(file.name);
+        }
+      }
       setState(() {
-        uploadFiles.addAll(result.files);
+        uploadFiles.addAll(validFiles);
       });
-      print(
-          'Dokumen berhasil diunggah: ${result.files.map((file) => file.name)}');
+      if (validFiles.isNotEmpty) {
+        print(
+            'Dokumen berhasil diunggah: ${validFiles.map((file) => file.name)}');
+      }
     } else {
       print('Pengguna membatalkan memilih file');
     }
   }
 
+  void _showErrorDialog(String fileName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('File Gagal Diunggah'),
+          content: Text('File $fileName terlalu besar atau bukan PDF.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> _simpan() async {
-    if (selectedValueIdProject != null && selectedValueKodeLot != null) {
+    if (selectedValueIdProject != null && selectedValueNoProduk != null) {
       List<MultipartFile> filesToUpload = [];
       for (var file in uploadFiles) {
-        // Buat objek MultipartFile dari file yang diunggah
         filesToUpload.add(
           MultipartFile.fromBytes(
             file.bytes!,
@@ -76,14 +107,14 @@ class _InputDokumenState extends State<InputDokumen> {
 
       var formData = FormData.fromMap({
         'id_project': selectedValueIdProject,
-        'kodeLot': selectedValueKodeLot,
+        'noProduk': selectedValueNoProduk,
         'tanggal': tanggalcontroller.text,
         'file': filesToUpload,
       });
 
       try {
         final response = await Dio().post(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/create_inputdokumen.php',
+          'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/create_inputdokumen.php',
           data: formData,
           options: Options(
             contentType: 'multipart/form-data',
@@ -94,7 +125,7 @@ class _InputDokumenState extends State<InputDokumen> {
           final newProjectData = {
             'id_project': idprojectcontroller.text,
             'file': filecontroller.text,
-            'kodeLot': kodelotcontroller.text,
+            'noProduk': noProdukcontroller.text,
             'tanggal': tanggalcontroller.text,
           };
 
@@ -103,7 +134,11 @@ class _InputDokumenState extends State<InputDokumen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => ViewUpload(newProject: newProjectData, nip: widget.nip, data: widget.data,),
+              builder: (context) => ViewUpload(
+                newProject: newProjectData,
+                nip: widget.nip,
+                data: widget.data,
+              ),
             ),
           );
         } else {
@@ -134,16 +169,30 @@ class _InputDokumenState extends State<InputDokumen> {
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+        'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readlot.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
 
+      Map<String, List<String>> projectMap = {};
+
+      for (var project in data) {
+        String nama = project['nama'].toString();
+        String noProduk = project['noProduk'].toString();
+
+        if (projectMap.containsKey(nama)) {
+          projectMap[nama]!.add(noProduk);
+        } else {
+          projectMap[nama] = [noProduk];
+        }
+      }
+
       setState(() {
         dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
-        dropdownItemsIdProject.addAll(data.map((e) => e['nama'].toString()));
-        dropdownItemsKodeLot = ['--Pilih Kode Lot--'];
-        dropdownItemsKodeLot.addAll(data.map((e) => e['kodeLot'].toString()));
+        dropdownItemsIdProject.addAll(projectMap.keys);
+
+        this.projectMap = projectMap;
+        dropdownItemsNoProduk = ['--Pilih No Produk--'];
       });
     } else {
       throw Exception('Failed to load project names');
@@ -168,7 +217,8 @@ class _InputDokumenState extends State<InputDokumen> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                  builder: (context) =>
+                      InputDokumen(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -243,7 +293,9 @@ class _InputDokumenState extends State<InputDokumen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                          builder: (context) => Notifikasi(
+                                              nip: widget.nip,
+                                              data: widget.data)),
                                     );
                                   },
                                 ),
@@ -352,6 +404,20 @@ class _InputDokumenState extends State<InputDokumen> {
                                       onChanged: (newValue) {
                                         setState(() {
                                           selectedValueIdProject = newValue;
+                                          if (projectMap
+                                              .containsKey(newValue)) {
+                                            dropdownItemsNoProduk = [
+                                              '--Pilih No Produk--'
+                                            ];
+                                            dropdownItemsNoProduk
+                                                .addAll(projectMap[newValue]!);
+                                          } else {
+                                            dropdownItemsNoProduk = [
+                                              '--Pilih No Produk--'
+                                            ];
+                                          }
+
+                                          selectedValueNoProduk = null;
                                         });
                                       },
                                       items: dropdownItemsIdProject
@@ -453,7 +519,7 @@ class _InputDokumenState extends State<InputDokumen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Kode Lot',
+                                    'No Produk',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16,
@@ -466,11 +532,11 @@ class _InputDokumenState extends State<InputDokumen> {
                                     ),
                                     child: DropdownButton<String>(
                                       alignment: Alignment.center,
-                                      hint: Text('--Pilih Kode Lot--'),
-                                      value: selectedValueKodeLot,
+                                      hint: Text('--Pilih No Produk--'),
+                                      value: selectedValueNoProduk,
                                       underline: SizedBox(),
                                       borderRadius: BorderRadius.circular(5),
-                                      items: dropdownItemsKodeLot
+                                      items: dropdownItemsNoProduk
                                           .map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
@@ -479,7 +545,7 @@ class _InputDokumenState extends State<InputDokumen> {
                                       }).toList(),
                                       onChanged: (newValue) {
                                         setState(() {
-                                          selectedValueKodeLot = newValue;
+                                          selectedValueNoProduk = newValue;
                                         });
                                       },
                                     ),
@@ -589,14 +655,16 @@ class _InputDokumenState extends State<InputDokumen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -651,42 +719,48 @@ class _InputDokumenState extends State<InputDokumen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -764,7 +838,9 @@ class _InputDokumenState extends State<InputDokumen> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

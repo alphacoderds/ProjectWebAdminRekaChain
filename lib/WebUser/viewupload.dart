@@ -39,7 +39,8 @@ class _ViewUploadState extends State<ViewUpload> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => ViewUpload(data: widget.data,nip: widget.nip),
+              builder: (context) =>
+                  ViewUpload(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -144,7 +145,8 @@ class _ViewUploadState extends State<ViewUpload> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi(data: widget.data,nip: widget.nip)),
+                                    builder: (context) => Notifikasi(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -158,7 +160,8 @@ class _ViewUploadState extends State<ViewUpload> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile()),
+                                    builder: (context) => Profile(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -192,7 +195,9 @@ class _ViewUploadState extends State<ViewUpload> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => InputDokumen(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          InputDokumen(data: widget.data, nip: widget.nip)),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -421,7 +426,8 @@ class _ViewUploadState extends State<ViewUpload> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           } else {
@@ -477,28 +483,32 @@ class _ViewUploadState extends State<ViewUpload> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -528,7 +538,9 @@ class _ViewUploadState extends State<ViewUpload> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

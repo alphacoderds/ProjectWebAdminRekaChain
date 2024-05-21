@@ -1,44 +1,52 @@
 import 'dart:convert';
-import 'dart:typed_data';
-import 'dart:html' as html;
-import 'package:RekaChain/WebAdmin/AfterSales.dart';
-import 'package:RekaChain/WebAdmin/dasboard.dart';
+
+import 'package:RekaChain/WebUser/AfterSales.dart';
+import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
-import 'package:RekaChain/WebAdmin/inputdokumen.dart';
-import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebAdmin/login.dart';
-import 'package:RekaChain/WebAdmin/notification.dart';
-import 'package:RekaChain/WebAdmin/perencanaan.dart';
-import 'package:RekaChain/WebAdmin/profile.dart';
-import 'package:RekaChain/WebAdmin/reportsttpp.dart';
-import 'package:RekaChain/WebAdmin/tambahproject.dart';
-import 'package:RekaChain/WebAdmin/tambahstaff.dart';
+import 'package:RekaChain/WebUser/inputdokumen.dart';
+import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/WebUser/login.dart';
+import 'package:RekaChain/WebUser/notification.dart';
+import 'package:RekaChain/WebUser/perencanaan.dart';
+import 'package:RekaChain/WebUser/profile.dart';
+import 'package:RekaChain/WebUser/reportsttpp.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
 
-class ViewUpload extends StatefulWidget {
-  final Map<String, dynamic>? newProject;
+class ViewMaterial extends StatefulWidget {
   final DataModel data;
   final String nip;
-  const ViewUpload(
+  final Map<String, dynamic>? newProject;
+
+  const ViewMaterial(
       {Key? key, this.newProject, required this.data, required this.nip})
       : super(key: key);
   @override
-  State<ViewUpload> createState() => _ViewUploadState();
+  State<ViewMaterial> createState() => _ViewMaterialState();
 }
 
-class _ViewUploadState extends State<ViewUpload> {
+class _ViewMaterialState extends State<ViewMaterial> {
   int _selectedIndex = 0;
   bool isViewVisible = false;
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
-  late final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey;
+  late List<String> dropdownItemsIdProject = [];
+  String? selectedValueIdProject;
+
+  late List<String> dropdownItemsNoProduk = [];
+  String? selectedValueNoProduk;
 
   List _listdata = [];
   bool _isloading = true;
+  List _filteredData = [];
 
   String _searchQuery = '';
+
+  Map<String, List<String>> projectMap = {};
 
   void _updateSearchQuery(String query) {
     setState(() {
@@ -50,7 +58,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
+          'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -66,67 +74,62 @@ class _ViewUploadState extends State<ViewUpload> {
     }
   }
 
+  Future<void> fetchProject() async {
+    final response = await http.get(Uri.parse(
+        'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readmaterial.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+
+      Map<String, List<String>> projectMap = {};
+
+      for (var project in data) {
+        String id_project = project['id_project'].toString();
+        String kodeLot = project['kodeLot'].toString();
+
+        if (projectMap.containsKey(id_project)) {
+          projectMap[id_project]!.add(kodeLot);
+        } else {
+          projectMap[id_project] = [kodeLot];
+        }
+      }
+
+      setState(() {
+        dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
+        dropdownItemsIdProject.addAll(projectMap.keys);
+      });
+    } else {
+      throw Exception('Failed to load project names');
+    }
+  }
+
+  void _filterData() {
+    setState(() {
+      if (selectedValueIdProject != null &&
+          selectedValueIdProject != '--Pilih Nama/Kode Project--') {
+        _filteredData = _listdata.where((data) {
+          return data['id_project'] == selectedValueIdProject;
+        }).toList();
+      } else {
+        _filteredData = _listdata;
+      }
+    });
+  }
+
   @override
   void initState() {
+    if (widget.newProject != null) {
+      _listdata.add(widget.newProject!);
+      updateData();
+    }
     _getdata();
     super.initState();
-    _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+    fetchProject();
   }
 
-  Future<void> _hapusData(String id) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-          'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php',
-        ),
-        body: {
-          "no": id,
-        },
-      );
-
-      print('Delete response: ${response.statusCode} - ${response.body}');
-
-      if (response.statusCode == 200) {
-      } else {
-        print('Failed to delete data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error deleting data: $e');
-    }
-  }
-
-  Future<void> _downloadFileFromDatabase(
-      Map<String, dynamic> data, String fileName) async {
-    if (data['file'] != null) {
-      String fileRelativePath = data['file'];
-
-      try {
-        String fileUrl =
-            'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/uploads/$fileRelativePath';
-
-        var response = await http.get(Uri.parse(fileUrl));
-        Uint8List fileBytes = response.bodyBytes;
-
-        final blob = html.Blob([fileBytes]);
-
-        final url = html.Url.createObjectUrlFromBlob(blob);
-
-        final anchor = html.AnchorElement(href: url)
-          ..setAttribute('download', fileName)
-          ..click();
-
-        html.Url.revokeObjectUrl(url);
-
-        _scaffoldMessengerKey.currentState?.showSnackBar(
-          SnackBar(content: Text('File $fileName berhasil didownload')),
-        );
-      } catch (e) {
-        print('Error downloading file: $e');
-        _scaffoldMessengerKey.currentState?.showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
-    }
+  Future<void> updateData() async {
+    await _getdata();
+    setState(() {});
   }
 
   @override
@@ -142,14 +145,13 @@ class _ViewUploadState extends State<ViewUpload> {
               case '/':
                 return MaterialPageRoute(
                   builder: (context) =>
-                      ViewUpload(data: widget.data, nip: widget.nip),
+                      ViewMaterial(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
             }
           },
           home: Scaffold(
-            key: _scaffoldMessengerKey,
             body: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -160,21 +162,12 @@ class _ViewUploadState extends State<ViewUpload> {
                       backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                       toolbarHeight: 65,
                       title: Padding(
-                        padding: EdgeInsets.only(left: screenHeight * 0.02),
-                        child: Text(
-                          'Daftar Dokumen',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Donegal One',
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      actions: [
-                        Padding(
-                          padding: EdgeInsets.only(right: screenHeight * 0.11),
+                        padding:
+                            EdgeInsets.only(left: screenHeight * 0.02, top: 2),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
                           child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 7),
@@ -184,28 +177,37 @@ class _ViewUploadState extends State<ViewUpload> {
                                   border: Border.all(),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: 8),
-                                    Expanded(
-                                      child: TextField(
-                                        onChanged: _updateSearchQuery,
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: 'Cari',
-                                        ),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.search,
-                                        size: 30,
-                                      ),
-                                      onPressed: () {},
-                                    ),
-                                  ],
+                                child: DropdownButton<String>(
+                                  alignment: Alignment.center,
+                                  hint: Text('--Pilih Nama Project--'),
+                                  value: selectedValueIdProject,
+                                  underline: SizedBox(),
+                                  borderRadius: BorderRadius.circular(5),
+                                  items: dropdownItemsIdProject
+                                      .map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      selectedValueIdProject = newValue;
+                                      _filterData();
+                                    });
+                                  },
                                 ),
                               ),
+                              SizedBox(width: 20),
+                            ],
+                          ),
+                        ),
+                      ),
+                      actions: [
+                        Padding(
+                          padding: EdgeInsets.only(right: screenHeight * 0.11),
+                          child: Row(
+                            children: [
                               SizedBox(
                                 width: screenWidth * 0.005,
                               ),
@@ -220,8 +222,8 @@ class _ViewUploadState extends State<ViewUpload> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Notifikasi(
-                                            data: widget.data,
-                                            nip: widget.nip)),
+                                            nip: widget.nip,
+                                            data: widget.data)),
                                   );
                                 },
                               ),
@@ -236,8 +238,8 @@ class _ViewUploadState extends State<ViewUpload> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => Profile(
-                                            data: widget.data,
-                                            nip: widget.nip)),
+                                            nip: widget.nip,
+                                            data: widget.data)),
                                   );
                                 },
                               ),
@@ -269,7 +271,7 @@ class _ViewUploadState extends State<ViewUpload> {
                       context,
                       MaterialPageRoute(
                           builder: (context) =>
-                              InputDokumen(data: widget.data, nip: widget.nip)),
+                              InputDokumen(nip: widget.nip, data: widget.data)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -293,9 +295,9 @@ class _ViewUploadState extends State<ViewUpload> {
   Widget _buildMainTable() {
     List filteredData = _listdata.where((data) {
       String id_project = data['id_project'] ?? '';
-      String noProduk = data['noProduk'] ?? '';
+      String kodeLot = data['kodeLot'] ?? '';
       return id_project.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          noProduk.toLowerCase().contains(_searchQuery.toLowerCase());
+          kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
     return Container(
       alignment: Alignment.center,
@@ -306,8 +308,8 @@ class _ViewUploadState extends State<ViewUpload> {
             minHeight: MediaQuery.of(context).size.height - 50,
           ),
           child: DataTable(
-            columnSpacing: 200.0,
-            horizontalMargin: 150.0,
+            columnSpacing: 120.0,
+            horizontalMargin: 70.0,
             columns: [
               DataColumn(
                 label: Center(
@@ -328,7 +330,7 @@ class _ViewUploadState extends State<ViewUpload> {
               DataColumn(
                 label: Center(
                   child: Text(
-                    'No Produk',
+                    'Kode Lot',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
@@ -336,7 +338,7 @@ class _ViewUploadState extends State<ViewUpload> {
               DataColumn(
                 label: Center(
                   child: Text(
-                    'Nama Dokumen',
+                    'Kode Material',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
@@ -344,7 +346,7 @@ class _ViewUploadState extends State<ViewUpload> {
               DataColumn(
                 label: Center(
                   child: Text(
-                    'Tanggal Upload',
+                    'Deskripsi',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
@@ -352,96 +354,108 @@ class _ViewUploadState extends State<ViewUpload> {
               DataColumn(
                 label: Center(
                   child: Text(
-                    'Aksi',
+                    'SpecTech/Material',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'QTY',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'Unit',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
             ],
-            rows: filteredData
-                .asMap()
-                .map(
-                  (index, data) => MapEntry(
-                    index,
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text((index + 1).toString()),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['id_project'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['noProduk'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['file'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['tanggal'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Center(
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.file_download_outlined),
-                                    onPressed: () {
-                                      _downloadFileFromDatabase(
-                                          data, data['file'].split('/').last);
-                                    },
-                                  ),
-                                  SizedBox(width: 10),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      _showDeleteDialog(
-                                          filteredData[index]['no'].toString());
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+            rows: _filteredData.asMap().entries.map((entry) {
+              final index = entry.key + 1;
+              final item = entry.value;
+              return DataRow(
+                cells: [
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text((index).toString()),
+                      ),
                     ),
                   ),
-                )
-                .values
-                .toList(),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['id_project'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['kodeLot'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['kodeMaterial'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['deskripsi'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['specTech'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['qty'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['unit'] ?? ''),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
           ),
         ),
       ),
@@ -473,7 +487,6 @@ class _ViewUploadState extends State<ViewUpload> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildAdminMenu(),
           _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
@@ -500,7 +513,7 @@ class _ViewUploadState extends State<ViewUpload> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AdminDashboard(data: widget.data, nip: widget.nip),
+                    UserDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
@@ -508,7 +521,7 @@ class _ViewUploadState extends State<ViewUpload> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AfterSales(data: widget.data, nip: widget.nip),
+                    AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -564,7 +577,7 @@ class _ViewUploadState extends State<ViewUpload> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
+                    ReportSTTPP(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 3) {
@@ -572,7 +585,7 @@ class _ViewUploadState extends State<ViewUpload> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    Perencanaan(data: widget.data, nip: widget.nip),
+                    Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
@@ -580,7 +593,7 @@ class _ViewUploadState extends State<ViewUpload> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    InputMaterial(data: widget.data, nip: widget.nip),
+                    InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
@@ -588,48 +601,12 @@ class _ViewUploadState extends State<ViewUpload> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    InputDokumen(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 7) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    TambahProject(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 8) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    TambahStaff(data: widget.data, nip: widget.nip),
+                    InputDokumen(nip: widget.nip, data: widget.data),
               ),
             );
           }
         }
       },
-    );
-  }
-
-  Widget _buildAdminMenu() {
-    return ExpansionTile(
-      title: Row(
-        children: [
-          Icon(
-            Icons.admin_panel_settings,
-            size: 35,
-            color: Color.fromARGB(255, 6, 37, 55),
-          ),
-          SizedBox(width: 12),
-          Text('Menu Admin'),
-        ],
-      ),
-      children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
-      ],
     );
   }
 
@@ -656,39 +633,10 @@ class _ViewUploadState extends State<ViewUpload> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          LoginPage(data: widget.data, nip: widget.nip)),
+                          LoginPage(nip: widget.nip, data: widget.data)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDeleteDialog(String id) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Delete", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin menghapus data?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () async {
-                await _hapusData(id);
-                Navigator.of(context).pop();
-              },
-              child: Text("Hapus", style: TextStyle(color: Colors.white)),
             ),
           ],
         );

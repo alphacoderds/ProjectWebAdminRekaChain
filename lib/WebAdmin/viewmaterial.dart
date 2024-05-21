@@ -24,7 +24,9 @@ class ViewMaterial extends StatefulWidget {
   final String nip;
   final Map<String, dynamic>? newProject;
 
-  const ViewMaterial({Key? key, this.newProject, required this.data, required this.nip}) : super(key: key);
+  const ViewMaterial(
+      {Key? key, this.newProject, required this.data, required this.nip})
+      : super(key: key);
   @override
   State<ViewMaterial> createState() => _ViewMaterialState();
 }
@@ -35,10 +37,19 @@ class _ViewMaterialState extends State<ViewMaterial> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
+  late List<String> dropdownItemsIdProject = [];
+  String? selectedValueIdProject;
+
+  late List<String> dropdownItemsNoProduk = [];
+  String? selectedValueNoProduk;
+
   List _listdata = [];
   bool _isloading = true;
+  List _filteredData = [];
 
   String _searchQuery = '';
+
+  Map<String, List<String>> projectMap = {};
 
   void _updateSearchQuery(String query) {
     setState(() {
@@ -50,7 +61,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
+          'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -66,6 +77,48 @@ class _ViewMaterialState extends State<ViewMaterial> {
     }
   }
 
+  Future<void> fetchProject() async {
+    final response = await http.get(Uri.parse(
+        'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readmaterial.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+
+      Map<String, List<String>> projectMap = {};
+
+      for (var project in data) {
+        String id_project = project['id_project'].toString();
+        String kodeLot = project['kodeLot'].toString();
+
+        if (projectMap.containsKey(id_project)) {
+          projectMap[id_project]!.add(kodeLot);
+        } else {
+          projectMap[id_project] = [kodeLot];
+        }
+      }
+
+      setState(() {
+        dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
+        dropdownItemsIdProject.addAll(projectMap.keys);
+      });
+    } else {
+      throw Exception('Failed to load project names');
+    }
+  }
+
+  void _filterData() {
+    setState(() {
+      if (selectedValueIdProject != null &&
+          selectedValueIdProject != '--Pilih Nama/Kode Project--') {
+        _filteredData = _listdata.where((data) {
+          return data['id_project'] == selectedValueIdProject;
+        }).toList();
+      } else {
+        _filteredData = _listdata;
+      }
+    });
+  }
+
   @override
   void initState() {
     if (widget.newProject != null) {
@@ -74,59 +127,12 @@ class _ViewMaterialState extends State<ViewMaterial> {
     }
     _getdata();
     super.initState();
+    fetchProject();
   }
 
   Future<void> updateData() async {
     await _getdata();
     setState(() {});
-  }
-
-  Future<void> _hapusData(String id) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/hapus.php',
-        ),
-        body: {
-          "id_project": id,
-        },
-      );
-
-      print('Delete response: ${response.statusCode} - ${response.body}');
-
-      if (response.statusCode == 200) {
-        await updateData();
-      } else {
-        print('Failed to delete data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error deleting data: $e');
-    }
-  }
-
-  Future<void> _downloadFile(String url, String fileName) async {
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final bytes = response.bodyBytes;
-      final permissionStatus = await Permission.storage.request();
-
-      if (permissionStatus.isGranted) {
-        final directory = await getExternalStorageDirectory();
-        final filePath = '${directory!.path}/$fileName';
-        final file = File(filePath);
-        await file.writeAsBytes(bytes);
-
-        // Berhasil mengunduh file
-        print('File berhasil diunduh ke: $filePath');
-      } else {
-        // Izin akses penyimpanan ditolak
-        print('Izin akses penyimpanan ditolak');
-      }
-    } else {
-      // Gagal mengunduh file
-      print('Gagal mengunduh file');
-    }
   }
 
   @override
@@ -141,7 +147,8 @@ class _ViewMaterialState extends State<ViewMaterial> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => ViewMaterial(data: widget.data,nip: widget.nip),
+                  builder: (context) =>
+                      ViewMaterial(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -173,26 +180,25 @@ class _ViewMaterialState extends State<ViewMaterial> {
                                   border: Border.all(),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
-                                child: Row(
-                                  children: [
-                                    SizedBox(width: 8),
-                                    Expanded(
-                                      child: TextField(
-                                        onChanged: _updateSearchQuery,
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: 'Cari',
-                                        ),
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        Icons.search,
-                                        size: 30,
-                                      ),
-                                      onPressed: () {},
-                                    ),
-                                  ],
+                                child: DropdownButton<String>(
+                                  alignment: Alignment.center,
+                                  hint: Text('--Pilih Nama Project--'),
+                                  value: selectedValueIdProject,
+                                  underline: SizedBox(),
+                                  borderRadius: BorderRadius.circular(5),
+                                  items: dropdownItemsIdProject
+                                      .map((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      selectedValueIdProject = newValue;
+                                      _filterData();
+                                    });
+                                  },
                                 ),
                               ),
                               SizedBox(width: 20),
@@ -218,7 +224,9 @@ class _ViewMaterialState extends State<ViewMaterial> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                        builder: (context) => Notifikasi(
+                                            nip: widget.nip,
+                                            data: widget.data)),
                                   );
                                 },
                               ),
@@ -232,7 +240,9 @@ class _ViewMaterialState extends State<ViewMaterial> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Profile(data: widget.data,nip: widget.nip)),
+                                        builder: (context) => Profile(
+                                            nip: widget.nip,
+                                            data: widget.data)),
                                   );
                                 },
                               ),
@@ -262,7 +272,9 @@ class _ViewMaterialState extends State<ViewMaterial> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => InputDokumen(data: widget.data,nip: widget.nip)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              InputDokumen(nip: widget.nip, data: widget.data)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -299,8 +311,8 @@ class _ViewMaterialState extends State<ViewMaterial> {
             minHeight: MediaQuery.of(context).size.height - 50,
           ),
           child: DataTable(
-            columnSpacing: 200.0,
-            horizontalMargin: 150.0,
+            columnSpacing: 120.0,
+            horizontalMargin: 70.0,
             columns: [
               DataColumn(
                 label: Center(
@@ -329,7 +341,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
               DataColumn(
                 label: Center(
                   child: Text(
-                    'Nama Dokumen',
+                    'Kode Material',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
@@ -337,82 +349,116 @@ class _ViewMaterialState extends State<ViewMaterial> {
               DataColumn(
                 label: Center(
                   child: Text(
-                    'Aksi',
+                    'Deskripsi',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'SpecTech/Material',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'QTY',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'Unit',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),
               ),
             ],
-            rows: filteredData
-                .asMap()
-                .map(
-                  (index, data) => MapEntry(
-                    index,
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text((index + 1).toString()),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['id_project'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['kodeLot'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['file'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Center(
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.visibility),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Viewkm(data: widget.data,nip: widget.nip)),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+            rows: _filteredData.asMap().entries.map((entry) {
+              final index = entry.key + 1;
+              final item = entry.value;
+              return DataRow(
+                cells: [
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text((index).toString()),
+                      ),
                     ),
                   ),
-                )
-                .values
-                .toList(),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['id_project'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['kodeLot'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['kodeMaterial'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['deskripsi'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['specTech'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['qty'] ?? ''),
+                      ),
+                    ),
+                  ),
+                  DataCell(
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(item['unit'] ?? ''),
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
           ),
         ),
       ),
@@ -470,14 +516,16 @@ class _ViewMaterialState extends State<ViewMaterial> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -532,42 +580,48 @@ class _ViewMaterialState extends State<ViewMaterial> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    InputDokumen(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    TambahProject(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    TambahStaff(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -617,7 +671,9 @@ class _ViewMaterialState extends State<ViewMaterial> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(nip: widget.nip, data: widget.data)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

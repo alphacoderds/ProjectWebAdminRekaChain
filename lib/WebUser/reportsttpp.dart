@@ -41,7 +41,8 @@ class _ReportSTTPState extends State<ReportSTTPP> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+              builder: (context) =>
+                  ReportSTTPP(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -110,7 +111,8 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi(data: widget.data,nip: widget.nip)),
+                                    builder: (context) => Notifikasi(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -124,7 +126,8 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile()),
+                                    builder: (context) => Profile(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -243,7 +246,8 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ViewReportSTTPP(data: widget.data,nip: widget.nip)),
+                              builder: (context) => ViewReportSTTPP(
+                                  data: widget.data, nip: widget.nip)),
                         );
                       },
                     ),
@@ -271,7 +275,8 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ViewReportSTTPP(data: widget.data,nip: widget.nip)),
+                              builder: (context) => ViewReportSTTPP(
+                                  data: widget.data, nip: widget.nip)),
                         );
                       },
                     ),
@@ -343,7 +348,8 @@ class _ReportSTTPState extends State<ReportSTTPP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           } else {
@@ -400,28 +406,32 @@ class _ReportSTTPState extends State<ReportSTTPP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -451,7 +461,9 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
