@@ -1,3 +1,4 @@
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/cetak1.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
@@ -12,7 +13,9 @@ import 'package:RekaChain/WebUser/viewperencanaan.dart';
 import 'package:flutter/material.dart';
 
 class DetailP extends StatefulWidget {
-  const DetailP({super.key});
+  final DataModel data;
+  final String nip;
+  const DetailP({super.key, required this.nip, required this.data});
 
   @override
   State<DetailP> createState() => _DetailPState();
@@ -53,7 +56,7 @@ class _DetailPState extends State<DetailP> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => const DetailP(),
+              builder: (context) => DetailP(data: widget.data,nip: widget.nip),
             );
           default:
             return null;
@@ -104,7 +107,7 @@ class _DetailPState extends State<DetailP> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Notifikasi(),
+                                        builder: (context) => Notifikasi(data: widget.data,nip: widget.nip),
                                       ),
                                     );
                                   },
@@ -474,7 +477,7 @@ class _DetailPState extends State<DetailP> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Cetak1(),
+                                            builder: (context) => Cetak1(data: widget.data,nip: widget.nip),
                                           ),
                                         );
                                       },
@@ -498,7 +501,7 @@ class _DetailPState extends State<DetailP> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                Vperencanaan(),
+                                                Vperencanaan(data: widget.data,nip: widget.nip),
                                           ),
                                         );
                                       },
@@ -771,14 +774,14 @@ class _DetailPState extends State<DetailP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(),
+                builder: (context) => UserDashboard(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           } else {
@@ -834,28 +837,28 @@ class _DetailPState extends State<DetailP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -885,7 +888,7 @@ class _DetailPState extends State<DetailP> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

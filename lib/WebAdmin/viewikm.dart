@@ -1,5 +1,6 @@
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -17,8 +18,10 @@ import 'dart:io';
 
 class Viewkm extends StatefulWidget {
   final Map<String, dynamic>? newProject;
+  final DataModel data;
+  final String nip;
 
-  const Viewkm({Key? key, this.newProject}) : super(key: key);
+  const Viewkm({Key? key, this.newProject, required this.data, required this.nip}) : super(key: key);
   @override
   State<Viewkm> createState() => _ViewkmState();
 }
@@ -41,7 +44,7 @@ class _ViewkmState extends State<Viewkm> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => Viewkm(),
+                  builder: (context) => Viewkm(data: widget.data,nip: widget.nip),
                 );
               default:
                 return null;
@@ -95,7 +98,7 @@ class _ViewkmState extends State<Viewkm> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Notifikasi()),
+                                        builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
                                   );
                                 },
                               ),
@@ -109,7 +112,7 @@ class _ViewkmState extends State<Viewkm> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Profile()),
+                                        builder: (context) => Profile(nip: widget.nip, data: widget.data)),
                                   );
                                 },
                               ),
@@ -139,7 +142,7 @@ class _ViewkmState extends State<Viewkm> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => InputMaterial()),
+                      MaterialPageRoute(builder: (context) => InputMaterial(data: widget.data,nip: widget.nip)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -346,14 +349,14 @@ class _ViewkmState extends State<Viewkm> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -408,42 +411,42 @@ class _ViewkmState extends State<Viewkm> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) => TambahProject(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => TambahStaff(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -493,7 +496,7 @@ class _ViewkmState extends State<Viewkm> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

@@ -1,3 +1,4 @@
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
@@ -10,6 +11,9 @@ import 'package:RekaChain/WebUser/reportsttpp.dart';
 import 'package:flutter/material.dart';
 
 class Viewkm extends StatefulWidget {
+  final DataModel data;
+  final String nip;
+  const Viewkm({required this.nip, required this.data});
   @override
   State<Viewkm> createState() => _ViewkmState();
 }
@@ -35,7 +39,7 @@ class _ViewkmState extends State<Viewkm> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Viewkm(),
+              builder: (context) => Viewkm(data: widget.data,nip: widget.nip),
             );
           default:
             return null;
@@ -148,7 +152,7 @@ class _ViewkmState extends State<Viewkm> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi()),
+                                    builder: (context) => Notifikasi(data: widget.data,nip: widget.nip)),
                               );
                             },
                           ),
@@ -196,7 +200,7 @@ class _ViewkmState extends State<Viewkm> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => InputMaterial()),
+                  MaterialPageRoute(builder: (context) => InputMaterial(data: widget.data,nip: widget.nip)),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -393,14 +397,15 @@ class _ViewkmState extends State<Viewkm> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(),
+                builder: (context) =>
+                    UserDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           } else {
@@ -456,28 +461,28 @@ class _ViewkmState extends State<Viewkm> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -507,7 +512,7 @@ class _ViewkmState extends State<Viewkm> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

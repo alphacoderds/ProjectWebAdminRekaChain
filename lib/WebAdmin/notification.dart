@@ -1,5 +1,6 @@
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -12,6 +13,11 @@ import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
 
 class Notifikasi extends StatefulWidget {
+  final Map<String, dynamic>? newProject;
+  final DataModel data;
+  final String nip;
+  const Notifikasi({Key? key, this.newProject, required this.data, required this.nip});
+
   @override
   State<Notifikasi> createState() => _NotifikasiState();
 }
@@ -32,7 +38,8 @@ class _NotifikasiState extends State<Notifikasi> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Notifikasi(),
+              builder: (context) =>
+                  Notifikasi(nip: widget.nip, data: widget.data),
             );
           default:
             return null;
@@ -78,7 +85,8 @@ class _NotifikasiState extends State<Notifikasi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi()),
+                                    builder: (context) => Notifikasi(
+                                        nip: widget.nip, data: widget.data)),
                               );
                             },
                           ),
@@ -92,7 +100,8 @@ class _NotifikasiState extends State<Notifikasi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile()),
+                                    builder: (context) => Profile(
+                                        nip: widget.nip, data: widget.data)),
                               );
                             },
                           ),
@@ -162,14 +171,16 @@ class _NotifikasiState extends State<Notifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) =>
+                    AdminDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -224,42 +235,48 @@ class _NotifikasiState extends State<Notifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -309,7 +326,9 @@ class _NotifikasiState extends State<Notifikasi> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
@@ -319,9 +338,8 @@ class _NotifikasiState extends State<Notifikasi> {
       },
     );
   }
-}
-
-Widget _ListView() {
+  
+  Widget _ListView() {
   return ListView.separated(
     itemBuilder: (context, index) {
       return ListViewItem(context, index);
@@ -339,8 +357,8 @@ Widget ListViewItem(BuildContext context, int index) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => Subnotifikasi(),
-        ),
+          builder: (context) =>
+              Subnotifikasi(data: widget.data, nip: widget.nip)),
       );
     },
     child: Container(
@@ -365,6 +383,9 @@ Widget ListViewItem(BuildContext context, int index) {
     ),
   );
 }
+}
+
+
 
 Widget prefixIcon() {
   return Container(

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -18,7 +19,9 @@ import 'package:flutter/material.dart';
 
 class Cetak1 extends StatefulWidget {
   final Map<String, dynamic> selectedProject;
-  const Cetak1({Key? key, this.selectedProject = const {}}) : super(key: key);
+  final DataModel data;
+  final String nip;
+  const Cetak1({Key? key, this.selectedProject = const {}, required this.data, required this.nip}) : super(key: key);
 
   @override
   State<Cetak1> createState() => _Cetak1State();
@@ -89,7 +92,7 @@ class _Cetak1State extends State<Cetak1> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -247,7 +250,7 @@ class _Cetak1State extends State<Cetak1> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Cetak1(),
+              builder: (context) => Cetak1(data: widget.data,nip: widget.nip),
             );
           default:
             return null;
@@ -301,7 +304,7 @@ class _Cetak1State extends State<Cetak1> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Notifikasi(),
+                                  builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
                                 ),
                               );
                             },
@@ -316,7 +319,7 @@ class _Cetak1State extends State<Cetak1> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile()),
+                                    builder: (context) => Profile(data: widget.data,nip: widget.nip)),
                               );
                             },
                             padding: EdgeInsets.only(right: 16.0),
@@ -392,7 +395,7 @@ class _Cetak1State extends State<Cetak1> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Vperencanaan(),
+                              builder: (context) => Vperencanaan(data: widget.data,nip: widget.nip),
                             ),
                           );
                         },
@@ -572,14 +575,14 @@ class _Cetak1State extends State<Cetak1> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => AdminDashboard(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -634,42 +637,42 @@ class _Cetak1State extends State<Cetak1> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -719,7 +722,7 @@ class _Cetak1State extends State<Cetak1> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

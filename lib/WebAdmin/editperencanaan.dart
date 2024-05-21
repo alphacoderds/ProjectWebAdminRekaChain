@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/Cetak1.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -16,8 +17,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class EditPerencanaan extends StatefulWidget {
+  final DataModel data;
+  final String nip;
   final Map<String, dynamic> selectedProject;
-  const EditPerencanaan({Key? key, this.selectedProject = const {}})
+  const EditPerencanaan({Key? key, this.selectedProject = const {}, required this.data, required this.nip})
       : super(key: key);
 
   @override
@@ -53,7 +56,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit.php?id_project=${widget.selectedProject['id_project']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit.php?id_project=${widget.selectedProject['id_project']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -166,7 +169,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const EditPerencanaan(),
+                  builder: (context) => EditPerencanaan(data: widget.data,nip: widget.nip),
                 );
               default:
                 return null;
@@ -212,7 +215,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                Vperencanaan(),
+                                                Vperencanaan(data: widget.data,nip: widget.nip),
                                           ),
                                         );
                                       },
@@ -246,7 +249,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Notifikasi(),
+                                            builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
                                           ),
                                         );
                                       },
@@ -261,7 +264,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Profile(),
+                                            builder: (context) => Profile(data: widget.data,nip: widget.nip),
                                           ),
                                         );
                                       },
@@ -802,7 +805,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           "id_project": idProjectcontroller.text,
           "noIndukProduk": noProdukcontroller.text,
@@ -1008,14 +1011,14 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(),
+                builder: (context) => UserDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -1070,42 +1073,42 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -1155,7 +1158,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => Vperencanaan()),
+                  MaterialPageRoute(builder: (context) => Vperencanaan(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
@@ -1187,7 +1190,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

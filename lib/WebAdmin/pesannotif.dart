@@ -1,6 +1,7 @@
 import 'dart:html';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/editprofile.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -17,7 +18,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class PesanNotifikasi extends StatefulWidget {
-  const PesanNotifikasi({super.key});
+  final DataModel data;
+  final String nip;
+  const PesanNotifikasi({Key? key, required this.data, required this.nip});
 
   @override
   State<PesanNotifikasi> createState() => _PesanNotifikasiState();
@@ -47,7 +50,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => PesanNotifikasi(),
+                  builder: (context) => PesanNotifikasi(data: widget.data,nip: widget.nip),
                 );
               default:
                 return null;
@@ -82,7 +85,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => Notifikasi(),
+                                      builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
                                     ),
                                   );
                                 },
@@ -97,7 +100,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => Profile(),
+                                      builder: (context) => Profile(data: widget.data,nip: widget.nip),
                                     ),
                                   );
                                 },
@@ -169,7 +172,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => InputDokumen()),
+                      MaterialPageRoute(builder: (context) => InputDokumen(data: widget.data,nip: widget.nip)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -243,14 +246,14 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => AdminDashboard(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -305,42 +308,42 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -423,7 +426,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

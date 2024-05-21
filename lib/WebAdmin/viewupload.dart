@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:html' as html;
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -17,8 +18,11 @@ import 'package:http/http.dart' as http;
 
 class ViewUpload extends StatefulWidget {
   final Map<String, dynamic>? newProject;
-
-  const ViewUpload({Key? key, this.newProject}) : super(key: key);
+  final DataModel data;
+  final String nip;
+  const ViewUpload(
+      {Key? key, this.newProject, required this.data, required this.nip})
+      : super(key: key);
   @override
   State<ViewUpload> createState() => _ViewUploadState();
 }
@@ -46,7 +50,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -73,7 +77,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php',
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php',
         ),
         body: {
           "no": id,
@@ -132,7 +136,8 @@ class _ViewUploadState extends State<ViewUpload> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => ViewUpload(),
+                  builder: (context) =>
+                      ViewUpload(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -209,7 +214,9 @@ class _ViewUploadState extends State<ViewUpload> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Notifikasi()),
+                                        builder: (context) => Notifikasi(
+                                            nip: widget.nip,
+                                            data: widget.data)),
                                   );
                                 },
                               ),
@@ -223,7 +230,9 @@ class _ViewUploadState extends State<ViewUpload> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Profile()),
+                                        builder: (context) => Profile(
+                                            data: widget.data,
+                                            nip: widget.nip)),
                                   );
                                 },
                               ),
@@ -253,7 +262,9 @@ class _ViewUploadState extends State<ViewUpload> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => InputDokumen()),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              InputDokumen(data: widget.data, nip: widget.nip)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -483,14 +494,16 @@ class _ViewUploadState extends State<ViewUpload> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) =>
+                    AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -545,42 +558,48 @@ class _ViewUploadState extends State<ViewUpload> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -630,7 +649,9 @@ class _ViewUploadState extends State<ViewUpload> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

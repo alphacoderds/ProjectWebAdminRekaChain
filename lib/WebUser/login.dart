@@ -1,8 +1,11 @@
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final DataModel data;
+  final String nip;
+  const LoginPage({Key? key, required this.data, required this.nip}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -37,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => LoginPage(),
+              builder: (context) => LoginPage(nip: widget.nip, data: widget.data,),
             );
           default:
             return null;
@@ -224,7 +227,7 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => UserDashboard(),
+            builder: (context) => UserDashboard(data: widget.data,nip: widget.nip),
             //role
           ),
         );

@@ -1,19 +1,34 @@
-import 'package:RekaChain/WebAdmin/DetailViewPerencanaan.dart';
-import 'package:RekaChain/WebAdmin/inputdokumen.dart';
-import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
-import 'package:RekaChain/WebAdmin/perencanaan.dart';
-import 'package:RekaChain/WebAdmin/viewperencanaan.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-import 'dart:async';
 
 void main() {
-  runApp(const MyApp1());
+  final String nip = '';
+  final DataModel data = DataModel(
+      kode_staff: '',
+      nama: '',
+      jabatan: '',
+      unit_kerja: '',
+      departemen: '',
+      divisi: '',
+      email: '',
+      nip: '',
+      noTelp: '',
+      status: '',
+      password: '',
+      konfirmasi_password: '');
+  runApp(MyApp1(
+    data: data,
+    nip: nip,
+  ));
 }
 
 class MyApp1 extends StatelessWidget {
-  const MyApp1({Key? key}) : super(key: key);
+  final DataModel data;
+  final String nip;
+  const MyApp1({Key? key, required this.nip, required this.data})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +40,7 @@ class MyApp1 extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: Vperencanaan(),
+          home: LoginPage(data: data, nip: nip),
         );
       },
     );

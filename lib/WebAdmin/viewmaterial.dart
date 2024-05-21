@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -19,9 +20,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 class ViewMaterial extends StatefulWidget {
+  final DataModel data;
+  final String nip;
   final Map<String, dynamic>? newProject;
 
-  const ViewMaterial({Key? key, this.newProject}) : super(key: key);
+  const ViewMaterial({Key? key, this.newProject, required this.data, required this.nip}) : super(key: key);
   @override
   State<ViewMaterial> createState() => _ViewMaterialState();
 }
@@ -47,7 +50,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -82,7 +85,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/hapus.php',
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/hapus.php',
         ),
         body: {
           "id_project": id,
@@ -138,7 +141,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => ViewMaterial(),
+                  builder: (context) => ViewMaterial(data: widget.data,nip: widget.nip),
                 );
               default:
                 return null;
@@ -215,7 +218,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Notifikasi()),
+                                        builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
                                   );
                                 },
                               ),
@@ -229,7 +232,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Profile()),
+                                        builder: (context) => Profile(data: widget.data,nip: widget.nip)),
                                   );
                                 },
                               ),
@@ -259,7 +262,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => InputDokumen()),
+                      MaterialPageRoute(builder: (context) => InputDokumen(data: widget.data,nip: widget.nip)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -395,7 +398,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => Viewkm()),
+                                            builder: (context) => Viewkm(data: widget.data,nip: widget.nip)),
                                       );
                                     },
                                   ),
@@ -467,14 +470,14 @@ class _ViewMaterialState extends State<ViewMaterial> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -529,42 +532,42 @@ class _ViewMaterialState extends State<ViewMaterial> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) => TambahProject(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => TambahStaff(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -614,7 +617,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

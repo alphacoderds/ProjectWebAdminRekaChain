@@ -1,52 +1,173 @@
+import 'package:RekaChain/WebAdmin/liststaff.dart';
 import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:RekaChain/WebAdmin/data_model.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfile extends StatefulWidget {
-  const EditProfile({Key? key}) : super(key: key);
+  final String nip;
+  final DataModel data;
+  const EditProfile({Key? key, required this.nip, required this.data})
+      : super(key: key);
 
   @override
   State<EditProfile> createState() => _EditProfileState();
 }
 
 class _EditProfileState extends State<EditProfile> {
-  TextEditingController namaLengkapController = TextEditingController();
+  late double screenWidth;
+  late double screenHeight;
+  final formKey = GlobalKey<FormState>();
+  TextEditingController kodeStaffController = TextEditingController();
+  TextEditingController namaController = TextEditingController();
   TextEditingController jabatanController = TextEditingController();
   TextEditingController unitKerjaController = TextEditingController();
   TextEditingController departemenController = TextEditingController();
   TextEditingController divisiController = TextEditingController();
-  TextEditingController nomorTeleponController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController noTelpController = TextEditingController();
   TextEditingController nipController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   TextEditingController statusController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController konfirmasiPasswordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    namaLengkapController = TextEditingController();
-    jabatanController = TextEditingController();
-    unitKerjaController = TextEditingController();
-    departemenController = TextEditingController();
-    divisiController = TextEditingController();
-    nomorTeleponController = TextEditingController();
-    nipController = TextEditingController();
-    passwordController = TextEditingController();
-    statusController = TextEditingController();
+    _getdata();
+    fetchData();
   }
 
-  @override
-  void dispose() {
-    namaLengkapController.dispose();
-    jabatanController.dispose();
-    unitKerjaController.dispose();
-    departemenController.dispose();
-    divisiController.dispose();
-    nomorTeleponController.dispose();
-    nipController.dispose();
-    passwordController.dispose();
-    statusController.dispose();
-    super.dispose();
+  Future _getdata() async {
+    try {
+      final response = await http.get(Uri.parse(
+          'http://192.168.11.148/crudflutter/flutter_crud/lib/read.php'));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          kodeStaffController.text = data['kode_staff'];
+          namaController.text = data['nama'];
+          jabatanController.text = data['jabatan'];
+          unitKerjaController.text = data['unit_kerja'];
+          departemenController.text = data['departemen'];
+          divisiController.text = data['divisi'];
+          noTelpController.text = data['no_telp'];
+          nipController.text = data['nip'];
+          passwordController.text = data['password'];
+          statusController.text = data['status'];
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _simpan() async {
+    final response = await http.post(
+      Uri.parse(
+          'http://192.168.11.148/ProjectScanner/lib/API/edit_profile.php'),
+      body: {
+        "kode_staff": widget.data.kode_staff,
+        "nama": namaController.text,
+        "jabatan": jabatanController.text,
+        "unit_kerja": unitKerjaController.text,
+        "departemen": departemenController.text,
+        "divisi": divisiController.text,
+        "no_telp": noTelpController.text,
+        "status": statusController.text,
+        "password": passwordController.text,
+        "konfirmasi_password": konfirmasiPasswordController.text,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final newProjectData = {
+        "kode_staff": widget.data.kode_staff,
+        "nama": namaController.text,
+        "jabatan": jabatanController.text,
+        "unit_kerja": unitKerjaController.text,
+        "departemen": departemenController.text,
+        "divisi": divisiController.text,
+        "no_telp": noTelpController.text,
+        "password": passwordController.text,
+        "status": statusController.text,
+        "konfirmasi_password": konfirmasiPasswordController.text,
+      };
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ListStaff(data: widget.data, nip: widget.nip)),
+      );
+    } else {
+      print('Gagal menyimpan data: ${response.statusCode}');
+    }
+  }
+
+  Future<void> fetchData() async {
+    String? nip = await getNipFromSharedPreferences();
+    if (nip != null) {
+      DataModel? data = await getUserDataByNip(nip);
+      if (data != null) {
+        setState(() {
+          namaController.text = data.nama;
+          jabatanController.text = data.jabatan;
+          unitKerjaController.text = data.unit_kerja;
+          departemenController.text = data.departemen;
+          divisiController.text = data.divisi;
+          noTelpController.text = data.noTelp;
+          nipController.text = data.nip;
+          passwordController.text = data.password;
+          statusController.text = data.status;
+        });
+      }
+    }
+  }
+
+  Future<String?> getNipFromSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('nip');
+  }
+
+  Future<DataModel?> getUserDataByNip(String nip) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? dataKaryawanJson = prefs.getString('dataKaryawan');
+    if (dataKaryawanJson != null) {
+      Map<String, dynamic> userMap = jsonDecode(dataKaryawanJson);
+      if (userMap['nip'] == nip) {
+        return DataModel.getDataFromJson(userMap);
+      }
+    }
+    return null;
+  }
+
+  XFile? _selectedImage;
+
+  Future<void> _update() async {
+    final response = await http.post(
+      Uri.parse(
+          'http://192.168.11.148/ProjectScanner/lib/tbl_tambahstaff/create_tambahstaff.php'),
+      body: {
+        "nama": namaController.text,
+        "jabatan": jabatanController.text,
+        "unit_kerja": unitKerjaController.text,
+        "departemen": departemenController.text,
+        "divisi": divisiController.text,
+        "no_telp": noTelpController.text,
+        "nip": nipController.text,
+        "password": passwordController.text,
+        "status": statusController.text,
+      },
+    );
+    if (response.statusCode == 200) {
+      print('Data berhasil diperbarui');
+    } else {
+      print('Gagal memperbarui data: ${response.statusCode}');
+    }
   }
 
   @override
@@ -57,7 +178,8 @@ class _EditProfileState extends State<EditProfile> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => const EditProfile(),
+              builder: (context) =>
+                  EditProfile(nip: widget.nip, data: widget.data),
             );
           default:
             return null;
@@ -94,7 +216,8 @@ class _EditProfileState extends State<EditProfile> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Profile(),
+                              builder: (context) =>
+                                  Profile(nip: widget.nip, data: widget.data),
                             ),
                           );
                         },
@@ -155,9 +278,7 @@ class _EditProfileState extends State<EditProfile> {
             const SizedBox(height: 16.0),
             // Letak widget content
             _buildTextView(
-                label: ' Nama Lengkap',
-                text: '',
-                controller: namaLengkapController),
+                label: ' Nama Lengkap', text: '', controller: namaController),
             _buildTextView(
                 label: ' Jabatan', text: '', controller: jabatanController),
             _buildTextView(
@@ -173,7 +294,7 @@ class _EditProfileState extends State<EditProfile> {
             _buildTextView(
                 label: ' Nomor Telepon',
                 text: '',
-                controller: nomorTeleponController),
+                controller: noTelpController),
             _buildTextView(label: ' NIP', text: '', controller: nipController),
             _buildTextView(
                 label: ' Password', text: '', controller: passwordController),

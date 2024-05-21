@@ -1,3 +1,4 @@
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
@@ -11,6 +12,9 @@ import 'package:RekaChain/WebUser/reportsttpp.dart';
 import 'package:flutter/material.dart';
 
 class Subnotifikasi extends StatefulWidget {
+  final DataModel data;
+  final String nip;
+  const Subnotifikasi({required this.nip, required this.data});
   @override
   State<Subnotifikasi> createState() => _SubnotifikasiState();
 }
@@ -31,7 +35,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Subnotifikasi(),
+              builder: (context) => Subnotifikasi(data: widget.data,nip: widget.nip),
             );
           default:
             return null;
@@ -77,7 +81,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi()),
+                                    builder: (context) => Notifikasi(data: widget.data,nip: widget.nip)),
                               );
                             },
                           ),
@@ -160,14 +164,15 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(),
+                builder: (context) =>
+                    UserDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           } else {
@@ -224,28 +229,28 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -275,7 +280,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
@@ -285,9 +290,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
       },
     );
   }
-}
 
-Widget _ListView() {
+  Widget _ListView() {
   return ListView.separated(
     itemBuilder: (context, index) {
       return ListViewItem(context, index);
@@ -305,7 +309,7 @@ Widget ListViewItem(BuildContext context, int index) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PesanNotifikasi(),
+          builder: (context) => PesanNotifikasi(data: widget.data,nip: widget.nip),
         ),
       );
     },
@@ -330,6 +334,7 @@ Widget ListViewItem(BuildContext context, int index) {
       ),
     ),
   );
+}
 }
 
 Widget prefixIcon() {

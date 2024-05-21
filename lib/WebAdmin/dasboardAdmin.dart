@@ -1,4 +1,5 @@
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -13,6 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AdminDashboard extends StatefulWidget {
+  final DataModel data;
+  final String nip;
+  const AdminDashboard({Key? key, required this.data, required this.nip});
+
   @override
   State<AdminDashboard> createState() => _DashboardState();
 }
@@ -47,7 +52,8 @@ class _DashboardState extends State<AdminDashboard> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => AdminDashboard(),
+              builder: (context) =>
+                  AdminDashboard(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -81,7 +87,7 @@ class _DashboardState extends State<AdminDashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Notifikasi(),
+                                  builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
                                 ),
                               );
                             },
@@ -96,7 +102,8 @@ class _DashboardState extends State<AdminDashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Profile(),
+                                  builder: (context) => Profile(
+                                      data: widget.data, nip: widget.nip),
                                 ),
                               );
                             },
@@ -197,14 +204,16 @@ class _DashboardState extends State<AdminDashboard> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) =>
+                    AdminDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -259,42 +268,48 @@ class _DashboardState extends State<AdminDashboard> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -344,7 +359,9 @@ class _DashboardState extends State<AdminDashboard> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

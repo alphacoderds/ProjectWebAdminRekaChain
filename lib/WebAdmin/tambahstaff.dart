@@ -1,6 +1,7 @@
 import 'dart:html';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/liststaff.dart';
@@ -15,7 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 
-class Project {
+class Staff {
   final String kode_staff;
   final String nama;
   final String jabatan;
@@ -29,7 +30,7 @@ class Project {
   final String password;
   final String konfirmasi_password;
 
-  Project({
+  Staff({
     required this.kode_staff,
     required this.nama,
     required this.jabatan,
@@ -45,19 +46,21 @@ class Project {
   });
 }
 
-class ProjectProvider extends ChangeNotifier {
-  List<Project> _projects = [];
+class StaffProvider extends ChangeNotifier {
+  List<Staff> _staff = [];
+  List<Staff> get staff => _staff;
 
-  List<Project> get projects => _projects;
-
-  void addProject(Project project) {
-    _projects.add(project);
+  void addStaff(Staff staff) {
+    _staff.add(staff);
     notifyListeners();
   }
 }
 
 class TambahStaff extends StatefulWidget {
-  const TambahStaff({Key? key}) : super(key: key);
+  final DataModel data;
+  final String nip;
+  const TambahStaff({Key? key, required this.data, required this.nip})
+      : super(key: key);
 
   @override
   State<TambahStaff> createState() => _TambahStaffState();
@@ -123,7 +126,7 @@ class _TambahStaffState extends State<TambahStaff> {
 
     final response = await http.post(
       Uri.parse(
-        "http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php",
+        "http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php",
       ),
       body: {
         "kode_staff": kodestaffController.text,
@@ -163,7 +166,11 @@ class _TambahStaffState extends State<TambahStaff> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => ListStaff(newStaff: newStaffData),
+          builder: (context) => ListStaff(
+            newStaff: newStaffData,
+            data: widget.data,
+            nip: widget.nip,
+          ),
         ),
       );
     } else {
@@ -189,6 +196,30 @@ class _TambahStaffState extends State<TambahStaff> {
   }
 
   @override
+  void dispose() {
+    kodestaffController.dispose();
+    namaController.dispose();
+    jabatanController.dispose();
+    unitkerjaController.dispose();
+    departemenController.dispose();
+    divisiController.dispose();
+    emailController.dispose();
+    nomortelponController.dispose();
+    nipController.dispose();
+    statusController.dispose();
+    passwordController.dispose();
+    konfirmasiPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _calculateNip() {
+    setState(() {
+      nipController.text =
+          '${kodestaffController.text} - ${namaController.text}';
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -200,7 +231,8 @@ class _TambahStaffState extends State<TambahStaff> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const TambahStaff(),
+                  builder: (context) =>
+                      TambahStaff(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -249,7 +281,9 @@ class _TambahStaffState extends State<TambahStaff> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ListStaff()),
+                                          builder: (context) => ListStaff(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                 ),
@@ -263,7 +297,9 @@ class _TambahStaffState extends State<TambahStaff> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Notifikasi()),
+                                          builder: (context) => Notifikasi(
+                                              nip: widget.nip,
+                                              data: widget.data)),
                                     );
                                   },
                                 ),
@@ -277,7 +313,9 @@ class _TambahStaffState extends State<TambahStaff> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Profile()),
+                                          builder: (context) => Profile(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                 ),
@@ -812,14 +850,16 @@ class _TambahStaffState extends State<TambahStaff> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) =>
+                    AdminDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -874,42 +914,48 @@ class _TambahStaffState extends State<TambahStaff> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -959,7 +1005,9 @@ class _TambahStaffState extends State<TambahStaff> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => ListStaff()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ListStaff(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
@@ -991,7 +1039,9 @@ class _TambahStaffState extends State<TambahStaff> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

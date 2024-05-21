@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -16,7 +17,9 @@ import 'package:http/http.dart' as http;
 
 class ViewAfterSales extends StatefulWidget {
   final Map<String, dynamic> selectedProject;
-  const ViewAfterSales({Key? key, this.selectedProject = const {}})
+  final DataModel data;
+  final String nip;
+  const ViewAfterSales({Key? key, this.selectedProject = const {}, required this.nip, required this.data})
       : super(key: key);
 
   @override
@@ -44,7 +47,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -92,7 +95,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => ViewAfterSales(),
+              builder: (context) => ViewAfterSales(data: widget.data,nip: widget.nip),
             );
           default:
             return null;
@@ -104,7 +107,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
           switch (settings.name) {
             case '/':
               return MaterialPageRoute(
-                builder: (context) => ViewAfterSales(),
+                builder: (context) => ViewAfterSales(data: widget.data,nip: widget.nip),
               );
             default:
               return null;
@@ -158,7 +161,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => Notifikasi(),
+                                    builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
                                   ),
                                 );
                               },
@@ -173,7 +176,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Profile()),
+                                      builder: (context) => Profile(data: widget.data,nip: widget.nip)),
                                 );
                               },
                             ),
@@ -394,14 +397,14 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => AdminDashboard(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -456,42 +459,42 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -541,7 +544,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

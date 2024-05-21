@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/liststaff.dart';
@@ -13,11 +14,20 @@ import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:http/http.dart' as http;
 
 class EditStaff extends StatefulWidget {
   final Map<String, dynamic> selectedStaff;
-  const EditStaff({Key? key, this.selectedStaff = const {}}) : super(key: key);
+  final DataModel data;
+  final String nip;
+
+  const EditStaff(
+      {Key? key,
+      this.selectedStaff = const {},
+      required this.data,
+      required this.nip})
+      : super(key: key);
 
   @override
   State<EditStaff> createState() => _EditStaffState();
@@ -26,7 +36,6 @@ class EditStaff extends StatefulWidget {
 class _EditStaffState extends State<EditStaff> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-
   late TextEditingController kodestaffController;
   late TextEditingController namaController;
   late TextEditingController jabatanController;
@@ -51,21 +60,29 @@ class _EditStaffState extends State<EditStaff> {
   bool isViewVisible = true;
 
   int _selectedIndex = 0;
+  String? selectValue1;
+  String? selectValue2;
 
   Future<void> fetchData() async {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php'),
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php?kode_staff=${widget.selectedStaff['kode_staff']}&nip=${widget.selectedStaff['nip']}'),
       );
       if (response.statusCode == 200) {
-        final List<Map<String, dynamic>> fetchedData =
-            List<Map<String, dynamic>>.from(jsonDecode(response.body));
-        setState(() {
-          _listdata = fetchedData;
-        });
+        try {
+          final responseData = json.decode(response.body);
+          final kodeStaff = responseData['kode_staff'];
+          setState(() {
+            kodestaffController.text = kodeStaff;
+          });
+        } catch (e) {
+          print('Error parsing JSON: $e');
+          print('Response body: ${response.body}');
+        }
       } else {
         print('Failed to fetch data: ${response.statusCode}');
+        print('Response body: ${response.body}');
       }
     } catch (e) {
       print('Error fetching data: $e');
@@ -101,6 +118,44 @@ class _EditStaffState extends State<EditStaff> {
         text: widget.selectedStaff['konfirmasi_password'] ?? '');
   }
 
+  void _updateDataAndNavigateToListStaff() async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php'),
+        body: {
+          'no': widget.selectedStaff['no'].toString(),
+          "kode_staff": kodestaffController.text,
+          "nama": namaController.text,
+          "jabatan": jabatanController.text,
+          "unit_kerja": unitkerjaController.text,
+          "departemen": departemenController.text,
+          "divisi": divisiController.text,
+          "email": emailController.text,
+          "no_telp": nomortelponController.text,
+          "nip": nipController.text,
+          "status": statusController.text,
+          "password": passwordController.text,
+          "konfirmasi_password": konfirmasiPasswordController.text,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        await fetchData();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ListStaff(nip: widget.nip, data: widget.data),
+          ),
+        );
+      } else {
+        print('Failed to update data: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error updating data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -113,7 +168,8 @@ class _EditStaffState extends State<EditStaff> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const EditStaff(),
+                  builder: (context) =>
+                      EditStaff(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -162,7 +218,9 @@ class _EditStaffState extends State<EditStaff> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ListStaff()),
+                                          builder: (context) => ListStaff(
+                                              nip: widget.nip,
+                                              data: widget.data)),
                                     );
                                   },
                                 ),
@@ -176,7 +234,9 @@ class _EditStaffState extends State<EditStaff> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Notifikasi()),
+                                          builder: (context) => Notifikasi(
+                                              nip: widget.nip,
+                                              data: widget.data)),
                                     );
                                   },
                                 ),
@@ -190,7 +250,9 @@ class _EditStaffState extends State<EditStaff> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Profile()),
+                                          builder: (context) => Profile(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                 ),
@@ -218,38 +280,6 @@ class _EditStaffState extends State<EditStaff> {
         );
       },
     );
-  }
-
-  void _updateDataAndNavigateToListProject() async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-            'https://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php'),
-        body: {
-          'no_tambahstaff': widget.selectedStaff['no_tambahstaff'].toString(),
-          "kode_staff": kodestaffController.text,
-          "nama": namaController.text,
-          "jabatan": jabatanController.text,
-          "unit_kerja": unitkerjaController.text,
-          "departemen": departemenController.text,
-          "divisi": divisiController.text,
-          "email": emailController.text,
-          "no_telp": nomortelponController.text,
-          "nip": nipController.text,
-          "status": statusController.text,
-          "password": passwordController.text,
-          "konfirmasi_password": konfirmasiPasswordController.text,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        _showFinishDialog();
-      } else {
-        print('Failed to update data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error updating data: $e');
-    }
   }
 
   Widget _buildMainTable() {
@@ -337,7 +367,7 @@ class _EditStaffState extends State<EditStaff> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    _updateDataAndNavigateToListProject();
+                    _updateDataAndNavigateToListStaff();
                   },
                   child: Text(
                     'Simpan',
@@ -387,8 +417,8 @@ class _EditStaffState extends State<EditStaff> {
   Widget _inputFieldPassword(String labelText, TextEditingController controller,
       {bool isPassword = false, Color? backgroundColor}) {
     return SizedBox(
-      width: screenWidth * 0.28,
-      height: screenHeight * 0.1,
+      width: 400,
+      height: 100,
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -442,8 +472,8 @@ class _EditStaffState extends State<EditStaff> {
       String labelText, TextEditingController controller,
       {bool isKonfirmasiPassword = false, Color? backgroundColor}) {
     return SizedBox(
-      width: screenWidth * 0.28,
-      height: screenHeight * 0.1,
+      width: 400,
+      height: 100,
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -545,14 +575,16 @@ class _EditStaffState extends State<EditStaff> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) =>
+                    AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -607,42 +639,48 @@ class _EditStaffState extends State<EditStaff> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) =>
+                    ReportSTTPP(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) =>
+                    Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) =>
+                    InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) =>
+                    TambahProject(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) =>
+                    TambahStaff(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -692,7 +730,9 @@ class _EditStaffState extends State<EditStaff> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => ListStaff()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ListStaff(nip: widget.nip, data: widget.data)),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
@@ -724,7 +764,9 @@ class _EditStaffState extends State<EditStaff> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(nip: widget.nip, data: widget.data)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

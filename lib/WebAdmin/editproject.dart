@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/listproject.dart';
@@ -16,9 +17,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class EditProject extends StatefulWidget {
+  final DataModel data;
+  final String nip;
   final Map<String, dynamic> selectedProject;
-
-  const EditProject({Key? key, this.selectedProject = const {}})
+  
+  const EditProject(
+      {Key? key,
+      this.selectedProject = const {},
+      required this.data,
+      required this.nip})
       : super(key: key);
 
   @override
@@ -28,7 +35,6 @@ class EditProject extends StatefulWidget {
 class _EditProjectState extends State<EditProject> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-
   late TextEditingController noController;
   late TextEditingController nmprojectController;
   late TextEditingController kdprojectController;
@@ -44,7 +50,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -102,7 +108,8 @@ class _EditProjectState extends State<EditProject> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const EditProject(),
+                  builder: (context) =>
+                      EditProject(nip: widget.nip, data: widget.data),
                 );
               default:
                 return null;
@@ -151,7 +158,9 @@ class _EditProjectState extends State<EditProject> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ListProject()),
+                                          builder: (context) => ListProject(
+                                              nip: widget.nip,
+                                              data: widget.data)),
                                     );
                                   },
                                 ),
@@ -165,7 +174,9 @@ class _EditProjectState extends State<EditProject> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Notifikasi()),
+                                          builder: (context) => Notifikasi(
+                                              nip: widget.nip,
+                                              data: widget.data)),
                                     );
                                   },
                                 ),
@@ -179,7 +190,9 @@ class _EditProjectState extends State<EditProject> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Profile()),
+                                          builder: (context) => Profile(
+                                              nip: widget.nip,
+                                              data: widget.data)),
                                     );
                                   },
                                 ),
@@ -229,7 +242,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php'),
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php'),
         body: {
           'no_tambahproject':
               widget.selectedProject['no_tambahproject'].toString(),
@@ -429,14 +442,16 @@ class _EditProjectState extends State<EditProject> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) =>
+                    AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -491,42 +506,48 @@ class _EditProjectState extends State<EditProject> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) =>
+                    ReportSTTPP(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) =>
+                    Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) =>
+                    InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) =>
+                    InputDokumen(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) =>
+                    TambahProject(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) =>
+                    TambahStaff(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -576,7 +597,9 @@ class _EditProjectState extends State<EditProject> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => ListProject()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ListProject(nip: widget.nip, data: widget.data)),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
@@ -608,7 +631,9 @@ class _EditProjectState extends State<EditProject> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(nip: widget.nip, data: widget.data)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

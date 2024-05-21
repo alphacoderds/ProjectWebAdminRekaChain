@@ -4,17 +4,17 @@ import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:crypto/crypto.dart';
-import 'package:RekaChain/WebAdmin/liststaff.dart';
-import 'package:RekaChain/WebAdmin/profile.dart';
-import 'package:RekaChain/WebAdmin/dbLogin.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final DataModel data;
+  final String nip;
+  const LoginPage({Key? key, required this.data, required this.nip})
+      : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -36,6 +36,14 @@ class _LoginPageState extends State<LoginPage> {
     passwordController = TextEditingController();
   }
 
+  String hashPassword(String password) {
+    var bytes =
+        utf8.encode(password); // Mengonversi string password ke bytes UTF-8
+    var digest =
+        sha1.convert(bytes); // Menghitung hash SHA-1 dari bytes password
+    return digest.toString(); // Mengembalikan hash sebagai string
+  }
+
   @override
   void dispose() {
     nipController.dispose();
@@ -46,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> validateLogin(String nip, String password) async {
     final response = await http.post(
       Uri.parse(
-          'http://10.208.32.215/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
       body: {
         'nip': nip,
         'password': hashPassword(password),
@@ -62,18 +70,10 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  String hashPassword(String password) {
-    var bytes =
-        utf8.encode(password); // Mengonversi string password ke bytes UTF-8
-    var digest =
-        sha1.convert(bytes); // Menghitung hash SHA-1 dari bytes password
-    return digest.toString(); // Mengembalikan hash sebagai string
-  }
-
   Future<String?> getUserRole(String nip) async {
     final response = await http.post(
       Uri.parse(
-          'http://localhost/ProjectWebAdminRekaChain/lib/Project/test.php'),
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/test.php'),
       body: {
         'nip': nip,
       },
@@ -114,18 +114,22 @@ class _LoginPageState extends State<LoginPage> {
       String role = data['role'];
 
       if (role == 'admin') {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => AdminDashboard()),
-          );
-        } else if (role == 'user') {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => UserDashboard()),
-          );
-        } else {
-          _showAlertDialog('Login Failed', 'Invalid user role.');
-        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  AdminDashboard(nip: widget.nip, data: widget.data)),
+        );
+      } else if (role == 'user') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  UserDashboard(data: widget.data, nip: widget.nip)),
+        );
+      } else {
+        _showAlertDialog('Login Failed', 'Invalid user role.');
+      }
     }
   }
 
@@ -154,24 +158,33 @@ class _LoginPageState extends State<LoginPage> {
     final hashedPassword = hashPassword(passwordController.text);
     var response = await http.post(
         Uri.parse(
-            'http://10.208.32.215/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
         body: {"nip": nipController.text, "password": hashedPassword});
-
+    var jsonData = jsonDecode(response.body);
+    dynamic data = (jsonData as Map<String, dynamic>);
+    DataModel dataStaff = DataModel.getDataFromJson(data['data']);
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data['status'] == "Success") {
         String role = data['role']; // Mengambil peran pengguna dari respons
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('username', data['username ']);
+        await prefs.setString('nip', nipController.text);
+
+        String dataStaffJson = jsonEncode(dataStaff.toJson());
+        await prefs.setString('dataStaff', dataStaffJson);
         if (role == 'admin') {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => AdminDashboard()),
+            MaterialPageRoute(
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data)),
           );
         } else if (role == 'user') {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => UserDashboard()),
+            MaterialPageRoute(
+                builder: (context) =>
+                    UserDashboard(nip: widget.nip, data: widget.data)),
           );
         }
       } else {
@@ -201,7 +214,8 @@ class _LoginPageState extends State<LoginPage> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => LoginPage(),
+              builder: (context) =>
+                  LoginPage(data: widget.data, nip: widget.nip),
             );
           default:
             return null;

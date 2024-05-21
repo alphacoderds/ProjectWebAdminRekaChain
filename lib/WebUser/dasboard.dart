@@ -1,3 +1,4 @@
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
@@ -10,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class UserDashboard extends StatefulWidget {
+  final DataModel data;
+  final String nip;
+  const UserDashboard({Key? key, required this.data, required this.nip }) : super(key: key);
   @override
   State<UserDashboard> createState() => _DashboardState();
 }
@@ -44,7 +48,7 @@ class _DashboardState extends State<UserDashboard> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => UserDashboard(),
+              builder: (context) => UserDashboard(data: widget.data,nip: widget.nip),
             );
           default:
             return null;
@@ -78,7 +82,7 @@ class _DashboardState extends State<UserDashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Notifikasi(),
+                                  builder: (context) => Notifikasi(data: widget.data,nip: widget.nip),
                                 ),
                               );
                             },
@@ -193,14 +197,14 @@ class _DashboardState extends State<UserDashboard> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(),
+                builder: (context) => UserDashboard(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           } else {
@@ -257,28 +261,28 @@ class _DashboardState extends State<UserDashboard> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -308,7 +312,7 @@ class _DashboardState extends State<UserDashboard> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

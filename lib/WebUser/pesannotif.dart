@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebUser/editprofile.dart';
@@ -15,7 +16,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class PesanNotifikasi extends StatefulWidget {
-  const PesanNotifikasi({super.key});
+  final DataModel data;
+  final String nip;
+  const PesanNotifikasi({super.key, required this.nip, required this.data});
 
   @override
   State<PesanNotifikasi> createState() => _PesanNotifikasiState();
@@ -41,7 +44,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => const PesanNotifikasi(),
+              builder: (context) => PesanNotifikasi(data: widget.data,nip: widget.nip),
             );
           default:
             return null;
@@ -76,7 +79,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Notifikasi(),
+                                  builder: (context) => Notifikasi(data: widget.data,nip: widget.nip),
                                 ),
                               );
                             },
@@ -162,7 +165,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => InputDokumen()),
+                  MaterialPageRoute(builder: (context) => InputDokumen(data: widget.data,nip: widget.nip)),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -233,14 +236,14 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(),
+                builder: (context) => UserDashboard(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           } else {
@@ -296,28 +299,28 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
             Navigator.pop(context);
@@ -381,7 +384,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

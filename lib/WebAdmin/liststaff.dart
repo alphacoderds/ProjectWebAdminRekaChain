@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/editstaff.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
@@ -15,9 +16,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ListStaff extends StatefulWidget {
+  final DataModel data;
+  final String nip;
   final Map<String, dynamic>? newStaff;
 
-  const ListStaff({Key? key, this.newStaff}) : super(key: key);
+  const ListStaff(
+      {Key? key, this.newStaff, required this.data, required this.nip})
+      : super(key: key);
   @override
   State<ListStaff> createState() => _ListStaffState();
 }
@@ -43,7 +48,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.182/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -62,6 +67,7 @@ class _ListStaffState extends State<ListStaff> {
   void initState() {
     if (widget.newStaff != null) {
       _listdata.add(widget.newStaff!);
+      updateData();
     }
     _getdata();
     super.initState();
@@ -76,7 +82,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.11.60/ProjectWebAdminRekaChain/lib/Project/hapus_tambahstaff.php',
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/hapus_tambahstaff.php',
         ),
         body: {
           "kode_staff": id,
@@ -107,7 +113,8 @@ class _ListStaffState extends State<ListStaff> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => ListStaff(),
+                  builder: (context) =>
+                      ListStaff(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -183,7 +190,9 @@ class _ListStaffState extends State<ListStaff> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Notifikasi()),
+                                        builder: (context) => Notifikasi(
+                                            nip: widget.nip,
+                                            data: widget.data)),
                                   );
                                 },
                               ),
@@ -197,7 +206,9 @@ class _ListStaffState extends State<ListStaff> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Profile()),
+                                        builder: (context) => Profile(
+                                            data: widget.data,
+                                            nip: widget.nip)),
                                   );
                                 },
                               ),
@@ -400,10 +411,10 @@ class _ListStaffState extends State<ListStaff> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => EditStaff(
+                                            nip: widget.nip,
+                                            data: widget.data,
                                             selectedStaff: {
-                                              "no_tambahstaff":
-                                                  filteredData[index]
-                                                      ['no_tambahstaff'],
+                                              "no": filteredData[index]['no'],
                                               "kode_staff": filteredData[index]
                                                   ['kode_staff'],
                                               "nama": filteredData[index]
@@ -544,14 +555,16 @@ class _ListStaffState extends State<ListStaff> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) =>
+                    AdminDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -606,42 +619,48 @@ class _ListStaffState extends State<ListStaff> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -691,7 +710,9 @@ class _ListStaffState extends State<ListStaff> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

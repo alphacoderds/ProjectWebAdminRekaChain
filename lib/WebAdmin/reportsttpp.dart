@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:html';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
@@ -15,9 +16,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class ReportSTTPP extends StatefulWidget {
+  final DataModel data;
+  final String nip;
   final Map<String, dynamic>? newProject;
 
-  const ReportSTTPP({Key? key, this.newProject}) : super(key: key);
+  const ReportSTTPP({Key? key, this.newProject, required this.data, required this.nip}) : super(key: key);
   @override
   State<ReportSTTPP> createState() => _ReportSTTPState();
 }
@@ -44,7 +47,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -78,7 +81,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => ReportSTTPP(),
+                  builder: (context) => ReportSTTPP(nip: widget.nip, data: widget.data),
                 );
               default:
                 return null;
@@ -154,7 +157,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Notifikasi()),
+                                        builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
                                   );
                                 },
                               ),
@@ -168,7 +171,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Profile()),
+                                        builder: (context) => Profile(nip: widget.nip, data: widget.data)),
                                   );
                                 },
                               ),
@@ -299,7 +302,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                ViewReportSTTPP(
+                                                ViewReportSTTPP(nip: widget.nip, data: widget.data,
                                               selectedProject: {
                                                 "id_lot": filteredData[index]
                                                     ['id_lot'],
@@ -477,14 +480,14 @@ class _ReportSTTPState extends State<ReportSTTPP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -539,42 +542,42 @@ class _ReportSTTPState extends State<ReportSTTPP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) => TambahProject(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => TambahStaff(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -624,7 +627,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(nip: widget.nip, data: widget.data)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

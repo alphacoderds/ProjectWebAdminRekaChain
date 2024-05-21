@@ -10,6 +10,20 @@ header("Access-Control-Allow-Methods: POST");
 // Koneksi ke database
 $conn = new mysqli("localhost", "root", "", "db_rekachain");
 
+$nama = $_POST['nama'];
+$jabatan = $_POST['jabatan'];
+$unit_kerja = $_POST['unit_kerja'];
+$departemen = $_POST['departemen'];
+$divisi = $_POST['divisi'];
+$no_telp = $_POST['no_telp'];
+$nip = $_POST['nip'];
+$password = $_POST['password'];
+$status = $_POST['status'];
+
+$sql =  "UPDATE `coba` SET `nama`='$nama',`jabatan`='$jabatan',`unit_kerja`='$unit_kerja',`departemen`='$departemen',`divisi`='$divisi',`no_telp`='$no_telp',`nip`='$nip',`password`=SHA1('$password'),`status`='$status' WHERE kode_staff = $id";
+
+$result = mysqli_query($conn,$sql);
+
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }

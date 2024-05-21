@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebAdmin/notification.dart';
@@ -19,7 +20,9 @@ import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 
 class InputDokumen extends StatefulWidget {
-  const InputDokumen({Key? key}) : super(key: key);
+  final DataModel data;
+  final String nip;
+  const InputDokumen({Key? key, required this.data, required this.nip}) : super(key: key);
 
   @override
   State<InputDokumen> createState() => _InputDokumenState();
@@ -80,7 +83,7 @@ class _InputDokumenState extends State<InputDokumen> {
 
       try {
         final response = await Dio().post(
-          'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/create_inputdokumen.php',
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/create_inputdokumen.php',
           data: formData,
           options: Options(
             contentType: 'multipart/form-data',
@@ -100,7 +103,7 @@ class _InputDokumenState extends State<InputDokumen> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => ViewUpload(newProject: newProjectData),
+              builder: (context) => ViewUpload(newProject: newProjectData, nip: widget.nip, data: widget.data,),
             ),
           );
         } else {
@@ -131,7 +134,7 @@ class _InputDokumenState extends State<InputDokumen> {
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.8.237/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+        'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -165,7 +168,7 @@ class _InputDokumenState extends State<InputDokumen> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const InputDokumen(),
+                  builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
                 );
               default:
                 return null;
@@ -209,7 +212,9 @@ class _InputDokumenState extends State<InputDokumen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ViewUpload()),
+                                          builder: (context) => ViewUpload(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                   child: Text(
@@ -238,7 +243,7 @@ class _InputDokumenState extends State<InputDokumen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Notifikasi()),
+                                          builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
                                     );
                                   },
                                 ),
@@ -252,7 +257,9 @@ class _InputDokumenState extends State<InputDokumen> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Profile()),
+                                          builder: (context) => Profile(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                 ),
@@ -582,14 +589,14 @@ class _InputDokumenState extends State<InputDokumen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -644,42 +651,42 @@ class _InputDokumenState extends State<InputDokumen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -757,7 +764,7 @@ class _InputDokumenState extends State<InputDokumen> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

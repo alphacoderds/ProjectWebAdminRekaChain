@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:html' as html;
 import 'dart:async';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
@@ -24,7 +25,9 @@ import 'package:barcode_image/barcode_image.dart';
 
 class DetailViewPerencanaan extends StatefulWidget {
   final Map<String, dynamic> selectedProject;
-  const DetailViewPerencanaan({Key? key, this.selectedProject = const {}})
+  final DataModel data;
+  final String nip;
+  const DetailViewPerencanaan({Key? key, this.selectedProject = const {}, required this.data, required this.nip})
       : super(key: key);
 
   @override
@@ -98,7 +101,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.10.159/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -292,7 +295,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => const DetailViewPerencanaan(),
+                  builder: (context) => DetailViewPerencanaan(data: widget.data,nip: widget.nip),
                 );
               default:
                 return null;
@@ -338,7 +341,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                Vperencanaan(),
+                                                Vperencanaan(data: widget.data,nip: widget.nip),
                                           ),
                                         );
                                       },
@@ -383,7 +386,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Notifikasi(),
+                                            builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
                                           ),
                                         );
                                       },
@@ -398,7 +401,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Profile(),
+                                            builder: (context) => Profile(data: widget.data,nip: widget.nip),
                                           ),
                                         );
                                       },
@@ -1391,7 +1394,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      Vperencanaan()),
+                                                      Vperencanaan(data: widget.data,nip: widget.nip)),
                                             );
                                           },
                                           child: Text(
@@ -1474,14 +1477,14 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(),
+                builder: (context) => AdminDashboard(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(),
+                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -1536,42 +1539,42 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(),
+                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(),
+                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
               ),
             );
           }
@@ -1621,7 +1624,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => Vperencanaan()),
+                  MaterialPageRoute(builder: (context) => Vperencanaan(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
@@ -1653,7 +1656,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

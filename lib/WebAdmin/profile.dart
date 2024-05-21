@@ -1,15 +1,46 @@
 import 'dart:convert';
-import 'package:RekaChain/WebAdmin/editprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:RekaChain/WebAdmin/data_model.dart';
+import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/editprofile.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Profile extends StatefulWidget {
-  final Map<String, dynamic>? newStaff;
-  final Map<String, dynamic>? tambahStaffData;
+class User {
+  final String kode_staff;
+  final String nama;
+  final String jabatan;
+  final String unit_kerja;
+  final String departemen;
+  final String divisi;
+  final String email;
+  final String no_telp;
+  final String nip;
+  final String status;
+  final String password;
+  final String konfirmasi_password;
 
-  const Profile({Key? key, this.newStaff, this.tambahStaffData})
-      : super(key: key);
+  User({
+    required this.kode_staff,
+    required this.nama,
+    required this.jabatan,
+    required this.unit_kerja,
+    required this.departemen,
+    required this.divisi,
+    required this.email,
+    required this.no_telp,
+    required this.nip,
+    required this.status,
+    required this.password,
+    required this.konfirmasi_password,
+  });
+}
+
+class Profile extends StatefulWidget {
+  final DataModel data;
+  final String nip;
+  const Profile({super.key, required this.nip, required this.data});
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -18,47 +49,133 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
-  List _listdata = [];
+  Map<String, dynamic>? _userData;
   bool _isloading = true;
-  Map<String, dynamic> _userData = {};
+  final formKey = GlobalKey<FormState>();
+
+  TextEditingController kodeStaffController = TextEditingController();
+  TextEditingController namaController = TextEditingController();
+  TextEditingController jabatanController = TextEditingController();
+  TextEditingController unitkerjaController = TextEditingController();
+  TextEditingController departemenController = TextEditingController();
+  TextEditingController divisiController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController noTelpController = TextEditingController();
+  TextEditingController nipController = TextEditingController();
+  TextEditingController statusController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController konfirmasiPasswordController = TextEditingController();
+
+  List _listdata = [];
+  bool _isLoading = true;
+  String _errorMessage = 'Terjadi kesalahan saat mengambil data';
 
   Future<void> _getdata() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? nip = prefs.getString('nip');
-    if (nip != null) {
-      try {
-        final response = await http.get(
-          Uri.parse(
-            'http://10.208.32.215/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
-          ),
-        );
-        if (response.statusCode == 200) {
-          final List<dynamic> data = jsonDecode(response.body);
-          setState(() { 
-            _userData = data[0];
-            _isloading = false;
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print("Response data: $data");
+
+        // Ambil NIP dari SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String? nip = prefs.getString('nip');
+        print("nip: $nip");
+
+        Map<String, dynamic>? userData;
+        for (var userDataItem in data) {
+          if (userDataItem['nip'] == nip) {
+            userData = userDataItem;
+            break;
+          }
+        }
+        if (userData != null) {
+          // Setel state untuk menampilkan data pengguna yang sesuai
+          setState(() {
+            _userData = _userData;
+            _isLoading = false;
           });
         } else {
-          print('Failed to load user data: ${response.statusCode}');
+          // Tampilkan pesan jika data pengguna tidak ditemukan
+          setState(() {
+            _isLoading = false;
+            _errorMessage = 'Data pengguna tidak ditemukan';
+          });
         }
-      } catch (e) {
-        print('Error: $e');
       }
+    } catch (e) {
+      // Tangani kesalahan yang terjadi
+      print(e);
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Terjadi kesalahan saat mengambil data';
+      });
+    }
+  }
+
+  Future<DataModel?> getUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? dataStaffJson = prefs.getString('dataStaff');
+    if (dataStaffJson != null) {
+      Map<String, dynamic> userMap = jsonDecode(dataStaffJson);
+      return DataModel.getDataFromJson(userMap);
+    }
+    return null;
+  }
+
+  Future<void> _getUserDataFromSharedPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? dataStaffJson = prefs.getString('dataStaff');
+    if (dataStaffJson != null) {
+      Map<String, dynamic> userMap = jsonDecode(dataStaffJson);
+      setState(() {
+        _userData = userMap;
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Data pengguna tidak ditemukan';
+      });
     }
   }
 
   @override
   void initState() {
-    if (widget.newStaff != null) {
-      _listdata.add(widget.newStaff!);
-    }
     _getdata();
     super.initState();
+    _getUserDataFromSharedPrefs();
   }
 
   Future<void> updateData() async {
     await _getdata();
     setState(() {});
+  }
+
+  Future<void> _simpan() async {
+    // Simpan data dan dapatkan data yang diperbarui
+    final updatedData = {
+      'kode_staff': widget.data.kode_staff,
+      'nama': namaController.text,
+      'jabatan': jabatanController.text,
+      'unit_kerja': unitkerjaController.text,
+      'departemen': departemenController.text,
+      'divisi': divisiController.text,
+      'email': emailController.text,
+      'nip': nipController.text,
+      'noTelp': noTelpController.text,
+      'status': statusController.text,
+      'password': passwordController.text,
+      'konfirmasi_password': konfirmasiPasswordController.text,
+      // Data yang diperbarui
+    };
+
+    // Kirim data yang diperbarui ke halaman profil
+    Navigator.pop(context, updatedData);
   }
 
   @override
@@ -73,7 +190,8 @@ class _ProfileState extends State<Profile> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => Profile(),
+                  builder: (context) =>
+                      Profile(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -110,7 +228,8 @@ class _ProfileState extends State<Profile> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const EditProfile(),
+                                  builder: (context) => EditProfile(
+                                      data: widget.data, nip: widget.nip),
                                 ),
                               );
                             },
@@ -151,19 +270,14 @@ class _ProfileState extends State<Profile> {
   }
 
   Widget _buildRightSection() {
-    String namaLengkap = _listdata.isNotEmpty ? _listdata[0]['nama'] ?? '' : '';
-    String jabatan = _listdata.isNotEmpty ? _listdata[0]['jabatan'] ?? '' : '';
-    String unitKerja =
-        _listdata.isNotEmpty ? _listdata[0]['unit_kerja'] ?? '' : '';
-    String departemen =
-        _listdata.isNotEmpty ? _listdata[0]['departemen'] ?? '' : '';
-    String divisi = _listdata.isNotEmpty ? _listdata[0]['divisi'] ?? '' : '';
-    String nomorTelepon =
-        _listdata.isNotEmpty ? _listdata[0]['no_telp'] ?? '' : '';
-    String nip = _listdata.isNotEmpty ? _listdata[0]['nip'] ?? '' : '';
-    String password =
-        _listdata.isNotEmpty ? _listdata[0]['password'] ?? '' : '';
-    String status = _listdata.isNotEmpty ? _listdata[0]['status'] ?? '' : '';
+    String namaLengkap = _userData?['nama'] ?? '';
+    String jabatan = _userData?['jabatan'] ?? '';
+    String unitKerja = _userData?['unit_kerja'] ?? '';
+    String departemen = _userData?['departemen'] ?? '';
+    String divisi = _userData?['divisi'] ?? '';
+    String nomorTelepon = _userData?['no_telp'] ?? '';
+    String nip = _userData?['nip'] ?? '';
+    String status = _userData?['status'] ?? '';
 
     return Stack(
       children: [

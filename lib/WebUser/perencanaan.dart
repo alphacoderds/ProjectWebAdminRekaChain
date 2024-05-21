@@ -1,3 +1,4 @@
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
@@ -9,7 +10,9 @@ import 'package:RekaChain/WebUser/viewperencanaan.dart';
 import 'package:flutter/material.dart';
 
 class Perencanaan extends StatefulWidget {
-  const Perencanaan({super.key});
+  const Perencanaan({super.key, required this.nip, required this.data});
+  final String nip;
+  final DataModel data;
 
   @override
   State<Perencanaan> createState() => _PerencanaanState();
@@ -119,7 +122,7 @@ class _PerencanaanState extends State<Perencanaan> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => const Perencanaan(),
+              builder: (context) => Perencanaan(nip: widget.nip, data: widget.data),
             );
           default:
             return null;
@@ -162,7 +165,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Vperencanaan(),
+                                        builder: (context) => Vperencanaan(data: widget.data,nip: widget.nip),
                                       ),
                                     );
                                   },
@@ -195,7 +198,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Notifikasi(),
+                                        builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
                                       ),
                                     );
                                   },
@@ -660,7 +663,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                Vperencanaan(),
+                                                Vperencanaan(data: widget.data,nip: widget.nip),
                                           ),
                                         );
                                       },
@@ -882,14 +885,15 @@ class _PerencanaanState extends State<Perencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(),
+                builder: (context) =>
+                    UserDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else {
@@ -945,28 +949,28 @@ class _PerencanaanState extends State<Perencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(),
+                builder: (context) => ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(),
+                builder: (context) => Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(),
+                builder: (context) => InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(),
+                builder: (context) => InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
             Navigator.pop(context);
@@ -997,7 +1001,11 @@ class _PerencanaanState extends State<Perencanaan> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                      builder: (context) => LoginPage(
+                            nip: widget.nip,
+                            data: widget.data,
+                          )),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
