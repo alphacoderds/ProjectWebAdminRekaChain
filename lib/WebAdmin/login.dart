@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
+import 'package:RekaChain/WebAdmin/provider/user_provider.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:crypto/crypto.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
@@ -54,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> validateLogin(String nip, String password) async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
+          'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
       body: {
         'nip': nip,
         'password': hashPassword(password),
@@ -73,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<String?> getUserRole(String nip) async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/test.php'),
+          'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/test.php'),
       body: {
         'nip': nip,
       },
@@ -100,18 +102,20 @@ class _LoginPageState extends State<LoginPage> {
 
     final response = await http.post(
       Uri.parse(
-          'http://localhost/ProjectWebAdminRekaChain/lib/Project/test.php'),
+          'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/test.php'),
       body: {
         'nip': nip,
         'password': password,
       },
     );
+
     if (response.statusCode != 200) {
       _showAlertDialog('Login Failed', 'User Not Found');
     } else {
       var jsonData = json.decode(response.body);
       dynamic data = (jsonData as Map<String, dynamic>);
       String role = data['role'];
+      context.read<UserProvider>().saveNip(nipController.text.toString());
 
       if (role == 'admin') {
         Navigator.pushReplacement(
@@ -158,26 +162,23 @@ class _LoginPageState extends State<LoginPage> {
     final hashedPassword = hashPassword(passwordController.text);
     var response = await http.post(
         Uri.parse(
-            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
+            'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
         body: {"nip": nipController.text, "password": hashedPassword});
     var jsonData = jsonDecode(response.body);
     dynamic data = (jsonData as Map<String, dynamic>);
     DataModel dataStaff = DataModel.getDataFromJson(data['data']);
+    print("Halloooo");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       if (data['status'] == "Success") {
         String role = data['role']; // Mengambil peran pengguna dari respons
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('nip', nipController.text);
-
-        String dataStaffJson = jsonEncode(dataStaff.toJson());
-        await prefs.setString('dataStaff', dataStaffJson);
+        context.read<UserProvider>().saveNip(nipController.text.toString());
         if (role == 'admin') {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    AdminDashboard(nip: widget.nip, data: widget.data)),
+                    AdminDashboard(nip: nipController.text, data: widget.data)),
           );
         } else if (role == 'user') {
           Navigator.pushReplacement(

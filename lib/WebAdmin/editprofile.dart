@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfile extends StatefulWidget {
@@ -22,18 +21,30 @@ class _EditProfileState extends State<EditProfile> {
   late double screenWidth;
   late double screenHeight;
   final formKey = GlobalKey<FormState>();
-  TextEditingController kodeStaffController = TextEditingController();
-  TextEditingController namaController = TextEditingController();
-  TextEditingController jabatanController = TextEditingController();
-  TextEditingController unitKerjaController = TextEditingController();
-  TextEditingController departemenController = TextEditingController();
-  TextEditingController divisiController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController noTelpController = TextEditingController();
-  TextEditingController nipController = TextEditingController();
-  TextEditingController statusController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController konfirmasiPasswordController = TextEditingController();
+  late TextEditingController kodeStaffController =
+      TextEditingController(text: widget.data.kode_staff);
+  late TextEditingController namaController =
+      TextEditingController(text: widget.data.nama);
+  late TextEditingController jabatanController =
+      TextEditingController(text: widget.data.jabatan);
+  late TextEditingController unitKerjaController =
+      TextEditingController(text: widget.data.unit_kerja);
+  late TextEditingController departemenController =
+      TextEditingController(text: widget.data.departemen);
+  late TextEditingController divisiController =
+      TextEditingController(text: widget.data.divisi);
+  late TextEditingController emailController =
+      TextEditingController(text: widget.data.email);
+  late TextEditingController noTelpController =
+      TextEditingController(text: widget.data.noTelp);
+  late TextEditingController nipController =
+      TextEditingController(text: widget.data.nip);
+  late TextEditingController statusController =
+      TextEditingController(text: widget.data.status);
+  late TextEditingController passwordController =
+      TextEditingController(text: widget.data.password);
+  late TextEditingController konfirmasiPasswordController =
+      TextEditingController(text: widget.data.konfirmasi_password);
 
   @override
   void initState() {
@@ -45,33 +56,41 @@ class _EditProfileState extends State<EditProfile> {
   Future _getdata() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://192.168.11.148/crudflutter/flutter_crud/lib/read.php'));
+          'http://169.254.32.254/crudflutter/flutter_crud/lib/readdataprofile.php'));
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        setState(() {
-          kodeStaffController.text = data['kode_staff'];
-          namaController.text = data['nama'];
-          jabatanController.text = data['jabatan'];
-          unitKerjaController.text = data['unit_kerja'];
-          departemenController.text = data['departemen'];
-          divisiController.text = data['divisi'];
-          noTelpController.text = data['no_telp'];
-          nipController.text = data['nip'];
-          passwordController.text = data['password'];
-          statusController.text = data['status'];
-        });
+        try {
+          final data = jsonDecode(response.body);
+          setState(() {
+            kodeStaffController.text = data['kode_staff'] ?? '';
+            namaController.text = data['nama'] ?? '';
+            jabatanController.text = data['jabatan'] ?? '';
+            unitKerjaController.text = data['unit_kerja'] ?? '';
+            departemenController.text = data['departemen'] ?? '';
+            divisiController.text = data['divisi'] ?? '';
+            noTelpController.text = data['no_telp'] ?? '';
+            nipController.text = data['nip'] ?? '';
+            passwordController.text = data['password'] ?? '';
+            statusController.text = data['status'] ?? '';
+          });
+        } catch (e) {
+          print('Error parsing JSON: $e');
+          print('Response body: ${response.body}');
+        }
+      } else {
+        print('Failed to load data: ${response.statusCode}');
+        print('Response body: ${response.body}');
       }
     } catch (e) {
-      print(e);
+      print('Error fetching data: $e');
     }
   }
 
   Future<void> _simpan() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.11.148/ProjectScanner/lib/API/edit_profile.php'),
+          'http://169.254.32.254/ProjectScanner/lib/API/edit_profile.php'),
       body: {
-        "kode_staff": widget.data.kode_staff,
+        "nip": widget.data.nip,
         "nama": namaController.text,
         "jabatan": jabatanController.text,
         "unit_kerja": unitKerjaController.text,
@@ -120,7 +139,7 @@ class _EditProfileState extends State<EditProfile> {
           departemenController.text = data.departemen;
           divisiController.text = data.divisi;
           noTelpController.text = data.noTelp;
-          nipController.text = data.nip;
+          nipController.text = data.nip.toString();
           passwordController.text = data.password;
           statusController.text = data.status;
         });
@@ -150,7 +169,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _update() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.11.148/ProjectScanner/lib/tbl_tambahstaff/create_tambahstaff.php'),
+          'http://169.254.32.254/ProjectScanner/lib/tbl_tambahstaff/create_tambahstaff.php'),
       body: {
         "nama": namaController.text,
         "jabatan": jabatanController.text,
@@ -212,7 +231,21 @@ class _EditProfileState extends State<EditProfile> {
                     child: Container(
                       margin: const EdgeInsets.only(top: 20),
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          await http.post(
+                              body: {
+                                'nama': namaController.text,
+                                'jabatan': jabatanController.text,
+                                'unit_kerja': unitKerjaController.text,
+                                'departemen': departemenController.text,
+                                'divisi': divisiController.text,
+                                'email': emailController.text,
+                                'no_telp': noTelpController.text,
+                                'nip': nipController.text,
+                                'status': statusController.text,
+                              },
+                              Uri.parse(
+                                  "http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -278,28 +311,50 @@ class _EditProfileState extends State<EditProfile> {
             const SizedBox(height: 16.0),
             // Letak widget content
             _buildTextView(
-                label: ' Nama Lengkap', text: '', controller: namaController),
+                isEnable: true,
+                label: ' Nama Lengkap',
+                text: '',
+                controller: namaController),
             _buildTextView(
-                label: ' Jabatan', text: '', controller: jabatanController),
+                isEnable: true,
+                label: ' Jabatan',
+                text: '',
+                controller: jabatanController),
             _buildTextView(
+                isEnable: true,
                 label: ' Unit Kerja',
                 text: '',
                 controller: unitKerjaController),
             _buildTextView(
+                isEnable: true,
                 label: ' Departemen',
                 text: '',
                 controller: departemenController),
             _buildTextView(
-                label: ' Divisi', text: '', controller: divisiController),
+                isEnable: true,
+                label: ' Divisi',
+                text: '',
+                controller: divisiController),
             _buildTextView(
+                isEnable: true,
                 label: ' Nomor Telepon',
                 text: '',
                 controller: noTelpController),
-            _buildTextView(label: ' NIP', text: '', controller: nipController),
             _buildTextView(
-                label: ' Password', text: '', controller: passwordController),
+                isEnable: false,
+                label: ' NIP',
+                text: '',
+                controller: nipController),
             _buildTextView(
-                label: ' Status', text: '', controller: statusController),
+                isEnable: false,
+                label: ' Password',
+                text: '',
+                controller: passwordController),
+            _buildTextView(
+                isEnable: true,
+                label: ' Status',
+                text: '',
+                controller: statusController),
             const SizedBox(height: 16.0),
           ],
         ),
@@ -310,6 +365,7 @@ class _EditProfileState extends State<EditProfile> {
   Widget _buildTextView(
       {required String label,
       required String text,
+      required bool isEnable,
       required TextEditingController controller}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -323,6 +379,7 @@ class _EditProfileState extends State<EditProfile> {
         ),
         const SizedBox(height: 8.0),
         TextFormField(
+          enabled: isEnable,
           controller: controller,
           decoration: InputDecoration(
             hintText: text,

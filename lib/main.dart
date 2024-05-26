@@ -1,6 +1,8 @@
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
+import 'package:RekaChain/WebAdmin/provider/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 void main() {
@@ -18,9 +20,12 @@ void main() {
       status: '',
       password: '',
       konfirmasi_password: '');
-  runApp(MyApp1(
-    data: data,
-    nip: nip,
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create:(context) => UserProvider(),)],
+    child: MyApp1(
+      data: data,
+      nip: nip,
+    ),
   ));
 }
 

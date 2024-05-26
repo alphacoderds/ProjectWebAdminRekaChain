@@ -1,16 +1,16 @@
 class DataModel {
-  String kode_staff;
-  String nama;
-  String jabatan;
-  String unit_kerja;
-  String departemen;
-  String divisi;
-  String email;
-  String noTelp;
-  String nip;
-  String status;
-  String password;
-  String konfirmasi_password;
+  final String kode_staff;
+  final String nama;
+  final String jabatan;
+  final String unit_kerja;
+  final String departemen;
+  final String divisi;
+  final String email;
+  final String noTelp;
+   String nip;
+  final String status;
+  final String password;
+  final String konfirmasi_password;
 
   DataModel({
     required this.kode_staff,

@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'package:RekaChain/WebAdmin/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:RekaChain/WebAdmin/data_model.dart';
-import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/editprofile.dart';
-import 'package:RekaChain/WebAdmin/login.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
@@ -50,8 +50,9 @@ class _ProfileState extends State<Profile> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
   Map<String, dynamic>? _userData;
-  bool _isloading = true;
+  List _listdata = [];
   final formKey = GlobalKey<FormState>();
+  String _errorMassage = 'Terjadi kesalahan saat mengambil data';
 
   TextEditingController kodeStaffController = TextEditingController();
   TextEditingController namaController = TextEditingController();
@@ -66,15 +67,18 @@ class _ProfileState extends State<Profile> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController konfirmasiPasswordController = TextEditingController();
 
-  List _listdata = [];
   bool _isLoading = true;
   String _errorMessage = 'Terjadi kesalahan saat mengambil data';
 
   Future<void> _getdata() async {
     try {
-      final response = await http.get(
+      print(widget.nip);
+      final map = <String, dynamic>{};
+      map['nip'] = widget.nip;
+      final response = await http.post(
+        body: map,
         Uri.parse(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
+          'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -96,7 +100,7 @@ class _ProfileState extends State<Profile> {
         if (userData != null) {
           // Setel state untuk menampilkan data pengguna yang sesuai
           setState(() {
-            _userData = _userData;
+            _userData = userData;
             _isLoading = false;
           });
         } else {
@@ -115,6 +119,16 @@ class _ProfileState extends State<Profile> {
         _errorMessage = 'Terjadi kesalahan saat mengambil data';
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final auth = Provider.of<UserProvider>(context, listen: false);
+      auth.getUserByNip();
+    });
+    
   }
 
   Future<DataModel?> getUserData() async {
@@ -142,13 +156,6 @@ class _ProfileState extends State<Profile> {
         _errorMessage = 'Data pengguna tidak ditemukan';
       });
     }
-  }
-
-  @override
-  void initState() {
-    _getdata();
-    super.initState();
-    _getUserDataFromSharedPrefs();
   }
 
   Future<void> updateData() async {
@@ -221,32 +228,36 @@ class _ProfileState extends State<Profile> {
                     children: [
                       _buildAvatar(),
                       Center(
-                        child: Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditProfile(
-                                      data: widget.data, nip: widget.nip),
+                        child: Consumer<UserProvider>(
+                          builder: (context, provider, child) {
+                            return Container(
+                              margin: const EdgeInsets.only(top: 20),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditProfile(
+                                          data: provider.dataModel, nip: widget.nip),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor:
+                                      const Color.fromRGBO(43, 56, 86, 1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 20,
+                                  ),
                                 ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor:
-                                  const Color.fromRGBO(43, 56, 86, 1),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
+                                child: const Text('Ubah Profile'),
                               ),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 20,
-                              ),
-                            ),
-                            child: const Text('Ubah Profile'),
-                          ),
+                            );
+                          }
                         ),
                       ),
                       Expanded(
@@ -299,23 +310,60 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             const SizedBox(height: 16.0),
-            _buildTextView(' Nama Lengkap :', text: namaLengkap),
+            Consumer<UserProvider>(
+              builder: (context,provider,child) {
+                return _buildTextView(' Nama Lengkap :', text: provider.dataModel.nama);
+              }
+            ),
             _buildDivider(),
-            _buildTextView(' Jabatan :', text: jabatan),
+
+            Consumer<UserProvider>(
+              builder: (context, provider,child) {
+                return _buildTextView(' Jabatan :', text: provider.dataModel.jabatan);
+              }
+            ),
             _buildDivider(),
-            _buildTextView(' Unit Kerja :', text: unitKerja),
+            Consumer<UserProvider>(
+              builder: (context, provider, child) {
+                return _buildTextView(' Unit Kerja :', text: provider.dataModel.unit_kerja);
+              }
+            ),
             _buildDivider(),
-            _buildTextView(' Departemen :', text: departemen),
+            Consumer<UserProvider>(
+              builder: (context, provider, child) {
+                return _buildTextView(' Departemen :', text: provider.dataModel.departemen);
+              }
+            ),
             _buildDivider(),
-            _buildTextView(' Divisi :', text: divisi),
+            Consumer<UserProvider>(
+              builder: (context, provider, child) {
+                return _buildTextView(' Divisi :', text: provider.dataModel.divisi);
+              }
+            ),
             _buildDivider(),
-            _buildTextView(' Nomor Telepon :', text: nomorTelepon),
+            Consumer<UserProvider>(
+              builder: (context, provider, child) {
+                return _buildTextView(' Nomor Telepon :', text: provider.dataModel.noTelp);
+              }
+            ),
             _buildDivider(),
-            _buildTextView(' NIP :', text: nip),
+            Consumer<UserProvider>(
+              builder: (context, provider, child) {
+                return _buildTextView(' NIP :', text: provider.dataModel.nip);
+              }
+            ),
             _buildDivider(),
-            _buildTextView(' Password :', text: ''),
+            Consumer<UserProvider>(
+              builder: (context, provider, child) {
+                return _buildTextView(' Password :', text: provider.dataModel.password);
+              }
+            ),
             _buildDivider(),
-            _buildTextView(' Status :', text: status),
+            Consumer<UserProvider>(
+              builder: (context, provider, child) {
+                return _buildTextView(' Status :', text: provider.dataModel.status);
+              }
+            ),
             _buildDivider(),
             const SizedBox(height: 16.0),
           ],
