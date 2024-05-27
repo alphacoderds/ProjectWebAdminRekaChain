@@ -4,7 +4,7 @@ import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebUser/login.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebUser/notification.dart';
 import 'package:RekaChain/WebUser/profile.dart';
 import 'package:RekaChain/WebUser/reportsttpp.dart';
@@ -144,7 +144,7 @@ class _PerencanaanState extends State<Perencanaan> {
   Future<void> _simpan(BuildContext context) async {
     final response = await http.post(
       Uri.parse(
-        "http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
+        "http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
       ),
       body: {
         "nama": selectedValuenamaProject ?? '',
@@ -249,7 +249,7 @@ class _PerencanaanState extends State<Perencanaan> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);

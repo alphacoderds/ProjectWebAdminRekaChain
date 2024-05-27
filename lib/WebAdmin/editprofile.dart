@@ -20,7 +20,6 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   late double screenWidth;
   late double screenHeight;
-  final formKey = GlobalKey<FormState>();
   late TextEditingController kodeStaffController =
       TextEditingController(text: widget.data.kode_staff);
   late TextEditingController namaController =
@@ -205,7 +204,7 @@ class _EditProfileState extends State<EditProfile> {
         }
       },
       home: Scaffold(
-        appBar: AppBar(
+        appBar : AppBar(
           title: Row(
             children: [
               Image.asset(
@@ -245,7 +244,7 @@ class _EditProfileState extends State<EditProfile> {
                                 'status': statusController.text,
                               },
                               Uri.parse(
-                                  "http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
+                                  "http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
                           Navigator.push(
                             context,
                             MaterialPageRoute(

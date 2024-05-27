@@ -11,7 +11,7 @@ import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
-import 'package:RekaChain/WebUser/login.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebUser/notification.dart';
 import 'package:RekaChain/WebUser/perencanaan.dart';
 import 'package:RekaChain/WebUser/profile.dart';
@@ -102,7 +102,7 @@ class _InputMaterialState extends State<InputMaterial> {
 
       try {
         final response = await Dio().post(
-          'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/create_material.php',
+          'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/create_material.php',
           data: formData,
           options: Options(
             contentType: 'multipart/form-data',
@@ -127,7 +127,7 @@ class _InputMaterialState extends State<InputMaterial> {
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+        'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);

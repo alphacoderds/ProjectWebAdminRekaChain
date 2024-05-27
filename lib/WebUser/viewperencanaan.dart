@@ -6,7 +6,7 @@ import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebUser/login.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebUser/notification.dart';
 import 'package:RekaChain/WebUser/perencanaan.dart';
 import 'package:RekaChain/WebUser/profile.dart';
@@ -46,7 +46,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {

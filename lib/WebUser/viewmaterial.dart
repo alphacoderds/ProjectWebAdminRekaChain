@@ -5,7 +5,7 @@ import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebUser/login.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebUser/notification.dart';
 import 'package:RekaChain/WebUser/perencanaan.dart';
 import 'package:RekaChain/WebUser/profile.dart';
@@ -58,7 +58,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
+          'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
         ),
       );
       if (response.statusCode == 200) {

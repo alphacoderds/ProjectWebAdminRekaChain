@@ -146,7 +146,7 @@ class _PerencanaanState extends State<Perencanaan> {
   Future<void> _simpan(BuildContext context) async {
     final response = await http.post(
       Uri.parse(
-        "http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
+        "http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
       ),
       body: {
         "nama": selectedValuenamaProject ?? '',
@@ -251,7 +251,7 @@ class _PerencanaanState extends State<Perencanaan> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.9.227/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);

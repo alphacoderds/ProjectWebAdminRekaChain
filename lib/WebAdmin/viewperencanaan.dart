@@ -47,7 +47,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -81,7 +81,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
+          'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
         ),
         body: {
           "id_lot": id,

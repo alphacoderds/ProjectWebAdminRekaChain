@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final response = await http.post(
       Uri.parse(
-          'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/test.php'),
+          'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/test.php'),
       body: {
         'nip': nip,
         'password': password,

@@ -1,25 +1,27 @@
-import 'package:RekaChain/WebAdmin/data_model.dart';
-import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebUser/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebUser/notification.dart';
 import 'package:RekaChain/WebUser/perencanaan.dart';
 import 'package:RekaChain/WebUser/profile.dart';
+import 'package:RekaChain/WebAdmin/provider/user_provider.dart';
 import 'package:RekaChain/WebUser/reportsttpp.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:RekaChain/WebAdmin/data_model.dart';
 
-class UserDashboard extends StatefulWidget {
+class AdminDashboard extends StatefulWidget {
   final DataModel data;
-  final String nip;
-  const UserDashboard({Key? key, required this.data, required this.nip});
+  final int nip;
+  const AdminDashboard({Key? key, required this.data, required this.nip});
+
   @override
-  State<UserDashboard> createState() => _DashboardState();
+  State<AdminDashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends State<UserDashboard> {
+class _DashboardState extends State<AdminDashboard> {
   int _selectedIndex = 0;
   late List<_ChartData> data;
   late TooltipBehavior _tooltip;
@@ -30,6 +32,7 @@ class _DashboardState extends State<UserDashboard> {
 
   @override
   void initState() {
+    context.read<UserProvider>().saveNip(widget.nip.toString());
     data = [
       _ChartData('Panel 1', 12),
       _ChartData('Panel 2', 15),
@@ -50,7 +53,7 @@ class _DashboardState extends State<UserDashboard> {
           case '/':
             return MaterialPageRoute(
               builder: (context) =>
-                  UserDashboard(data: widget.data, nip: widget.nip),
+                  AdminDashboard(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -84,8 +87,8 @@ class _DashboardState extends State<UserDashboard> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Notifikasi(
-                                      data: widget.data, nip: widget.nip),
+                                  builder: (context) =>
+                                      Notifikasi(nip: '', data: widget.data),
                                 ),
                               );
                             },
@@ -101,7 +104,8 @@ class _DashboardState extends State<UserDashboard> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Profile(
-                                      data: widget.data, nip: widget.nip),
+                                      data: widget.data,
+                                      nip: widget.nip.toString()),
                                 ),
                               );
                             },
@@ -176,7 +180,8 @@ class _DashboardState extends State<UserDashboard> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildAdminMenu(),
+          _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
     );
@@ -191,7 +196,7 @@ class _DashboardState extends State<UserDashboard> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -202,7 +207,7 @@ class _DashboardState extends State<UserDashboard> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    UserDashboard(data: widget.data, nip: widget.nip),
+                    AdminDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
@@ -210,11 +215,9 @@ class _DashboardState extends State<UserDashboard> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AfterSales(data: widget.data, nip: widget.nip),
+                    AfterSales(data: widget.data, nip: widget.nip.toString()),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -257,7 +260,7 @@ class _DashboardState extends State<UserDashboard> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -268,7 +271,7 @@ class _DashboardState extends State<UserDashboard> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
+                    ReportSTTPP(data: widget.data, nip: widget.nip.toString()),
               ),
             );
           } else if (index == 3) {
@@ -276,15 +279,15 @@ class _DashboardState extends State<UserDashboard> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    Perencanaan(data: widget.data, nip: widget.nip),
+                    Perencanaan(data: widget.data, nip: widget.nip.toString()),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    InputMaterial(data: widget.data, nip: widget.nip),
+                builder: (context) => InputMaterial(
+                    data: widget.data, nip: widget.nip.toString()),
               ),
             );
           } else if (index == 5) {
@@ -292,12 +295,32 @@ class _DashboardState extends State<UserDashboard> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    InputDokumen(data: widget.data, nip: widget.nip),
+                    InputDokumen(data: widget.data, nip: widget.nip.toString()),
               ),
             );
           }
         }
       },
+    );
+  }
+
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+      ],
     );
   }
 
@@ -323,8 +346,8 @@ class _DashboardState extends State<UserDashboard> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          LoginPage(data: widget.data, nip: widget.nip)),
+                      builder: (context) => LoginPage(
+                          data: widget.data, nip: widget.nip.toString())),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

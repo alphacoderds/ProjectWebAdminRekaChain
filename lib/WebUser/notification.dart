@@ -1,19 +1,22 @@
-import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/dasboard.dart';
+import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
-import 'package:RekaChain/WebUser/login.dart';
+import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebUser/perencanaan.dart';
 import 'package:RekaChain/WebUser/profile.dart';
 import 'package:RekaChain/WebUser/reportsttpp.dart';
 import 'package:RekaChain/WebUser/subnotifikasi.dart';
+import 'package:RekaChain/WebAdmin/tambahproject.dart';
+import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
 
 class Notifikasi extends StatefulWidget {
+  final Map<String, dynamic>? newProject;
   final DataModel data;
   final String nip;
-  const Notifikasi({Key? key, required this.data, required this.nip});
+  const Notifikasi({Key? key, this.newProject, required this.data, required this.nip});
 
   @override
   State<Notifikasi> createState() => _NotifikasiState();
@@ -35,10 +38,8 @@ class _NotifikasiState extends State<Notifikasi> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Notifikasi(
-                nip: widget.nip,
-                data: widget.data,
-              ),
+              builder: (context) =>
+                  Notifikasi(nip: widget.nip, data: widget.data),
             );
           default:
             return null;
@@ -99,9 +100,8 @@ class _NotifikasiState extends State<Notifikasi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Profile(
-                                      data: widget.data, nip: widget.nip),
-                                ),
+                                    builder: (context) => Profile(
+                                        nip: widget.nip, data: widget.data)),
                               );
                             },
                           ),
@@ -123,7 +123,7 @@ class _NotifikasiState extends State<Notifikasi> {
   Widget _buildDrawer() {
     return Drawer(
       backgroundColor: Color.fromARGB(255, 244, 249, 255),
-      child: Column(
+      child: ListView(
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
@@ -145,7 +145,8 @@ class _NotifikasiState extends State<Notifikasi> {
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
           _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildAdminMenu(),
+          _buildListTile('Logout', Icons.logout, 9, 35),
         ],
       ),
     );
@@ -160,7 +161,7 @@ class _NotifikasiState extends State<Notifikasi> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -182,8 +183,6 @@ class _NotifikasiState extends State<Notifikasi> {
                     AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -223,9 +222,10 @@ class _NotifikasiState extends State<Notifikasi> {
       leading: Icon(
         icon,
         size: size.toDouble(),
+        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 9) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -263,9 +263,45 @@ class _NotifikasiState extends State<Notifikasi> {
                     InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
+          } else if (index == 7) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 8) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
+              ),
+            );
           }
         }
       },
+    );
+  }
+
+  Widget _buildAdminMenu() {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(
+            Icons.admin_panel_settings,
+            size: 35,
+            color: Color.fromARGB(255, 6, 37, 55),
+          ),
+          SizedBox(width: 12),
+          Text('Menu Admin'),
+        ],
+      ),
+      children: [
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
+        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+      ],
     );
   }
 
@@ -291,10 +327,8 @@ class _NotifikasiState extends State<Notifikasi> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => LoginPage(
-                            nip: widget.nip,
-                            data: widget.data,
-                          )),
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
@@ -304,53 +338,54 @@ class _NotifikasiState extends State<Notifikasi> {
       },
     );
   }
+  
+  Widget _ListView() {
+  return ListView.separated(
+    itemBuilder: (context, index) {
+      return ListViewItem(context, index);
+    },
+    separatorBuilder: (context, index) {
+      return Divider(height: 0);
+    },
+    itemCount: 15,
+  );
+}
 
-  Widget ListViewItem(BuildContext context, int index) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                Subnotifikasi(data: widget.data, nip: widget.nip),
-          ),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            prefixIcon(),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    message(index),
-                  ],
-                ),
+Widget ListViewItem(BuildContext context, int index) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              Subnotifikasi(data: widget.data, nip: widget.nip)),
+      );
+    },
+    child: Container(
+      margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          prefixIcon(),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  message(index),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-    );
-  }
-
-  Widget _ListView() {
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        return ListViewItem(context, index);
-      },
-      separatorBuilder: (context, index) {
-        return Divider(height: 0);
-      },
-      itemCount: 15,
-    );
-  }
+    ),
+  );
 }
+}
+
+
 
 Widget prefixIcon() {
   return Container(

@@ -56,7 +56,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit.php?id_project=${widget.selectedProject['id_project']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/edit.php?id_project=${widget.selectedProject['id_project']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -805,7 +805,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           "id_project": idProjectcontroller.text,
           "noIndukProduk": noProdukcontroller.text,

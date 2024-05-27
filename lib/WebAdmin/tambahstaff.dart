@@ -126,7 +126,7 @@ class _TambahStaffState extends State<TambahStaff> {
 
     final response = await http.post(
       Uri.parse(
-        "http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php",
+        "http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php",
       ),
       body: {
         "kode_staff": kodestaffController.text,

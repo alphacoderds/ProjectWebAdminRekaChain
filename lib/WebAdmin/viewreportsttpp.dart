@@ -55,7 +55,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.148/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
+            'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
