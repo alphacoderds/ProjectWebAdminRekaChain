@@ -20,7 +20,9 @@ class ReportSTTPP extends StatefulWidget {
   final String nip;
   final Map<String, dynamic>? newProject;
 
-  const ReportSTTPP({Key? key, this.newProject, required this.data, required this.nip}) : super(key: key);
+  const ReportSTTPP(
+      {Key? key, this.newProject, required this.data, required this.nip})
+      : super(key: key);
   @override
   State<ReportSTTPP> createState() => _ReportSTTPState();
 }
@@ -37,6 +39,8 @@ class _ReportSTTPState extends State<ReportSTTPP> {
 
   String _searchQuery = '';
 
+  Map<String, List<dynamic>> _groupedData = {};
+
   void _updateSearchQuery(String query) {
     setState(() {
       _searchQuery = query;
@@ -47,20 +51,28 @@ class _ReportSTTPState extends State<ReportSTTPP> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.9.38/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print(data);
         setState(() {
-          _listdata = data;
+          _listdata = _removeDuplicates(data);
           _isloading = false;
         });
       }
     } catch (e) {
       print(e);
     }
+  }
+
+  List _removeDuplicates(List data) {
+    final seen = <String>{};
+    return data.where((item) {
+      final uniqueIdentifier = '${item['nama']}-${item['kodelot']}';
+      return seen.add(uniqueIdentifier);
+    }).toList();
   }
 
   @override
@@ -81,7 +93,8 @@ class _ReportSTTPState extends State<ReportSTTPP> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => ReportSTTPP(nip: widget.nip, data: widget.data),
+                  builder: (context) =>
+                      ReportSTTPP(nip: widget.nip, data: widget.data),
                 );
               default:
                 return null;
@@ -157,7 +170,9 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                        builder: (context) => Notifikasi(
+                                            nip: widget.nip,
+                                            data: widget.data)),
                                   );
                                 },
                               ),
@@ -171,7 +186,9 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Profile(nip: widget.nip, data: widget.data)),
+                                        builder: (context) => Profile(
+                                            nip: widget.nip,
+                                            data: widget.data)),
                                   );
                                 },
                               ),
@@ -215,8 +232,8 @@ class _ReportSTTPState extends State<ReportSTTPP> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              columnSpacing: 200.0,
-              horizontalMargin: 100.0,
+              columnSpacing: 120.0,
+              horizontalMargin: 200.0,
               columns: [
                 DataColumn(
                   label: Center(
@@ -302,7 +319,9 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                ViewReportSTTPP(nip: widget.nip, data: widget.data,
+                                                ViewReportSTTPP(
+                                              nip: widget.nip,
+                                              data: widget.data,
                                               selectedProject: {
                                                 "id_lot": filteredData[index]
                                                     ['id_lot'],
@@ -480,14 +499,16 @@ class _ReportSTTPState extends State<ReportSTTPP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -542,42 +563,48 @@ class _ReportSTTPState extends State<ReportSTTPP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    ReportSTTPP(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    InputDokumen(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    TambahProject(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    TambahStaff(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -627,7 +654,9 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(nip: widget.nip, data: widget.data)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(nip: widget.nip, data: widget.data)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

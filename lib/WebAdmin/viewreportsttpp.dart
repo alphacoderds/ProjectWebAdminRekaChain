@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:html';
-
+import 'package:csv/csv.dart';
+import 'package:excel/excel.dart';
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
@@ -21,9 +22,12 @@ class ViewReportSTTPP extends StatefulWidget {
   final Map<String, dynamic> selectedProject;
   final DataModel data;
   final String nip;
-  const ViewReportSTTPP({Key? key, this.selectedProject = const {}, required this.data, required this.nip})
+  const ViewReportSTTPP(
+      {Key? key,
+      this.selectedProject = const {},
+      required this.data,
+      required this.nip})
       : super(key: key);
-
 
   @override
   State<ViewReportSTTPP> createState() => _ViewReportSTTPState();
@@ -35,11 +39,21 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
   late double screenHeight = MediaQuery.of(context).size.height;
 
   int _selectedIndex = 0;
+  List _listdata = [];
+  bool _isloading = true;
+
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
 
   TextEditingController idLotcontroller = TextEditingController();
+  TextEditingController noIndukProdukcontroller = TextEditingController();
   TextEditingController namaProjectcontroller = TextEditingController();
   TextEditingController noProdukcontroller = TextEditingController();
-  TextEditingController noIndukProdukcontroller = TextEditingController();
   TextEditingController noSeriAwalcontroller = TextEditingController();
   TextEditingController namaProdukcontroller = TextEditingController();
   TextEditingController jumlahLotcontroller = TextEditingController();
@@ -47,21 +61,57 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
   TextEditingController noSeriAkhircontroller = TextEditingController();
   TextEditingController tglMulaicontroller = TextEditingController();
   TextEditingController tglSelesaicontroller = TextEditingController();
+
   TextEditingController alurProses1controller = TextEditingController();
   TextEditingController kategori1controller = TextEditingController();
   TextEditingController detail1controller = TextEditingController();
+
+  TextEditingController alurProses2controller = TextEditingController();
+  TextEditingController kategori2controller = TextEditingController();
+  TextEditingController detail2controller = TextEditingController();
+
+  TextEditingController alurProses3controller = TextEditingController();
+  TextEditingController kategori3controller = TextEditingController();
+  TextEditingController detail3controller = TextEditingController();
+
+  TextEditingController alurProses4controller = TextEditingController();
+  TextEditingController kategori4controller = TextEditingController();
+  TextEditingController detail4controller = TextEditingController();
+
+  TextEditingController alurProses5controller = TextEditingController();
+  TextEditingController kategori5controller = TextEditingController();
+  TextEditingController detail5controller = TextEditingController();
+
+  TextEditingController alurProses6controller = TextEditingController();
+  TextEditingController kategori6controller = TextEditingController();
+  TextEditingController detail6controller = TextEditingController();
+
+  TextEditingController alurProses7controller = TextEditingController();
+  TextEditingController kategori7controller = TextEditingController();
+  TextEditingController detail7controller = TextEditingController();
+
+  TextEditingController alurProses8controller = TextEditingController();
+  TextEditingController kategori8controller = TextEditingController();
+  TextEditingController detail8controller = TextEditingController();
+
+  TextEditingController alurProses9controller = TextEditingController();
+  TextEditingController kategori9controller = TextEditingController();
+  TextEditingController detail9controller = TextEditingController();
+
+  TextEditingController alurProses10controller = TextEditingController();
+  TextEditingController kategori10controller = TextEditingController();
+  TextEditingController detail10controller = TextEditingController();
 
   void fetchData() async {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
+            'http://192.168.9.38/ProjectWebAdminRekaChain/lib/Project/read_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        final noProduk = responseData['noProduk'];
         setState(() {
-          noProdukcontroller.text = noProduk;
+          _listdata = responseData;
         });
       } else {
         print('Failed to fetch data: ${response.statusCode}');
@@ -69,6 +119,72 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
     } catch (e) {
       print('Error fetching data: $e');
     }
+  }
+
+  void _downloadCSV() {
+    String? nama = _listdata.isNotEmpty ? _listdata[0]['nama'] : 'default';
+    String? kodeLot =
+        _listdata.isNotEmpty ? _listdata[0]['kodeLot'] : 'default';
+
+    String finalNama = nama ?? 'default';
+    String finalKodeLot = kodeLot ?? 'default';
+
+    List<List<dynamic>> rows = [];
+
+    rows.add([
+      'No',
+      'Nama Project',
+      'Kode Lot',
+      'Nama Produk',
+      'No Produk',
+      'ID Lot',
+      'Proses',
+      'Tgl Mulai',
+      'Tgl Selesai',
+      'Personil',
+      'Keterangan'
+    ]);
+
+    int rowIndex = 1;
+    for (var data in _listdata) {
+      final nama = data['nama'];
+      final kodeLot = data['kodeLot'];
+      final idLot = data['id_lot'];
+
+      for (var i = 1; i <= 10; i++) {
+        final alurProsesKey = 'ap$i';
+        final detailKey = 'keterangan$i';
+
+        final alurProses = data[alurProsesKey];
+        final detail = data[detailKey];
+
+        if (alurProses != null && alurProses.isNotEmpty) {
+          rows.add([
+            rowIndex.toString(),
+            nama ?? '',
+            kodeLot ?? '',
+            namaProdukcontroller.text,
+            data['noProduk'] ?? '',
+            data['id_lot'] ?? '',
+            alurProses ?? '',
+            tglMulaicontroller.text,
+            tglSelesaicontroller.text,
+            detail ?? '',
+            detail ?? ''
+          ]);
+          rowIndex++;
+        }
+      }
+    }
+
+    String csv = const ListToCsvConverter().convert(rows);
+    final bytes = utf8.encode(csv);
+    final blob = Blob([bytes]);
+    final url = Url.createObjectUrlFromBlob(blob);
+    AnchorElement(href: url)
+      ..setAttribute("download", "report/$finalNama - $finalKodeLot.csv")
+      ..click();
+    Url.revokeObjectUrl(url);
   }
 
   @override
@@ -105,6 +221,69 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori1'] ?? '');
     detail1controller = TextEditingController(
         text: widget.selectedProject['keterangan1'] ?? '');
+
+    alurProses2controller =
+        TextEditingController(text: widget.selectedProject['ap2'] ?? '');
+    kategori2controller =
+        TextEditingController(text: widget.selectedProject['kategori2'] ?? '');
+    detail2controller = TextEditingController(
+        text: widget.selectedProject['keterangan2'] ?? '');
+
+    alurProses3controller =
+        TextEditingController(text: widget.selectedProject['ap3'] ?? '');
+    kategori3controller =
+        TextEditingController(text: widget.selectedProject['kategori3'] ?? '');
+    detail3controller = TextEditingController(
+        text: widget.selectedProject['keterangan3'] ?? '');
+
+    alurProses4controller =
+        TextEditingController(text: widget.selectedProject['ap4'] ?? '');
+    kategori4controller =
+        TextEditingController(text: widget.selectedProject['kategori4'] ?? '');
+    detail4controller = TextEditingController(
+        text: widget.selectedProject['keterangan4'] ?? '');
+
+    alurProses5controller =
+        TextEditingController(text: widget.selectedProject['ap5'] ?? '');
+    kategori5controller =
+        TextEditingController(text: widget.selectedProject['kategori5'] ?? '');
+    detail5controller = TextEditingController(
+        text: widget.selectedProject['keterangan5'] ?? '');
+
+    alurProses6controller =
+        TextEditingController(text: widget.selectedProject['ap6'] ?? '');
+    kategori6controller =
+        TextEditingController(text: widget.selectedProject['kategori6'] ?? '');
+    detail6controller = TextEditingController(
+        text: widget.selectedProject['keterangan6'] ?? '');
+
+    alurProses7controller =
+        TextEditingController(text: widget.selectedProject['ap7'] ?? '');
+    kategori7controller =
+        TextEditingController(text: widget.selectedProject['kategori7'] ?? '');
+    detail7controller = TextEditingController(
+        text: widget.selectedProject['keterangan7'] ?? '');
+
+    alurProses8controller =
+        TextEditingController(text: widget.selectedProject['ap8'] ?? '');
+    kategori8controller =
+        TextEditingController(text: widget.selectedProject['kategori8'] ?? '');
+    detail8controller = TextEditingController(
+        text: widget.selectedProject['keterangan8'] ?? '');
+
+    alurProses9controller =
+        TextEditingController(text: widget.selectedProject['ap9'] ?? '');
+    kategori9controller =
+        TextEditingController(text: widget.selectedProject['kategori9'] ?? '');
+    detail9controller = TextEditingController(
+        text: widget.selectedProject['keterangan9'] ?? '');
+
+    alurProses10controller =
+        TextEditingController(text: widget.selectedProject['ap10'] ?? '');
+    kategori10controller =
+        TextEditingController(text: widget.selectedProject['kategori10'] ?? '');
+    detail10controller = TextEditingController(
+        text: widget.selectedProject['keterangan10'] ?? '');
 
     _generateBarcode();
   }
@@ -147,7 +326,8 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => ViewReportSTTPP(data: widget.data,nip: widget.nip),
+                  builder: (context) =>
+                      ViewReportSTTPP(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -189,7 +369,9 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                                   size: 33,
                                   color: Color.fromARGB(255, 255, 255, 255),
                                 ),
-                                onPressed: () {},
+                                onPressed: () {
+                                  _downloadCSV();
+                                },
                               ),
                               IconButton(
                                 icon: Icon(
@@ -201,7 +383,9 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                        builder: (context) => Notifikasi(
+                                            nip: widget.nip,
+                                            data: widget.data)),
                                   );
                                 },
                               ),
@@ -215,7 +399,9 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Profile(data: widget.data,nip: widget.nip)),
+                                        builder: (context) => Profile(
+                                            data: widget.data,
+                                            nip: widget.nip)),
                                   );
                                 },
                               ),
@@ -242,6 +428,212 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
   }
 
   Widget _buildMainTable() {
+    List<DataRow> generateRows() {
+      List<DataRow> rows = [];
+      int rowIndex = 1;
+
+      List<Map<String, TextEditingController>> data = [
+        {
+          'alurProses': alurProses1controller,
+          'detail': detail1controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+        {
+          'alurProses': alurProses2controller,
+          'detail': detail2controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+        {
+          'alurProses': alurProses3controller,
+          'detail': detail3controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+        {
+          'alurProses': alurProses4controller,
+          'detail': detail4controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+        {
+          'alurProses': alurProses5controller,
+          'detail': detail5controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+        {
+          'alurProses': alurProses6controller,
+          'detail': detail6controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+        {
+          'alurProses': alurProses7controller,
+          'detail': detail7controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+        {
+          'alurProses': alurProses8controller,
+          'detail': detail8controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+        {
+          'alurProses': alurProses9controller,
+          'detail': detail9controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+        {
+          'alurProses': alurProses10controller,
+          'detail': detail10controller,
+          'noProduk': noProdukcontroller,
+          'id_lot': idLotcontroller
+        },
+      ];
+      for (var data in _listdata) {
+        // Ekstrak 'nama' dan 'kodeLot'
+        final nama = data['nama'];
+        final kodeLot = data['kodeLot'];
+        final idLot = data['id_lot'];
+
+        // Iterasi melalui 'alurProses' dan 'detail'
+        for (var i = 1; i <= 10; i++) {
+          final alurProsesKey = 'ap$i';
+          final detailKey = 'keterangan$i';
+
+          final alurProses = data[alurProsesKey];
+          final detail = data[detailKey];
+
+          if (alurProses != null && alurProses.isNotEmpty) {
+            rows.add(
+              DataRow(cells: [
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(rowIndex.toString()),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(nama ?? ''),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(kodeLot ?? ''),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(namaProdukcontroller.text),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(data['noProduk'] ?? ''),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(data['id_lot'] ?? ''),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: BarcodeWidget(
+                        barcode: Barcode.qrCode(),
+                        data: idLot ?? '',
+                        color: Colors.black,
+                        height: 40,
+                        width: 40,
+                      ),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(alurProses ?? ''),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(tglMulaicontroller.text),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(tglSelesaicontroller.text),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(detail ?? ''),
+                    ),
+                  ),
+                ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(detail ?? ''),
+                    ),
+                  ),
+                ),
+              ]),
+            );
+            rowIndex++;
+          }
+        }
+      }
+      return rows;
+    }
+
     return Container(
       alignment: Alignment.center,
       child: SingleChildScrollView(
@@ -259,7 +651,52 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                 DataColumn(
                   label: Center(
                     child: Text(
+                      'No',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Nama Project',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Kode Lot',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
                       'Nama Produk',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'No Produk',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'ID Lot',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -286,7 +723,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                 DataColumn(
                   label: Center(
                     child: Text(
-                      'Tanggal Mulai',
+                      'Tgl Mulai',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -295,7 +732,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                 DataColumn(
                   label: Center(
                     child: Text(
-                      'Tanggal Selesai',
+                      'Tgl Selesai',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -320,73 +757,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                   ),
                 ),
               ],
-              rows: [
-                DataRow(cells: [
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text((1).toString()),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: qrCodeWidget ?? Container(),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text(alurProses1controller.text),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text(tglMulaicontroller.text),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text(tglSelesaicontroller.text),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                  DataCell(
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: Text('1'),
-                      ),
-                    ),
-                  ),
-                ]),
-              ],
+              rows: generateRows(),
             ),
           ),
         ),
@@ -445,14 +816,16 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -507,42 +880,48 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    TambahProject(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    TambahStaff(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -592,7 +971,9 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

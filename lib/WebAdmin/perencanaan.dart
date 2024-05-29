@@ -33,61 +33,111 @@ class _PerencanaanState extends State<Perencanaan> {
   late List<String> dropdownItemsnamaProject = [];
   String? selectedValuenamaProject;
 
-  List<String> dropdownItemsAlurProses1 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses1 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses1;
 
   List<String> dropdownItemsKategori1 = ['Produk', 'Material'];
   String? selectedValueKategori1;
 
-  List<String> dropdownItemsAlurProses2 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses2 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses2;
 
   List<String> dropdownItemsKategori2 = ['Produk', 'Material'];
   String? selectedValueKategori2;
 
-  List<String> dropdownItemsAlurProses3 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses3 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses3;
 
   List<String> dropdownItemsKategori3 = ['Produk', 'Material'];
   String? selectedValueKategori3;
 
-  List<String> dropdownItemsAlurProses4 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses4 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses4;
 
   List<String> dropdownItemsKategori4 = ['Produk', 'Material'];
   String? selectedValueKategori4;
 
-  List<String> dropdownItemsAlurProses5 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses5 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses5;
 
   List<String> dropdownItemsKategori5 = ['Produk', 'Material'];
   String? selectedValueKategori5;
 
-  List<String> dropdownItemsAlurProses6 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses6 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses6;
 
   List<String> dropdownItemsKategori6 = ['Produk', 'Material'];
   String? selectedValueKategori6;
 
-  List<String> dropdownItemsAlurProses7 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses7 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses7;
 
   List<String> dropdownItemsKategori7 = ['Produk', 'Material'];
   String? selectedValueKategori7;
 
-  List<String> dropdownItemsAlurProses8 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses8 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses8;
 
   List<String> dropdownItemsKategori8 = ['Produk', 'Material'];
   String? selectedValueKategori8;
 
-  List<String> dropdownItemsAlurProses9 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses9 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses9;
 
   List<String> dropdownItemsKategori9 = ['Produk', 'Material'];
   String? selectedValueKategori9;
 
-  List<String> dropdownItemsAlurProses10 = ['PPC', 'Produksi'];
+  List<String> dropdownItemsAlurProses10 = [
+    'PPC',
+    'Produksi',
+    'Mekanik',
+    'Elektronik'
+  ];
   String? selectedValueAlurProses10;
 
   List<String> dropdownItemsKategori10 = ['Produk', 'Material'];
@@ -146,7 +196,7 @@ class _PerencanaanState extends State<Perencanaan> {
   Future<void> _simpan(BuildContext context) async {
     final response = await http.post(
       Uri.parse(
-        "http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
+        "http://192.168.9.80/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
       ),
       body: {
         "nama": selectedValuenamaProject ?? '',
@@ -251,7 +301,7 @@ class _PerencanaanState extends State<Perencanaan> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.9.80/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -343,7 +393,7 @@ class _PerencanaanState extends State<Perencanaan> {
       final tahun = tglMulaicontroller.text.substring(6);
 
       kodeLotcontroller.text =
-          '${noProdukcontroller.text} - ${noSeriAwalcontroller.text} - ${noSeriAkhircontroller.text} / $tahun';
+          '${noProdukcontroller.text}-${noSeriAwalcontroller.text}-${noSeriAkhircontroller.text}/$tahun';
     });
   }
 
