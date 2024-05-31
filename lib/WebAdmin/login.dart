@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> validateLogin(String nip, String password) async {
     final response = await http.post(
       Uri.parse(
-          'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
+          'http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/validate_login.php'),
       body: {
         'nip': nip,
         'password': hashPassword(password),
@@ -75,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<String?> getUserRole(String nip) async {
     final response = await http.post(
       Uri.parse(
-          'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/test.php'),
+          'http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/test.php'),
       body: {
         'nip': nip,
       },
@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
 
     final response = await http.post(
       Uri.parse(
-          'http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/test.php'),
+          'http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/test.php'),
       body: {
         'nip': nip,
         'password': password,
@@ -162,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
     final hashedPassword = hashPassword(passwordController.text);
     var response = await http.post(
         Uri.parse(
-            'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
+            'http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/create_login.php'),
         body: {"nip": nipController.text, "password": hashedPassword});
     var jsonData = jsonDecode(response.body);
     dynamic data = (jsonData as Map<String, dynamic>);
