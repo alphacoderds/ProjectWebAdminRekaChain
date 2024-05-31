@@ -54,7 +54,7 @@ class _EditProfileState extends State<EditProfile> {
   Future _getdata() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://192.168.8.152/crudflutter/flutter_crud/lib/readdataprofile.php'));
+          'http://192.168.8.153/crudflutter/flutter_crud/lib/readdataprofile.php'));
       if (response.statusCode == 200) {
         try {
           final data = jsonDecode(response.body);
@@ -86,7 +86,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _simpan() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.8.152/ProjectScanner/lib/API/edit_profile.php'),
+          'http://192.168.8.153/ProjectScanner/lib/API/edit_profile.php'),
       body: {
         "nip": widget.data.nip,
         "nama": namaController.text,
@@ -161,7 +161,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _update() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.8.152/ProjectScanner/lib/tbl_tambahstaff/create_tambahstaff.php'),
+          'http://192.168.8.153/ProjectScanner/lib/tbl_tambahstaff/create_tambahstaff.php'),
       body: {
         "nama": namaController.text,
         "jabatan": jabatanController.text,
@@ -237,7 +237,7 @@ class _EditProfileState extends State<EditProfile> {
                                 'status': statusController.text,
                               },
                               Uri.parse(
-                                  "http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
+                                  "http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
                           Navigator.push(
                             context,
                             MaterialPageRoute(

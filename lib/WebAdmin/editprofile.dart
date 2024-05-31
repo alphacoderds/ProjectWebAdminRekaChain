@@ -86,8 +86,7 @@ class _EditProfileState extends State<EditProfile> {
 
   Future<void> _simpan() async {
     final response = await http.post(
-      Uri.parse(
-          'http://192.168.8.153/ProjectScanner/lib/API/edit_profile.php'),
+      Uri.parse('http://192.168.8.153/ProjectScanner/lib/API/edit_profile.php'),
       body: {
         "nip": widget.data.nip,
         "nama": namaController.text,
@@ -204,7 +203,7 @@ class _EditProfileState extends State<EditProfile> {
         }
       },
       home: Scaffold(
-        appBar : AppBar(
+        appBar: AppBar(
           title: Row(
             children: [
               Image.asset(
@@ -244,7 +243,7 @@ class _EditProfileState extends State<EditProfile> {
                                 'status': statusController.text,
                               },
                               Uri.parse(
-                                  "http://192.168.8.152/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
+                                  "http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
                           Navigator.push(
                             context,
                             MaterialPageRoute(

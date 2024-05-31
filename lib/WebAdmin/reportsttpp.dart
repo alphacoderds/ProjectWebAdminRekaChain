@@ -51,7 +51,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.9.38/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {

@@ -78,7 +78,7 @@ class _ProfileState extends State<Profile> {
       final response = await http.post(
         body: map,
         Uri.parse(
-          'http://169.254.32.254/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
+          'http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
         ),
       );
       if (response.statusCode == 200) {

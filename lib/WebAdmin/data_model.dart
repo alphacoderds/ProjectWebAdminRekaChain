@@ -7,7 +7,7 @@ class DataModel {
   final String divisi;
   final String email;
   final String noTelp;
-   String nip;
+  String nip;
   final String status;
   final String password;
   final String konfirmasi_password;
