@@ -19,7 +19,8 @@ void main() {
       noTelp: '',
       status: '',
       password: '',
-      konfirmasi_password: '');
+      konfirmasi_password: '',
+      profile: '');
 
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp1(data: data, nip: nip));

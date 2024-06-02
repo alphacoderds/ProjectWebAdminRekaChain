@@ -11,6 +11,7 @@ class DataModel {
   final String status;
   final String password;
   final String konfirmasi_password;
+  final String profile;
 
   DataModel({
     required this.kode_staff,
@@ -25,6 +26,7 @@ class DataModel {
     required this.status,
     required this.password,
     required this.konfirmasi_password,
+    required this.profile
   });
 
   Map<String, dynamic> toJson() {
@@ -40,7 +42,8 @@ class DataModel {
       'no_telp': noTelp,
       'status': status,
       'password': password,
-      'konfirmasi_password': konfirmasi_password
+      'konfirmasi_password': konfirmasi_password,
+      'profile': profile
     };
   }
 
@@ -57,6 +60,7 @@ class DataModel {
         nip: json['nip'],
         status: json['status'],
         password: json['password'],
-        konfirmasi_password: json['konfirmasi_password']);
+        konfirmasi_password: json['konfirmasi_password'],
+        profile: json['profile']);
   }
 }

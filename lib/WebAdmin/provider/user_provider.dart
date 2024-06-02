@@ -17,7 +17,8 @@ class UserProvider extends ChangeNotifier {
       noTelp: '',
       status: '',
       password: '',
-      konfirmasi_password: '');
+      konfirmasi_password: '',
+      profile: '');
 
   void saveNip(String newNip) {
     nip = newNip;

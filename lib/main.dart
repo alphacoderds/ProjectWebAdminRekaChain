@@ -19,7 +19,8 @@ void main() {
       noTelp: '',
       status: '',
       password: '',
-      konfirmasi_password: '');
+      konfirmasi_password: '',
+      profile: '');
   runApp(MultiProvider(
     providers: [ChangeNotifierProvider(create:(context) => UserProvider(),)],
     child: MyApp1(
