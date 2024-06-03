@@ -33,7 +33,7 @@ class UserProvider extends ChangeNotifier {
         .post(
             body: map,
             Uri.parse(
-                "http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php"))
+                "http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php"))
         .then((value) {
       dataModel = DataModel.getDataFromJson(jsonDecode(value.body));
       print(dataModel.nama);

@@ -44,7 +44,7 @@ class _AfterSalesState extends State<AfterSales> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/readaftersales.php',
+          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readaftersales.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -69,7 +69,7 @@ class _AfterSalesState extends State<AfterSales> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.8.153/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
+          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
         ),
         body: {
           "noProduk": id,

@@ -62,7 +62,7 @@ class _EditProfileState extends State<EditProfile> {
   Future _getdata() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://192.168.18.39/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'));
+          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'));
       if (response.statusCode == 200) {
         try {
           final data = jsonDecode(response.body);
@@ -93,52 +93,92 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> _simpan() async {
-    final response = await http.post(
-      Uri.parse(
-          'http://192.168.18.39/ProjectWebAdminRekaChain/lib/Project/edit_profile.php'),
-      body: {
-        "nip": widget.data.nip,
-        "nama": namaController.text,
-        "jabatan": jabatanController.text,
-        "unit_kerja": unitKerjaController.text,
-        "departemen": departemenController.text,
-        "divisi": divisiController.text,
-        "no_telp": noTelpController.text,
-        "status": statusController.text,
-        "password": passwordController.text,
-        "konfirmasi_password": konfirmasiPasswordController.text,
-        "profile": base64Encode(_selectedImage),
-      },
-    );
+    final uri = Uri.parse(
+        'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_profile.php');
+    final request = http.MultipartRequest('POST', uri);
+
+    request.fields['nip'] = widget.data.nip;
+    request.fields['nama'] = namaController.text;
+    request.fields['jabatan'] = jabatanController.text;
+    request.fields['unit_kerja'] = unitKerjaController.text;
+    request.fields['departemen'] = departemenController.text;
+    request.fields['divisi'] = divisiController.text;
+    request.fields['no_telp'] = noTelpController.text;
+    request.fields['status'] = statusController.text;
+    request.fields['password'] = passwordController.text;
+    request.fields['konfirmasi_password'] = konfirmasiPasswordController.text;
+
+    if (_selectedImage.isNotEmpty) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'profile',
+        _selectedImage,
+        filename: '', // Kosongkan nama file
+      ));
+    }
+
+    final response = await request.send();
 
     if (response.statusCode == 200) {
-      final newProjectData = {
-        "kode_staff": widget.data.kode_staff,
-        "nama": namaController.text,
-        "jabatan": jabatanController.text,
-        "unit_kerja": unitKerjaController.text,
-        "departemen": departemenController.text,
-        "divisi": divisiController.text,
-        "no_telp": noTelpController.text,
-        "password": passwordController.text,
-        "status": statusController.text,
-        "konfirmasi_password": konfirmasiPasswordController.text,
-        "profile": base64Encode(_selectedImage),
-      };
+      final responseBody = await response.stream.bytesToString();
+      print('Data berhasil diperbarui: $responseBody');
       Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) =>
                 ListStaff(data: widget.data, nip: widget.nip)),
       );
-
-      if (response.statusCode == 200) {
-        print('Gambar berhasil disimpan');
-      }
     } else {
-      print('Gagal menyimpan data: ${response.statusCode}');
+      print('Gagal memperbarui data: ${response.statusCode}');
     }
   }
+
+  // Future<void> _simpan() async {
+  //   final response = await http.post(
+  //     Uri.parse(
+  //         'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_profile.php'),
+  //     body: {
+  //       "nip": widget.data.nip,
+  //       "nama": namaController.text,
+  //       "jabatan": jabatanController.text,
+  //       "unit_kerja": unitKerjaController.text,
+  //       "departemen": departemenController.text,
+  //       "divisi": divisiController.text,
+  //       "no_telp": noTelpController.text,
+  //       "status": statusController.text,
+  //       "password": passwordController.text,
+  //       "konfirmasi_password": konfirmasiPasswordController.text,
+  //       "profile": base64Encode(_selectedImage),
+  //     },
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     final newProjectData = {
+  //       "kode_staff": widget.data.kode_staff,
+  //       "nama": namaController.text,
+  //       "jabatan": jabatanController.text,
+  //       "unit_kerja": unitKerjaController.text,
+  //       "departemen": departemenController.text,
+  //       "divisi": divisiController.text,
+  //       "no_telp": noTelpController.text,
+  //       "password": passwordController.text,
+  //       "status": statusController.text,
+  //       "konfirmasi_password": konfirmasiPasswordController.text,
+  //       "profile": base64Encode(_selectedImage),
+  //     };
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //           builder: (context) =>
+  //               ListStaff(data: widget.data, nip: widget.nip)),
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       print('Gambar berhasil disimpan');
+  //     }
+  //   } else {
+  //     print('Gagal menyimpan data: ${response.statusCode}');
+  //   }
+  // }
 
   Future<void> fetchData() async {
     String? nip = await getNipFromSharedPreferences();
@@ -190,7 +230,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _update() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.18.39/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php'),
+          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php'),
       body: {
         "nama": namaController.text,
         "jabatan": jabatanController.text,
@@ -268,7 +308,7 @@ class _EditProfileState extends State<EditProfile> {
                                 'profile': profileController.text,
                               },
                               Uri.parse(
-                                  "http://192.168.18.39/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
+                                  "http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -417,7 +457,7 @@ class _EditProfileState extends State<EditProfile> {
       var request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'http://192.168.18.39/ProjectWebAdminRekaChain/lib/Project/edit_profile.php'),
+            'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_profile.php'),
       );
 
       request.fields['kode_staff'] = kodeStaffController.text;
