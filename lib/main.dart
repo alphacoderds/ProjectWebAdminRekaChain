@@ -1,3 +1,4 @@
+import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
 import 'package:RekaChain/WebAdmin/provider/user_provider.dart';
@@ -22,7 +23,11 @@ void main() {
       konfirmasi_password: '',
       profile: '');
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create:(context) => UserProvider(),)],
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => UserProvider(),
+      )
+    ],
     child: MyApp1(
       data: data,
       nip: nip,
@@ -46,7 +51,7 @@ class MyApp1 extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: LoginPage(data: data, nip: nip),
+          home: AfterSales(data: data, nip: nip),
         );
       },
     );

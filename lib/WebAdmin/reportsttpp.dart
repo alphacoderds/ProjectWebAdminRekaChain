@@ -68,11 +68,14 @@ class _ReportSTTPState extends State<ReportSTTPP> {
   }
 
   List _removeDuplicates(List data) {
-    final seen = <String>{};
-    return data.where((item) {
-      final uniqueIdentifier = '${item['nama']}-${item['kodelot']}';
-      return seen.add(uniqueIdentifier);
-    }).toList();
+    final Map<String, dynamic> resultMap = {};
+
+    data.forEach((item) {
+      final uniqueIdentifier = '${item['nama']}-${item['kodeLot']}';
+      resultMap[uniqueIdentifier] = item;
+    });
+
+    return resultMap.values.toList();
   }
 
   @override

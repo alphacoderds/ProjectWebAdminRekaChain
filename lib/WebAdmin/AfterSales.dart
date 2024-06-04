@@ -18,7 +18,9 @@ class AfterSales extends StatefulWidget {
   final Map<String, dynamic>? newProject;
   final DataModel data;
   final String nip;
-  const AfterSales({Key? key, this.newProject, required this.data, required this.nip}) : super(key: key);
+  const AfterSales(
+      {Key? key, this.newProject, required this.data, required this.nip})
+      : super(key: key);
   @override
   State<AfterSales> createState() => _AfterSalesState();
 }
@@ -40,15 +42,16 @@ class _AfterSalesState extends State<AfterSales> {
     });
   }
 
-  Future<void> _getdata() async {
+  Future _getdata() async {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readaftersales.php',
+          'http://192.168.11.132/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        print(data);
         setState(() {
           _listdata = data;
           _isloading = false;
@@ -65,28 +68,6 @@ class _AfterSalesState extends State<AfterSales> {
     super.initState();
   }
 
-  Future<void> _hapusData(String id) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
-        ),
-        body: {
-          "noProduk": id,
-        },
-      );
-
-      print('Delete response: ${response.statusCode} - ${response.body}');
-
-      if (response.statusCode == 200) {
-      } else {
-        print('Failed to delete data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error deleting data: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
@@ -98,7 +79,10 @@ class _AfterSalesState extends State<AfterSales> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => AfterSales(data: widget.data, nip: widget.nip,),
+              builder: (context) => AfterSales(
+                data: widget.data,
+                nip: widget.nip,
+              ),
             );
           default:
             return null;
@@ -174,7 +158,8 @@ class _AfterSalesState extends State<AfterSales> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                    builder: (context) => Notifikasi(
+                                        nip: widget.nip, data: widget.data)),
                               );
                             },
                           ),
@@ -188,7 +173,8 @@ class _AfterSalesState extends State<AfterSales> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile(data: widget.data, nip: widget.nip)),
+                                    builder: (context) => Profile(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -214,10 +200,16 @@ class _AfterSalesState extends State<AfterSales> {
 
   Widget _buildMainTable() {
     List filteredData = _listdata.where((data) {
+      String id_lot = data['id_lot'] ?? '';
+      String id_project = data['id_project'] ?? '';
       String nama = data['nama'] ?? '';
+      String kodeLot = data['kodeLot'] ?? '';
       String noProduk = data['noProduk'] ?? '';
       String targetMulai = data['targetMulai'] ?? '';
-      return nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+      return id_lot.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          id_project.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          kodeLot.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           noProduk.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           targetMulai.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
@@ -232,8 +224,8 @@ class _AfterSalesState extends State<AfterSales> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              columnSpacing: 200.0,
-              horizontalMargin: 50.0,
+              columnSpacing: 100.0,
+              horizontalMargin: 110.0,
               columns: [
                 DataColumn(
                   label: Center(
@@ -248,6 +240,15 @@ class _AfterSalesState extends State<AfterSales> {
                   label: Center(
                     child: Text(
                       'Nama Project',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Kode Lot',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -311,6 +312,15 @@ class _AfterSalesState extends State<AfterSales> {
                               scrollDirection: Axis.horizontal,
                               child: Container(
                                 alignment: Alignment.center,
+                                child: Text(data['kodeLot'] ?? ''),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
                                 child: Text(data['noProduk'] ?? ''),
                               ),
                             ),
@@ -337,11 +347,17 @@ class _AfterSalesState extends State<AfterSales> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                ViewAfterSales(nip: widget.nip, data: widget.data,
+                                                ViewAfterSales(
+                                              nip: widget.nip,
+                                              data: widget.data,
                                               selectedProject: {
-                                                "no_aftersales":
+                                                "id_lot": filteredData[index]
+                                                    ['id_lot'],
+                                                "kodeLot": filteredData[index]
+                                                    ['kodeLot'],
+                                                "id_project":
                                                     filteredData[index]
-                                                        ['no_aftersales'],
+                                                        ['id_project'],
                                                 "noProduk": filteredData[index]
                                                     ['noProduk'],
                                                 "nama": filteredData[index]
@@ -349,9 +365,9 @@ class _AfterSalesState extends State<AfterSales> {
                                                 "targetMulai":
                                                     filteredData[index]
                                                         ['targetMulai'],
-                                                "dtlKekurangan":
+                                                "detail_kerusakan":
                                                     filteredData[index]
-                                                        ['dtlKekurangan'],
+                                                        ['detail_kerusakan'],
                                                 "item": filteredData[index]
                                                     ['item'],
                                                 "keterangan":
@@ -365,15 +381,6 @@ class _AfterSalesState extends State<AfterSales> {
                                         ).then((result) {
                                           if (result != null && result) {}
                                         });
-                                      },
-                                    ),
-                                    SizedBox(width: 10),
-                                    IconButton(
-                                      icon: Icon(Icons.delete),
-                                      onPressed: () {
-                                        _showDeleteDialog(filteredData[index]
-                                                ['noProduk']
-                                            .toString());
                                       },
                                     ),
                                   ],
@@ -445,14 +452,16 @@ class _AfterSalesState extends State<AfterSales> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -507,42 +516,48 @@ class _AfterSalesState extends State<AfterSales> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -592,39 +607,12 @@ class _AfterSalesState extends State<AfterSales> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDeleteDialog(String id) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Delete", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin menghapus data?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () async {
-                await _hapusData(id);
-                Navigator.of(context).pop();
-              },
-              child: Text("Hapus", style: TextStyle(color: Colors.white)),
             ),
           ],
         );

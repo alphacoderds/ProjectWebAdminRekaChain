@@ -22,7 +22,9 @@ class Vperencanaan extends StatefulWidget {
   final DataModel data;
   final String nip;
 
-  const Vperencanaan({Key? key, this.newProject, required this.data, required this.nip}) : super(key: key);
+  const Vperencanaan(
+      {Key? key, this.newProject, required this.data, required this.nip})
+      : super(key: key);
   @override
   State<Vperencanaan> createState() => _VperencanaanState();
 }
@@ -77,28 +79,6 @@ class _VperencanaanState extends State<Vperencanaan> {
     setState(() {});
   }
 
-  Future<void> _hapusData(String id) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
-        ),
-        body: {
-          "id_lot": id,
-        },
-      );
-
-      print('Delete response: ${response.statusCode} - ${response.body}');
-
-      if (response.statusCode == 200) {
-      } else {
-        print('Failed to delete data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error deleting data: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     screenWidth = MediaQuery.of(context).size.width;
@@ -110,7 +90,8 @@ class _VperencanaanState extends State<Vperencanaan> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Vperencanaan(data: widget.data,nip: widget.nip),
+              builder: (context) =>
+                  Vperencanaan(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -186,7 +167,8 @@ class _VperencanaanState extends State<Vperencanaan> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                    builder: (context) => Notifikasi(
+                                        nip: widget.nip, data: widget.data)),
                               );
                             },
                           ),
@@ -200,7 +182,8 @@ class _VperencanaanState extends State<Vperencanaan> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile(data: widget.data,nip: widget.nip)),
+                                    builder: (context) => Profile(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -359,7 +342,9 @@ class _VperencanaanState extends State<Vperencanaan> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              DetailViewPerencanaan(nip: widget.nip, data: widget.data,
+                                              DetailViewPerencanaan(
+                                            nip: widget.nip,
+                                            data: widget.data,
                                             selectedProject: {
                                               "id_lot": filteredData[index]
                                                   ['id_lot'],
@@ -447,15 +432,6 @@ class _VperencanaanState extends State<Vperencanaan> {
                                       });
                                     },
                                   ),
-                                  SizedBox(width: 10),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      _showDeleteDialog(filteredData[index]
-                                              ['id_lot']
-                                          .toString());
-                                    },
-                                  ),
                                 ],
                               ),
                             ),
@@ -524,14 +500,16 @@ class _VperencanaanState extends State<Vperencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    AfterSales(nip: widget.nip, data: widget.data),
               ),
             );
           }
@@ -586,42 +564,48 @@ class _VperencanaanState extends State<Vperencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    ReportSTTPP(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    Perencanaan(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    InputMaterial(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    InputDokumen(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(nip: widget.nip, data: widget.data),
+                builder: (context) =>
+                    TambahProject(nip: widget.nip, data: widget.data),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -671,39 +655,12 @@ class _VperencanaanState extends State<Vperencanaan> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDeleteDialog(String id) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Delete", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin menghapus data?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () async {
-                await _hapusData(id);
-                Navigator.of(context).pop();
-              },
-              child: Text("Hapus", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
