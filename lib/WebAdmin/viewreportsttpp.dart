@@ -122,69 +122,97 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
   }
 
   void _downloadCSV() {
-    String? nama = _listdata.isNotEmpty ? _listdata[0]['nama'] : 'default';
-    String? kodeLot =
-        _listdata.isNotEmpty ? _listdata[0]['kodeLot'] : 'default';
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Download CSV", style: TextStyle(color: Colors.white)),
+          content: Text(
+              "Apakah Anda yakin ingin mengunduh data sebagai file CSV?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                String? nama =
+                    _listdata.isNotEmpty ? _listdata[0]['nama'] : 'default';
+                String? kodeLot =
+                    _listdata.isNotEmpty ? _listdata[0]['kodeLot'] : 'default';
 
-    String finalNama = nama ?? 'default';
-    String finalKodeLot = kodeLot ?? 'default';
+                String finalNama = nama ?? 'default';
+                String finalKodeLot = kodeLot ?? 'default';
 
-    List<List<dynamic>> rows = [];
+                List<List<dynamic>> rows = [];
 
-    rows.add([
-      'No',
-      'Nama Project',
-      'Kode Lot',
-      'Nama Produk',
-      'No Produk',
-      'ID Lot',
-      'Proses',
-      'Tgl Mulai',
-      'Tgl Selesai',
-      'Personil',
-      'Keterangan'
-    ]);
+                rows.add([
+                  'No',
+                  'Nama Project',
+                  'Kode Lot',
+                  'Nama Produk',
+                  'No Produk',
+                  'ID Lot',
+                  'Proses',
+                  'Tgl Mulai',
+                  'Tgl Selesai',
+                  'Personil',
+                  'Keterangan'
+                ]);
 
-    int rowIndex = 1;
-    for (var data in _listdata) {
-      final nama = data['nama'];
-      final kodeLot = data['kodeLot'];
-      final idLot = data['id_lot'];
+                int rowIndex = 1;
+                for (var data in _listdata) {
+                  final nama = data['nama'];
+                  final kodeLot = data['kodeLot'];
+                  final idLot = data['id_lot'];
 
-      for (var i = 1; i <= 10; i++) {
-        final alurProsesKey = 'ap$i';
-        final detailKey = 'keterangan$i';
+                  for (var i = 1; i <= 10; i++) {
+                    final alurProsesKey = 'ap$i';
+                    final detailKey = 'keterangan$i';
 
-        final alurProses = data[alurProsesKey];
-        final detail = data[detailKey];
+                    final alurProses = data[alurProsesKey];
+                    final detail = data[detailKey];
 
-        if (alurProses != null && alurProses.isNotEmpty) {
-          rows.add([
-            rowIndex.toString(),
-            nama ?? '',
-            kodeLot ?? '',
-            namaProdukcontroller.text,
-            data['noProduk'] ?? '',
-            data['id_lot'] ?? '',
-            alurProses ?? '',
-            tglMulaicontroller.text,
-            tglSelesaicontroller.text,
-            detail ?? '',
-            detail ?? ''
-          ]);
-          rowIndex++;
-        }
-      }
-    }
+                    if (alurProses != null && alurProses.isNotEmpty) {
+                      rows.add([
+                        rowIndex.toString(),
+                        nama ?? '',
+                        kodeLot ?? '',
+                        namaProdukcontroller.text,
+                        data['noProduk'] ?? '',
+                        data['id_lot'] ?? '',
+                        alurProses ?? '',
+                        tglMulaicontroller.text,
+                        tglSelesaicontroller.text,
+                        detail ?? '',
+                        detail ?? ''
+                      ]);
+                      rowIndex++;
+                    }
+                  }
+                }
 
-    String csv = const ListToCsvConverter().convert(rows);
-    final bytes = utf8.encode(csv);
-    final blob = Blob([bytes]);
-    final url = Url.createObjectUrlFromBlob(blob);
-    AnchorElement(href: url)
-      ..setAttribute("download", "report/$finalNama - $finalKodeLot.csv")
-      ..click();
-    Url.revokeObjectUrl(url);
+                String csv = const ListToCsvConverter().convert(rows);
+                final bytes = utf8.encode(csv);
+                final blob = Blob([bytes]);
+                final url = Url.createObjectUrlFromBlob(blob);
+                AnchorElement(href: url)
+                  ..setAttribute(
+                      "download", "ReportSTTPP/$finalNama - $finalKodeLot.csv")
+                  ..click();
+                Url.revokeObjectUrl(url);
+              },
+              child: Text("Download", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

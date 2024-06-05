@@ -73,25 +73,40 @@ class _ViewUploadState extends State<ViewUpload> {
     _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   }
 
-  Future<void> _hapusData(String id) async {
+  Future<void> _hapusFile(String no) async {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php',
-        ),
+            'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php'),
         body: {
-          "no": id,
+          "no": no,
         },
       );
- 
-      print('Delete response: ${response.statusCode} - ${response.body}');
+
+      print('Delete file response: ${response.statusCode} - ${response.body}');
 
       if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData['pesan'] == 'Sukses') {
+          print('File and entry deleted successfully');
+          _scaffoldMessengerKey.currentState?.showSnackBar(
+            SnackBar(content: Text('File berhasil dihapus')),
+          );
+          // Refresh data setelah menghapus file
+          _getdata();
+        } else {
+          print('Gagal menghapus file: ${responseData['pesan']}');
+          _scaffoldMessengerKey.currentState?.showSnackBar(
+            SnackBar(
+                content:
+                    Text('Gagal menghapus file: ${responseData['pesan']}')),
+          );
+        }
       } else {
-        print('Failed to delete data: ${response.statusCode}');
+        print('Failed to delete file: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error deleting data: $e');
+      print('Error deleting file: $e');
     }
   }
 
@@ -685,7 +700,7 @@ class _ViewUploadState extends State<ViewUpload> {
             ),
             TextButton(
               onPressed: () async {
-                await _hapusData(id);
+                await _hapusFile(id);
                 Navigator.of(context).pop();
               },
               child: Text("Hapus", style: TextStyle(color: Colors.white)),

@@ -25,7 +25,8 @@ if (empty($id_project)) {
 // Prepare and execute query
 $sql = $conn->prepare("
     SELECT 
-        lot.noProduk, 
+        lot.noProduk,
+        lot.kodeLot, 
         lot.nama, 
         lot.saran, 
         kerusakan.detail_kerusakan, 

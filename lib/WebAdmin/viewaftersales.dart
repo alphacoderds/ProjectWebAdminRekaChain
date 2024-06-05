@@ -1,5 +1,7 @@
 import 'dart:convert';
-
+import 'dart:html';
+import 'package:csv/csv.dart';
+import 'package:excel/excel.dart' as excel;
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
@@ -40,11 +42,12 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
   bool _isloading = true;
 
   TextEditingController namaProjectcontroller = TextEditingController();
+  TextEditingController kodeLotcontroller = TextEditingController();
   TextEditingController noProdukcontroller = TextEditingController();
   TextEditingController tglMulaicontroller = TextEditingController();
   TextEditingController dtlKekurangancontroller = TextEditingController();
   TextEditingController itemcontroller = TextEditingController();
-  TextEditingController keteranganontroller = TextEditingController();
+  TextEditingController keterangancontroller = TextEditingController();
   TextEditingController sarancontroller = TextEditingController();
 
   void fetchData() async {
@@ -54,7 +57,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.132/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=$nama&noProduk=$noProduk',
+          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=$nama&noProduk=$noProduk',
         ),
       );
 
@@ -63,6 +66,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
 
         setState(() {
           noProdukcontroller.text = responseData['noProduk'] ?? 'N/A';
+          kodeLotcontroller.text = responseData['kodeLot'] ?? 'N/A';
           namaProjectcontroller.text = responseData['nama'] ?? 'N/A';
           sarancontroller.text = responseData['saran'] ?? 'N/A';
         });
@@ -81,7 +85,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.132/ProjectWebAdminRekaChain/lib/Project/read_aftersales.php?id_project=$idProject',
+          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/read_aftersales.php?id_project=$idProject',
         ),
       );
 
@@ -95,7 +99,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
             dtlKekurangancontroller.text =
                 firstItem['detail_kerusakan'] ?? 'N/A';
             itemcontroller.text = firstItem['item'] ?? 'N/A';
-            keteranganontroller.text = firstItem['keterangan'] ?? 'N/A';
+            keterangancontroller.text = firstItem['keterangan'] ?? 'N/A';
             _listdata = responseData;
             _isloading = false;
           });
@@ -110,6 +114,84 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
     }
   }
 
+  void _downloadCSV() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Download CSV", style: TextStyle(color: Colors.white)),
+          content: Text(
+              "Apakah Anda yakin ingin mengunduh data sebagai file CSV?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Kode pengunduhan CSV dimulai dari sini
+                String? nama =
+                    _listdata.isNotEmpty ? _listdata[0]['nama'] : 'default';
+                String? kodeLot =
+                    _listdata.isNotEmpty ? _listdata[0]['kodeLot'] : 'default';
+
+                String finalNama = nama ?? 'default';
+                String finalKodeLot = kodeLot ?? 'default';
+
+                List<List<dynamic>> rows = [
+                  [
+                    'No',
+                    'Nama Project',
+                    'Kode Lot',
+                    'No Produk',
+                    'Detail Kerusakan',
+                    'Item',
+                    'Keterangan',
+                    'Saran',
+                  ]
+                ];
+
+                int rowIndex = 1;
+                for (var data in _listdata) {
+                  final nama = data['nama'];
+                  final kodeLot = data['kodeLot'];
+
+                  rows.add([
+                    rowIndex.toString(),
+                    nama ?? '',
+                    kodeLot ?? '',
+                    data['noProduk'] ?? '',
+                    data['detail_kerusakan'] ?? '',
+                    data['item'] ?? '',
+                    data['keterangan'] ?? '',
+                    data['saran'] ?? '',
+                  ]);
+                  rowIndex++;
+                }
+
+                String csv = const ListToCsvConverter().convert(rows);
+                final bytes = utf8.encode(csv);
+                final blob = Blob([bytes]);
+                final url = Url.createObjectUrlFromBlob(blob);
+                AnchorElement(href: url)
+                  ..setAttribute(
+                      "download", "Aftersales/$finalNama-$finalKodeLot.csv")
+                  ..click();
+                Url.revokeObjectUrl(url);
+              },
+              child: Text("Download", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -118,6 +200,8 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
 
     noProdukcontroller =
         TextEditingController(text: widget.selectedProject['noProduk'] ?? '');
+    kodeLotcontroller =
+        TextEditingController(text: widget.selectedProject['kodeLot'] ?? '');
     namaProjectcontroller =
         TextEditingController(text: widget.selectedProject['nama'] ?? '');
     tglMulaicontroller = TextEditingController(
@@ -126,7 +210,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
         text: widget.selectedProject['detail_kerusakan'] ?? '');
     itemcontroller =
         TextEditingController(text: widget.selectedProject['item'] ?? '');
-    keteranganontroller =
+    keterangancontroller =
         TextEditingController(text: widget.selectedProject['keterangan'] ?? '');
     sarancontroller =
         TextEditingController(text: widget.selectedProject['saran'] ?? '');
@@ -199,7 +283,9 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                                 size: 33,
                                 color: Color.fromARGB(255, 255, 255, 255),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                _downloadCSV();
+                              },
                             ),
                             IconButton(
                               icon: Icon(
@@ -254,6 +340,48 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                                   borderRadius: BorderRadius.circular(10)),
                               child: Column(
                                 children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20.0, horizontal: 20.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text('Nama Project : ',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16)),
+                                            Text(namaProjectcontroller.text,
+                                                style: TextStyle(fontSize: 16)),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            Text('Kode Lot         : ',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16)),
+                                            Text(kodeLotcontroller.text,
+                                                style: TextStyle(fontSize: 16)),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        Row(
+                                          children: [
+                                            Text('No Produk      : ',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16)),
+                                            Text(noProdukcontroller.text,
+                                                style: TextStyle(fontSize: 16)),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   Container(child: _buildMainTable()),
                                   Container(
                                     decoration: BoxDecoration(
@@ -273,15 +401,14 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                                           Text(
                                             'Saran :',
                                             style: TextStyle(
-                                                fontWeight: FontWeight.w600),
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16),
                                           ),
                                           SizedBox(
                                             height: 20,
                                           ),
-                                          Text(
-                                            sarancontroller.text,
-                                            maxLines: 1,
-                                          ),
+                                          Text(sarancontroller.text,
+                                              style: TextStyle(fontSize: 16)),
                                         ],
                                       ),
                                     ),
