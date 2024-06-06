@@ -21,7 +21,12 @@ class Cetak1 extends StatefulWidget {
   final Map<String, dynamic> selectedProject;
   final DataModel data;
   final String nip;
-  const Cetak1({Key? key, this.selectedProject = const {}, required this.data, required this.nip}) : super(key: key);
+  const Cetak1(
+      {Key? key,
+      this.selectedProject = const {},
+      required this.data,
+      required this.nip})
+      : super(key: key);
 
   @override
   State<Cetak1> createState() => _Cetak1State();
@@ -92,7 +97,7 @@ class _Cetak1State extends State<Cetak1> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -250,7 +255,7 @@ class _Cetak1State extends State<Cetak1> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => Cetak1(data: widget.data,nip: widget.nip),
+              builder: (context) => Cetak1(data: widget.data, nip: widget.nip),
             );
           default:
             return null;
@@ -304,7 +309,8 @@ class _Cetak1State extends State<Cetak1> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
+                                  builder: (context) => Notifikasi(
+                                      nip: widget.nip, data: widget.data),
                                 ),
                               );
                             },
@@ -319,7 +325,8 @@ class _Cetak1State extends State<Cetak1> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile(data: widget.data,nip: widget.nip)),
+                                    builder: (context) => Profile(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                             padding: EdgeInsets.only(right: 16.0),
@@ -395,7 +402,8 @@ class _Cetak1State extends State<Cetak1> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Vperencanaan(data: widget.data,nip: widget.nip),
+                              builder: (context) => Vperencanaan(
+                                  data: widget.data, nip: widget.nip),
                             ),
                           );
                         },
@@ -575,14 +583,16 @@ class _Cetak1State extends State<Cetak1> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AdminDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -637,42 +647,48 @@ class _Cetak1State extends State<Cetak1> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -722,7 +738,9 @@ class _Cetak1State extends State<Cetak1> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

@@ -20,7 +20,11 @@ class EditPerencanaan extends StatefulWidget {
   final DataModel data;
   final String nip;
   final Map<String, dynamic> selectedProject;
-  const EditPerencanaan({Key? key, this.selectedProject = const {}, required this.data, required this.nip})
+  const EditPerencanaan(
+      {Key? key,
+      this.selectedProject = const {},
+      required this.data,
+      required this.nip})
       : super(key: key);
 
   @override
@@ -56,7 +60,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit.php?id_project=${widget.selectedProject['id_project']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit.php?id_project=${widget.selectedProject['id_project']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -169,7 +173,8 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => EditPerencanaan(data: widget.data,nip: widget.nip),
+                  builder: (context) =>
+                      EditPerencanaan(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -214,8 +219,9 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                Vperencanaan(data: widget.data,nip: widget.nip),
+                                            builder: (context) => Vperencanaan(
+                                                data: widget.data,
+                                                nip: widget.nip),
                                           ),
                                         );
                                       },
@@ -249,7 +255,9 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
+                                            builder: (context) => Notifikasi(
+                                                nip: widget.nip,
+                                                data: widget.data),
                                           ),
                                         );
                                       },
@@ -264,7 +272,9 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) => Profile(data: widget.data,nip: widget.nip),
+                                            builder: (context) => Profile(
+                                                data: widget.data,
+                                                nip: widget.nip),
                                           ),
                                         );
                                       },
@@ -805,7 +815,7 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit.php'),
+            'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit.php'),
         body: {
           "id_project": idProjectcontroller.text,
           "noIndukProduk": noProdukcontroller.text,
@@ -1011,14 +1021,16 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => UserDashboard(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    UserDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -1073,42 +1085,48 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -1158,7 +1176,9 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => Vperencanaan(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Vperencanaan(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
@@ -1190,7 +1210,9 @@ class _EditPerencanaanState extends State<EditPerencanaan> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

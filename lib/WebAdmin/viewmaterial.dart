@@ -61,7 +61,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
+          'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -79,7 +79,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readmaterial.php'));
+        'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/readmaterial.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);

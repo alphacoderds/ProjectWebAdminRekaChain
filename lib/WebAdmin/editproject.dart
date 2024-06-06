@@ -20,7 +20,7 @@ class EditProject extends StatefulWidget {
   final DataModel data;
   final String nip;
   final Map<String, dynamic> selectedProject;
-  
+
   const EditProject(
       {Key? key,
       this.selectedProject = const {},
@@ -50,7 +50,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
+            'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -242,7 +242,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php'),
+            'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php'),
         body: {
           'no_tambahproject':
               widget.selectedProject['no_tambahproject'].toString(),

@@ -1,14 +1,18 @@
+import 'dart:html';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:RekaChain/WebAdmin/liststaff.dart';
 import 'package:RekaChain/WebAdmin/profile.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:RekaChain/WebAdmin/data_model.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker_web/image_picker_web.dart';
+import 'package:uuid/uuid.dart';
+import 'package:mime/mime.dart';
 
 class EditProfile extends StatefulWidget {
   final String nip;
@@ -51,18 +55,79 @@ class _EditProfileState extends State<EditProfile> {
       TextEditingController(text: widget.data.profile);
 
   late Uint8List _selectedImage = Uint8List(0);
+  late String _originalFileName = '';
 
   @override
   void initState() {
     super.initState();
+    _loadProfileImage();
     _getdata();
     fetchData();
+  }
+
+  Future<void> _pickImage() async {
+    FileUploadInputElement uploadInput = FileUploadInputElement();
+    uploadInput.accept = 'image/*';
+    uploadInput.click();
+
+    uploadInput.onChange.listen((e) {
+      final files = uploadInput.files;
+      if (files!.isNotEmpty) {
+        final reader = FileReader();
+        reader.readAsArrayBuffer(files[0]);
+        reader.onLoadEnd.listen((e) async {
+          setState(() {
+            _selectedImage = reader.result as Uint8List;
+            _originalFileName = files[0].name; // Save the original file name
+          });
+          await _saveProfileImage(_selectedImage);
+        });
+      }
+    });
+  }
+
+  Future<void> _loadProfileImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? base64Image = prefs.getString('profile');
+    if (base64Image != null) {
+      setState(() {
+        _selectedImage = base64Decode(base64Image);
+      });
+    }
+  }
+
+  Future<void> _saveProfileImage(Uint8List image) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String base64Image = base64Encode(image);
+    await prefs.setString('profile', base64Image);
+
+    final formData = FormData.fromMap({
+      'profile': MultipartFile.fromBytes(
+        image,
+        filename: 'profile_image.jpg', // Provide a filename
+        contentType: MediaType('image', 'jpeg'),
+      ),
+    });
+
+    final response = await Dio().post(
+      'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit_profile.php',
+      data: formData,
+      options: Options(
+        contentType: 'multipart/form-data',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      print('Image uploaded successfully');
+    } else {
+      print('Failed to upload image: ${response.statusCode}');
+    }
   }
 
   Future _getdata() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'));
+          'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'));
       if (response.statusCode == 200) {
         try {
           final data = jsonDecode(response.body);
@@ -94,7 +159,7 @@ class _EditProfileState extends State<EditProfile> {
 
   Future<void> _simpan() async {
     final uri = Uri.parse(
-        'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_profile.php');
+        'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit_profile.php');
     final request = http.MultipartRequest('POST', uri);
 
     request.fields['nip'] = widget.data.nip;
@@ -112,7 +177,8 @@ class _EditProfileState extends State<EditProfile> {
       request.files.add(http.MultipartFile.fromBytes(
         'profile',
         _selectedImage,
-        filename: '', // Kosongkan nama file
+        filename: _originalFileName, // Provide a filename
+        contentType: MediaType('image', 'jpeg'),
       ));
     }
 
@@ -129,56 +195,10 @@ class _EditProfileState extends State<EditProfile> {
       );
     } else {
       print('Gagal memperbarui data: ${response.statusCode}');
+      final responseBody = await response.stream.bytesToString();
+      print('Response: $responseBody');
     }
   }
-
-  // Future<void> _simpan() async {
-  //   final response = await http.post(
-  //     Uri.parse(
-  //         'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_profile.php'),
-  //     body: {
-  //       "nip": widget.data.nip,
-  //       "nama": namaController.text,
-  //       "jabatan": jabatanController.text,
-  //       "unit_kerja": unitKerjaController.text,
-  //       "departemen": departemenController.text,
-  //       "divisi": divisiController.text,
-  //       "no_telp": noTelpController.text,
-  //       "status": statusController.text,
-  //       "password": passwordController.text,
-  //       "konfirmasi_password": konfirmasiPasswordController.text,
-  //       "profile": base64Encode(_selectedImage),
-  //     },
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     final newProjectData = {
-  //       "kode_staff": widget.data.kode_staff,
-  //       "nama": namaController.text,
-  //       "jabatan": jabatanController.text,
-  //       "unit_kerja": unitKerjaController.text,
-  //       "departemen": departemenController.text,
-  //       "divisi": divisiController.text,
-  //       "no_telp": noTelpController.text,
-  //       "password": passwordController.text,
-  //       "status": statusController.text,
-  //       "konfirmasi_password": konfirmasiPasswordController.text,
-  //       "profile": base64Encode(_selectedImage),
-  //     };
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //           builder: (context) =>
-  //               ListStaff(data: widget.data, nip: widget.nip)),
-  //     );
-
-  //     if (response.statusCode == 200) {
-  //       print('Gambar berhasil disimpan');
-  //     }
-  //   } else {
-  //     print('Gagal menyimpan data: ${response.statusCode}');
-  //   }
-  // }
 
   Future<void> fetchData() async {
     String? nip = await getNipFromSharedPreferences();
@@ -218,19 +238,10 @@ class _EditProfileState extends State<EditProfile> {
     return null;
   }
 
-  Future<void> _pickImage() async {
-    Uint8List? pickedImage = await ImagePickerWeb.getImageAsBytes();
-    if (pickedImage != null) {
-      setState(() {
-        _selectedImage = pickedImage;
-      });
-    }
-  }
-
   Future<void> _update() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php'),
+          'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php'),
       body: {
         "nama": namaController.text,
         "jabatan": jabatanController.text,
@@ -253,6 +264,8 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       onGenerateRoute: (settings) {
@@ -308,7 +321,7 @@ class _EditProfileState extends State<EditProfile> {
                                 'profile': profileController.text,
                               },
                               Uri.parse(
-                                  "http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
+                                  "http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -338,7 +351,6 @@ class _EditProfileState extends State<EditProfile> {
                 ],
               ),
             ),
-            // Main content
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
@@ -452,13 +464,21 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  void _updateDataAndNavigateToProfile() async {
+  Future<void> _updateDataAndNavigateToProfile() async {
     try {
       var request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/edit_profile.php'),
+            'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit_profile.php'),
       );
+
+      if (_selectedImage.isNotEmpty) {
+        request.files.add(http.MultipartFile.fromBytes(
+          'profile',
+          _selectedImage,
+          filename: _originalFileName,
+        ));
+      }
 
       request.fields['kode_staff'] = kodeStaffController.text;
       request.fields['nama'] = namaController.text;
@@ -470,19 +490,18 @@ class _EditProfileState extends State<EditProfile> {
       request.fields['status'] = statusController.text;
       request.fields['nip'] = nipController.text;
       request.fields['password'] = passwordController.text;
-
-      if (_selectedImage.isNotEmpty) {
-        request.files.add(http.MultipartFile.fromBytes(
-          'profile',
-          _selectedImage,
-        ));
-      }
+      request.fields['profile'] = profileController.text;
 
       var response = await request.send();
 
       if (response.statusCode == 200) {
+        String new_filename = '${Uuid().v4()}_${_originalFileName}';
         var responseBody = await response.stream.bytesToString();
         print('Update successful: $responseBody');
+        var newProfileUrl =
+            'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/upload/$new_filename';
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('profile', newProfileUrl);
         DataModel updatedData = DataModel(
           kode_staff: kodeStaffController.text,
           nama: namaController.text,
@@ -499,8 +518,6 @@ class _EditProfileState extends State<EditProfile> {
           profile: profileController.text,
         );
 
-        // Simpan data yang diperbarui ke SharedPreferences
-        SharedPreferences prefs = await SharedPreferences.getInstance();
         String dataKaryawanJson = jsonEncode(updatedData.toJson());
         await prefs.setString('dataKaryawan', dataKaryawanJson);
 
@@ -545,17 +562,13 @@ class _EditProfileState extends State<EditProfile> {
               ),
             ],
             shape: BoxShape.circle,
-            image: _selectedImage != null
-                ? DecorationImage(
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
-                    image: MemoryImage(_selectedImage),
-                  )
-                : const DecorationImage(
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
-                    image: AssetImage('assets/images/profil.png'),
-                  ),
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+              image: _selectedImage.isNotEmpty
+                  ? MemoryImage(_selectedImage)
+                  : NetworkImage(widget.data.profile) as ImageProvider,
+            ),
           ),
         ),
         Positioned(

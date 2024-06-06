@@ -59,6 +59,7 @@ dependencies:
   http_parser: ^4.0.2
   qr_flutter: ^4.1.0
   image_picker_web: ^4.0.0
+  uuid: ^4.4.0
 
 dev_dependencies:
   flutter_test:

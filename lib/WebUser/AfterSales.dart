@@ -16,7 +16,9 @@ class AfterSales extends StatefulWidget {
   final Map<String, dynamic>? newProject;
   final DataModel data;
   final String nip;
-  const AfterSales({Key? key, this.newProject, required this.data, required this.nip}) : super(key: key);
+  const AfterSales(
+      {Key? key, this.newProject, required this.data, required this.nip})
+      : super(key: key);
   @override
   State<AfterSales> createState() => _AfterSalesState();
 }
@@ -42,7 +44,7 @@ class _AfterSalesState extends State<AfterSales> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readaftersales.php',
+          'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/readaftersales.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -67,7 +69,7 @@ class _AfterSalesState extends State<AfterSales> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
+          'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
         ),
         body: {
           "noProduk": id,
@@ -96,7 +98,10 @@ class _AfterSalesState extends State<AfterSales> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) => AfterSales(data: widget.data, nip: widget.nip,),
+              builder: (context) => AfterSales(
+                data: widget.data,
+                nip: widget.nip,
+              ),
             );
           default:
             return null;
@@ -172,7 +177,8 @@ class _AfterSalesState extends State<AfterSales> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                    builder: (context) => Notifikasi(
+                                        nip: widget.nip, data: widget.data)),
                               );
                             },
                           ),
@@ -186,7 +192,8 @@ class _AfterSalesState extends State<AfterSales> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Profile(data: widget.data, nip: widget.nip)),
+                                    builder: (context) => Profile(
+                                        data: widget.data, nip: widget.nip)),
                               );
                             },
                           ),
@@ -335,7 +342,9 @@ class _AfterSalesState extends State<AfterSales> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                ViewAfterSales(nip: widget.nip, data: widget.data,
+                                                ViewAfterSales(
+                                              nip: widget.nip,
+                                              data: widget.data,
                                               selectedProject: {
                                                 "no_aftersales":
                                                     filteredData[index]
@@ -444,7 +453,8 @@ class _AfterSalesState extends State<AfterSales> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -499,31 +509,35 @@ class _AfterSalesState extends State<AfterSales> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data, nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
-          } 
+          }
         }
       },
     );
@@ -570,7 +584,9 @@ class _AfterSalesState extends State<AfterSales> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

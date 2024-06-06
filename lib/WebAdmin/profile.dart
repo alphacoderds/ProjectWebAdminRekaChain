@@ -78,7 +78,7 @@ class _ProfileState extends State<Profile> {
       final response = await http.post(
         body: map,
         Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
+          'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -128,7 +128,6 @@ class _ProfileState extends State<Profile> {
       final auth = Provider.of<UserProvider>(context, listen: false);
       auth.getUserByNip();
     });
-    
   }
 
   Future<DataModel?> getUserData() async {
@@ -229,36 +228,36 @@ class _ProfileState extends State<Profile> {
                       _buildAvatar(),
                       Center(
                         child: Consumer<UserProvider>(
-                          builder: (context, provider, child) {
-                            return Container(
-                              margin: const EdgeInsets.only(top: 20),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EditProfile(
-                                          data: provider.dataModel, nip: widget.nip),
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor:
-                                      const Color.fromRGBO(43, 56, 86, 1),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
+                            builder: (context, provider, child) {
+                          return Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EditProfile(
+                                        data: provider.dataModel,
+                                        nip: widget.nip),
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 20,
-                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    const Color.fromRGBO(43, 56, 86, 1),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
                                 ),
-                                child: const Text('Ubah Profile'),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 20,
+                                ),
                               ),
-                            );
-                          }
-                        ),
+                              child: const Text('Ubah Profile'),
+                            ),
+                          );
+                        }),
                       ),
                       Expanded(
                         child: Container(),
@@ -310,60 +309,49 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             const SizedBox(height: 16.0),
-            Consumer<UserProvider>(
-              builder: (context,provider,child) {
-                return _buildTextView(' Nama Lengkap :', text: provider.dataModel.nama);
-              }
-            ),
+            Consumer<UserProvider>(builder: (context, provider, child) {
+              return _buildTextView(' Nama Lengkap :',
+                  text: provider.dataModel.nama);
+            }),
             _buildDivider(),
-
-            Consumer<UserProvider>(
-              builder: (context, provider,child) {
-                return _buildTextView(' Jabatan :', text: provider.dataModel.jabatan);
-              }
-            ),
+            Consumer<UserProvider>(builder: (context, provider, child) {
+              return _buildTextView(' Jabatan :',
+                  text: provider.dataModel.jabatan);
+            }),
             _buildDivider(),
-            Consumer<UserProvider>(
-              builder: (context, provider, child) {
-                return _buildTextView(' Unit Kerja :', text: provider.dataModel.unit_kerja);
-              }
-            ),
+            Consumer<UserProvider>(builder: (context, provider, child) {
+              return _buildTextView(' Unit Kerja :',
+                  text: provider.dataModel.unit_kerja);
+            }),
             _buildDivider(),
-            Consumer<UserProvider>(
-              builder: (context, provider, child) {
-                return _buildTextView(' Departemen :', text: provider.dataModel.departemen);
-              }
-            ),
+            Consumer<UserProvider>(builder: (context, provider, child) {
+              return _buildTextView(' Departemen :',
+                  text: provider.dataModel.departemen);
+            }),
             _buildDivider(),
-            Consumer<UserProvider>(
-              builder: (context, provider, child) {
-                return _buildTextView(' Divisi :', text: provider.dataModel.divisi);
-              }
-            ),
+            Consumer<UserProvider>(builder: (context, provider, child) {
+              return _buildTextView(' Divisi :',
+                  text: provider.dataModel.divisi);
+            }),
             _buildDivider(),
-            Consumer<UserProvider>(
-              builder: (context, provider, child) {
-                return _buildTextView(' Nomor Telepon :', text: provider.dataModel.noTelp);
-              }
-            ),
+            Consumer<UserProvider>(builder: (context, provider, child) {
+              return _buildTextView(' Nomor Telepon :',
+                  text: provider.dataModel.noTelp);
+            }),
             _buildDivider(),
-            Consumer<UserProvider>(
-              builder: (context, provider, child) {
-                return _buildTextView(' NIP :', text: provider.dataModel.nip);
-              }
-            ),
+            Consumer<UserProvider>(builder: (context, provider, child) {
+              return _buildTextView(' NIP :', text: provider.dataModel.nip);
+            }),
             _buildDivider(),
-            Consumer<UserProvider>(
-              builder: (context, provider, child) {
-                return _buildTextView(' Password :', text: provider.dataModel.password);
-              }
-            ),
+            Consumer<UserProvider>(builder: (context, provider, child) {
+              return _buildTextView(' Password :',
+                  text: provider.dataModel.password);
+            }),
             _buildDivider(),
-            Consumer<UserProvider>(
-              builder: (context, provider, child) {
-                return _buildTextView(' Status :', text: provider.dataModel.status);
-              }
-            ),
+            Consumer<UserProvider>(builder: (context, provider, child) {
+              return _buildTextView(' Status :',
+                  text: provider.dataModel.status);
+            }),
             _buildDivider(),
             const SizedBox(height: 16.0),
           ],

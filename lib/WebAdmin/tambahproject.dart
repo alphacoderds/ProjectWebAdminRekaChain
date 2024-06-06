@@ -59,7 +59,7 @@ class _TambahProjectState extends State<TambahProject> {
 
       final response = await http.post(
         Uri.parse(
-            'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/create_tambahproject.php'),
+            'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/create_tambahproject.php'),
         body: {
           "kodeProject": kdprojectController.text,
           "namaProject": nmprojectController.text,
@@ -80,7 +80,8 @@ class _TambahProjectState extends State<TambahProject> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => ListProject(newProject: newProjectData, data: widget.data,nip: widget.nip),
+            builder: (context) => ListProject(
+                newProject: newProjectData, data: widget.data, nip: widget.nip),
           ),
         );
       } else {
@@ -135,7 +136,8 @@ class _TambahProjectState extends State<TambahProject> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
+                  builder: (context) =>
+                      TambahProject(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -184,7 +186,9 @@ class _TambahProjectState extends State<TambahProject> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => ListProject(data: widget.data,nip: widget.nip)),
+                                          builder: (context) => ListProject(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                 ),
@@ -198,7 +202,9 @@ class _TambahProjectState extends State<TambahProject> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                          builder: (context) => Notifikasi(
+                                              nip: widget.nip,
+                                              data: widget.data)),
                                     );
                                   },
                                 ),
@@ -212,7 +218,9 @@ class _TambahProjectState extends State<TambahProject> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) => Profile(data: widget.data,nip: widget.nip)),
+                                          builder: (context) => Profile(
+                                              data: widget.data,
+                                              nip: widget.nip)),
                                     );
                                   },
                                 ),
@@ -440,14 +448,16 @@ class _TambahProjectState extends State<TambahProject> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AdminDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -502,7 +512,8 @@ class _TambahProjectState extends State<TambahProject> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {

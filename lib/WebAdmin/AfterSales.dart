@@ -46,7 +46,7 @@ class _AfterSalesState extends State<AfterSales> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.230/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
