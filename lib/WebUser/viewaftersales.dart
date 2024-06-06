@@ -49,7 +49,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.8.121/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
+            'http://192.168.1.8/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);

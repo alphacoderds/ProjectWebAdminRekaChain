@@ -51,7 +51,7 @@ class MyApp1 extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: AfterSales(data: data, nip: nip),
+          home: LoginPage(data: data, nip: nip),
         );
       },
     );
