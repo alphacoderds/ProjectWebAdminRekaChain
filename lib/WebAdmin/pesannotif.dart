@@ -12,7 +12,6 @@ import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-import 'package:RekaChain/WebAdmin/viewikm.dart';
 import 'package:RekaChain/WebAdmin/viewupload.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +49,8 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
             switch (settings.name) {
               case '/':
                 return MaterialPageRoute(
-                  builder: (context) => PesanNotifikasi(data: widget.data,nip: widget.nip),
+                  builder: (context) =>
+                      PesanNotifikasi(data: widget.data, nip: widget.nip),
                 );
               default:
                 return null;
@@ -85,7 +85,8 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => Notifikasi(nip: widget.nip, data: widget.data),
+                                      builder: (context) => Notifikasi(
+                                          nip: widget.nip, data: widget.data),
                                     ),
                                   );
                                 },
@@ -100,7 +101,8 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => Profile(data: widget.data,nip: widget.nip),
+                                      builder: (context) => Profile(
+                                          data: widget.data, nip: widget.nip),
                                     ),
                                   );
                                 },
@@ -172,7 +174,9 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => InputDokumen(data: widget.data,nip: widget.nip)),
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              InputDokumen(data: widget.data, nip: widget.nip)),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -246,14 +250,16 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AdminDashboard(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AdminDashboard(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AfterSales(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -308,42 +314,48 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ReportSTTPP(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => Perencanaan(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputMaterial(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => InputDokumen(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahProject(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 8) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TambahStaff(data: widget.data,nip: widget.nip),
+                builder: (context) =>
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -367,7 +379,7 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
       ),
       children: [
         _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 8, 35),
       ],
     );
   }
@@ -426,7 +438,9 @@ class _PesanNotifikasiState extends State<PesanNotifikasi> {
                 Navigator.of(context).pop();
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage(data: widget.data,nip: widget.nip)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

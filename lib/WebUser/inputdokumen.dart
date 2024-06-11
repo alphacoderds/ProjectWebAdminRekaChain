@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'dart:convert';
 
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/AfterSales.dart';
@@ -11,13 +11,17 @@ import 'package:RekaChain/WebUser/profile.dart';
 import 'package:RekaChain/WebUser/reportsttpp.dart';
 import 'package:RekaChain/WebUser/viewupload.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 
 class InputDokumen extends StatefulWidget {
   final DataModel data;
   final String nip;
-  const InputDokumen({super.key, required this.data, required this.nip});
+  const InputDokumen({Key? key, required this.data, required this.nip})
+      : super(key: key);
 
   @override
   State<InputDokumen> createState() => _InputDokumenState();
@@ -27,25 +31,177 @@ class _InputDokumenState extends State<InputDokumen> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
-  List<File> uploadFiles = [];
+  TextEditingController idprojectcontroller = TextEditingController();
+  TextEditingController noProdukcontroller = TextEditingController();
+  TextEditingController filecontroller = TextEditingController();
+  TextEditingController tanggalcontroller = TextEditingController();
+
+  int _selectedIndex = 0;
+  late List<String> dropdownItemsIdProject = [];
+  String? selectedValueIdProject;
+
+  late List<String> dropdownItemsNoProduk = [];
+  String? selectedValueNoProduk;
+
+  List<PlatformFile> uploadFiles = [];
+  Map<String, List<String>> projectMap = {};
 
   Future<void> _uploadDocument() async {
     FilePickerResult? result =
         await FilePicker.platform.pickFiles(allowMultiple: true);
     if (result != null) {
-      print('Path File: ${result.files.single.path}');
+      List<PlatformFile> validFiles = [];
+      for (var file in result.files) {
+        if (file.size <= 5242880 && file.extension == 'pdf') {
+          validFiles.add(file);
+        } else {
+          _showErrorDialog(file.name);
+        }
+      }
+      setState(() {
+        uploadFiles.addAll(validFiles);
+      });
+      if (validFiles.isNotEmpty) {
+        print(
+            'Dokumen berhasil diunggah: ${validFiles.map((file) => file.name)}');
+      }
     } else {
       print('Pengguna membatalkan memilih file');
     }
   }
 
-  int _selectedIndex = 0;
-  List<String> dropdownItems = [
-    '--Pilih Nama/Kode Project--',
-    'R22-PT. Nugraha Jasa',
-    'PT. INDAH JAYA'
-  ];
-  String? selectedValue;
+  void _showErrorDialog(String fileName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('File Gagal Diunggah'),
+          content: Text('File $fileName terlalu besar atau bukan PDF.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _simpan() async {
+    if (selectedValueIdProject != null && selectedValueNoProduk != null) {
+      List<MultipartFile> filesToUpload = [];
+      for (var file in uploadFiles) {
+        filesToUpload.add(
+          MultipartFile.fromBytes(
+            file.bytes!,
+            filename: file.name,
+            contentType: MediaType('application', 'pdf'),
+          ),
+        );
+      }
+
+      var formData = FormData.fromMap({
+        'id_project': selectedValueIdProject,
+        'noProduk': selectedValueNoProduk,
+        'tanggal': tanggalcontroller.text,
+        'file': filesToUpload,
+      });
+
+      try {
+        final response = await Dio().post(
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/create_inputdokumen.php',
+          data: formData,
+          options: Options(
+            contentType: 'multipart/form-data',
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          final newProjectData = {
+            'id_project': idprojectcontroller.text,
+            'file': filecontroller.text,
+            'noProduk': noProdukcontroller.text,
+            'tanggal': tanggalcontroller.text,
+          };
+
+          _showFinishDialog();
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ViewUpload(
+                newProject: newProjectData,
+                nip: widget.nip,
+                data: widget.data,
+              ),
+            ),
+          );
+        } else {
+          print('Gagal menyimpan data: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error: $e');
+      }
+    } else {
+      print('Mohon lengkapi nama project.');
+    }
+  }
+
+  Future<void> _selectDate(TextEditingController controller) async {
+    DateTime? _picked = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (_picked != null) {
+      setState(() {
+        final formattedDate = DateFormat('dd-MM-yyyy').format(_picked);
+        controller.text = formattedDate;
+      });
+    }
+  }
+
+  Future<void> fetchProject() async {
+    final response = await http.get(Uri.parse(
+        'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readlot.php'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+
+      Map<String, List<String>> projectMap = {};
+
+      for (var project in data) {
+        String nama = project['nama'].toString();
+        String noProduk = project['noProduk'].toString();
+
+        if (projectMap.containsKey(nama)) {
+          projectMap[nama]!.add(noProduk);
+        } else {
+          projectMap[nama] = [noProduk];
+        }
+      }
+
+      setState(() {
+        dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
+        dropdownItemsIdProject.addAll(projectMap.keys);
+
+        this.projectMap = projectMap;
+        dropdownItemsNoProduk = ['--Pilih No Produk--'];
+      });
+    } else {
+      throw Exception('Failed to load project names');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchProject();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,8 +292,8 @@ class _InputDokumenState extends State<InputDokumen> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => Notifikasi(
-                                              data: widget.data,
-                                              nip: widget.nip)),
+                                              nip: widget.nip,
+                                              data: widget.data)),
                                     );
                                   },
                                 ),
@@ -179,7 +335,7 @@ class _InputDokumenState extends State<InputDokumen> {
                 height: 40.0,
                 child: ElevatedButton(
                   onPressed: () {
-                    _showFinishDialog();
+                    _simpan();
                   },
                   style: ElevatedButton.styleFrom(
                     primary: const Color.fromRGBO(43, 56, 86, 1),
@@ -241,22 +397,34 @@ class _InputDokumenState extends State<InputDokumen> {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: DropdownButton<String>(
-                                      alignment: Alignment.center,
+                                      value: selectedValueIdProject,
                                       hint: Text('--Pilih Nama Project--'),
-                                      underline: SizedBox(),
-                                      value: selectedValue,
-                                      borderRadius: BorderRadius.circular(5),
-                                      items: dropdownItems.map((String value) {
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          selectedValueIdProject = newValue;
+                                          if (projectMap
+                                              .containsKey(newValue)) {
+                                            dropdownItemsNoProduk = [
+                                              '--Pilih No Produk--'
+                                            ];
+                                            dropdownItemsNoProduk
+                                                .addAll(projectMap[newValue]!);
+                                          } else {
+                                            dropdownItemsNoProduk = [
+                                              '--Pilih No Produk--'
+                                            ];
+                                          }
+
+                                          selectedValueNoProduk = null;
+                                        });
+                                      },
+                                      items: dropdownItemsIdProject
+                                          .map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
                                         );
                                       }).toList(),
-                                      onChanged: (newValue) {
-                                        setState(() {
-                                          selectedValue = newValue;
-                                        });
-                                      },
                                     ),
                                   ),
                                 ],
@@ -280,24 +448,61 @@ class _InputDokumenState extends State<InputDokumen> {
                                       border: Border.all(),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
-                                        SizedBox(width: 8),
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.add,
-                                            size: 35,
-                                          ),
-                                          onPressed: () {
-                                            _uploadDocument();
+                                        SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            SizedBox(width: 8),
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.add,
+                                                size: 35,
+                                              ),
+                                              onPressed: () {
+                                                _uploadDocument();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 8),
+                                        ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: uploadFiles.length,
+                                          itemBuilder: (context, index) {
+                                            return ListTile(
+                                              title:
+                                                  Text(uploadFiles[index].name),
+                                              trailing: IconButton(
+                                                icon: Icon(Icons.remove_circle),
+                                                onPressed: () {
+                                                  setState(() {
+                                                    uploadFiles.removeAt(index);
+                                                  });
+                                                },
+                                              ),
+                                            );
                                           },
                                         ),
                                       ],
                                     ),
                                   ),
                                   SizedBox(height: 10),
+                                  RichText(
+                                    text: TextSpan(children: [
+                                      TextSpan(
+                                        text: 'Input Dokumen',
+                                      ),
+                                      TextSpan(
+                                        style: TextStyle(
+                                          color: Colors.blueAccent[700],
+                                        ),
+                                        text: ' Berupa Pdf',
+                                      ),
+                                    ]),
+                                  ),
                                 ],
                               ),
                             ],
@@ -326,10 +531,11 @@ class _InputDokumenState extends State<InputDokumen> {
                                     child: DropdownButton<String>(
                                       alignment: Alignment.center,
                                       hint: Text('--Pilih No Produk--'),
-                                      value: selectedValue,
+                                      value: selectedValueNoProduk,
                                       underline: SizedBox(),
                                       borderRadius: BorderRadius.circular(5),
-                                      items: dropdownItems.map((String value) {
+                                      items: dropdownItemsNoProduk
+                                          .map((String value) {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
@@ -337,9 +543,46 @@ class _InputDokumenState extends State<InputDokumen> {
                                       }).toList(),
                                       onChanged: (newValue) {
                                         setState(() {
-                                          selectedValue = newValue;
+                                          selectedValueNoProduk = newValue;
                                         });
                                       },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 40),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Tanggal',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 90,
+                                    width: 150,
+                                    child: TextField(
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      textAlign: TextAlign.center,
+                                      controller: tanggalcontroller,
+                                      readOnly: true,
+                                      onTap: () {
+                                        _selectDate(tanggalcontroller);
+                                      },
+                                      decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 15,
+                                          vertical: 2,
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -383,8 +626,9 @@ class _InputDokumenState extends State<InputDokumen> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -399,7 +643,7 @@ class _InputDokumenState extends State<InputDokumen> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -410,10 +654,18 @@ class _InputDokumenState extends State<InputDokumen> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    UserDashboard(data: widget.data, nip: widget.nip),
+                    UserDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -421,8 +673,6 @@ class _InputDokumenState extends State<InputDokumen> {
                     AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -443,10 +693,9 @@ class _InputDokumenState extends State<InputDokumen> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -462,23 +711,16 @@ class _InputDokumenState extends State<InputDokumen> {
       leading: Icon(
         icon,
         size: size.toDouble(),
+        color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -486,7 +728,7 @@ class _InputDokumenState extends State<InputDokumen> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -494,7 +736,7 @@ class _InputDokumenState extends State<InputDokumen> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -504,40 +746,6 @@ class _InputDokumenState extends State<InputDokumen> {
             );
           }
         }
-      },
-    );
-  }
-
-  void _showFinishDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin simpan data?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          InputDokumen(data: widget.data, nip: widget.nip)),
-                );
-              },
-              child: Text("Ya", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
       },
     );
   }
@@ -569,6 +777,34 @@ class _InputDokumenState extends State<InputDokumen> {
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showFinishDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin simpan data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                _simpan();
+              },
+              child: Text("Ya", style: TextStyle(color: Colors.white)),
             ),
           ],
         );

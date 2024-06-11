@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebUser/AfterSales.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
@@ -8,37 +9,118 @@ import 'package:RekaChain/WebUser/perencanaan.dart';
 import 'package:RekaChain/WebUser/profile.dart';
 import 'package:RekaChain/WebUser/reportsttpp.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:http/http.dart' as http;
 
 class UserDashboard extends StatefulWidget {
   final DataModel data;
   final String nip;
   const UserDashboard({Key? key, required this.data, required this.nip})
       : super(key: key);
+
   @override
-  State<UserDashboard> createState() => _DashboardState();
+  State<UserDashboard> createState() => _UserDashboardState();
 }
 
-class _DashboardState extends State<UserDashboard> {
+class _UserDashboardState extends State<UserDashboard> {
   int _selectedIndex = 0;
-  late List<_ChartData> data;
-  late TooltipBehavior _tooltip;
 
   bool isViewVisible = false;
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
+  List<LotData> _listdata = [];
+  bool _isloading = true;
+
+  TextEditingController idLotcontroller = TextEditingController();
+  TextEditingController namaProjectcontroller = TextEditingController();
+  TextEditingController noProdukcontroller = TextEditingController();
+  TextEditingController noIndukProdukcontroller = TextEditingController();
+  TextEditingController noSeriAwalcontroller = TextEditingController();
+  TextEditingController namaProdukcontroller = TextEditingController();
+  TextEditingController jumlahLotcontroller = TextEditingController();
+  TextEditingController kodeLotcontroller = TextEditingController();
+  TextEditingController noSeriAkhircontroller = TextEditingController();
+  TextEditingController tglMulaicontroller = TextEditingController();
+  TextEditingController tglSelesaicontroller = TextEditingController();
+
+  TextEditingController alurProses1controller = TextEditingController();
+  TextEditingController kategori1controller = TextEditingController();
+  TextEditingController detail1controller = TextEditingController();
+
+  TextEditingController alurProses2controller = TextEditingController();
+  TextEditingController kategori2controller = TextEditingController();
+  TextEditingController detail2controller = TextEditingController();
+
+  TextEditingController alurProses3controller = TextEditingController();
+  TextEditingController kategori3controller = TextEditingController();
+  TextEditingController detail3controller = TextEditingController();
+
+  TextEditingController alurProses4controller = TextEditingController();
+  TextEditingController kategori4controller = TextEditingController();
+  TextEditingController detail4controller = TextEditingController();
+
+  TextEditingController alurProses5controller = TextEditingController();
+  TextEditingController kategori5controller = TextEditingController();
+  TextEditingController detail5controller = TextEditingController();
+
+  TextEditingController alurProses6controller = TextEditingController();
+  TextEditingController kategori6controller = TextEditingController();
+  TextEditingController detail6controller = TextEditingController();
+
+  TextEditingController alurProses7controller = TextEditingController();
+  TextEditingController kategori7controller = TextEditingController();
+  TextEditingController detail7controller = TextEditingController();
+
+  TextEditingController alurProses8controller = TextEditingController();
+  TextEditingController kategori8controller = TextEditingController();
+  TextEditingController detail8controller = TextEditingController();
+
+  TextEditingController alurProses9controller = TextEditingController();
+  TextEditingController kategori9controller = TextEditingController();
+  TextEditingController detail9controller = TextEditingController();
+
+  TextEditingController alurProses10controller = TextEditingController();
+  TextEditingController kategori10controller = TextEditingController();
+  TextEditingController detail10controller = TextEditingController();
+
   @override
   void initState() {
-    data = [
-      _ChartData('Panel 1', 12),
-      _ChartData('Panel 2', 15),
-      _ChartData('Panel 3', 30),
-      _ChartData('Panel 4', 6.4),
-      _ChartData('Panel 5', 14),
-    ];
-    _tooltip = TooltipBehavior(enable: true);
     super.initState();
+    _getdata();
+  }
+
+  Future<void> _getdata() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final String responseBody = response.body;
+
+        // Print the raw response body to debug
+        print('Response Body: $responseBody');
+
+        final List<dynamic> rawData = jsonDecode(responseBody);
+
+        // Print the raw data to debug
+        print('Raw Data: $rawData');
+
+        List<LotData> lotDataList =
+            rawData.map((item) => LotData.fromJson(item)).toList();
+
+        setState(() {
+          _listdata = lotDataList;
+          _isloading = false;
+        });
+      }
+    } catch (e) {
+      print(e);
+      setState(() {
+        _isloading = false;
+      });
+    }
   }
 
   @override
@@ -50,7 +132,7 @@ class _DashboardState extends State<UserDashboard> {
           case '/':
             return MaterialPageRoute(
               builder: (context) =>
-                  UserDashboard(data: widget.data, nip: widget.nip),
+                  UserDashboard(nip: widget.nip, data: widget.data),
             );
           default:
             return null;
@@ -85,7 +167,7 @@ class _DashboardState extends State<UserDashboard> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => Notifikasi(
-                                      data: widget.data, nip: widget.nip),
+                                      nip: widget.nip, data: widget.data),
                                 ),
                               );
                             },
@@ -111,37 +193,121 @@ class _DashboardState extends State<UserDashboard> {
                     )
                   ],
                 ),
-                body: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildChartContainer('Nama Pt 1 - Kode Lot'),
-                          SizedBox(width: 20),
-                          _buildChartContainer('Nama Pt 2 - Kode Lot'),
-                        ],
+                body: _isloading
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.separated(
+                        itemCount: _listdata.length,
+                        separatorBuilder: (context, index) => Divider(),
+                        itemBuilder: (context, index) {
+                          LotData data = _listdata[index];
+
+                          return Column(
+                            children: [
+                              Text(
+                                '${data.nama} | ${data.kodeLot} | ${data.noProduk}',
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                              Stepper(
+                                currentStep: _listdata[index].currentStep,
+                                steps: [
+                                  Step(
+                                    title: Text('${data.ap1}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive: data.status1 == 'sudah dikerjakan'
+                                        ? true
+                                        : false,
+                                  ),
+                                  Step(
+                                    title: Text('${data.ap2}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive: data.status2 == 'sudah dikerjakan'
+                                        ? true
+                                        : false,
+                                  ),
+                                  Step(
+                                    title: Text('${data.ap3}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive: data.status3 == 'sudah dikerjakan'
+                                        ? true
+                                        : false,
+                                  ),
+                                  Step(
+                                    title: Text('${data.ap4}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive: data.status4 == 'sudah dikerjakan'
+                                        ? true
+                                        : false,
+                                  ),
+                                  Step(
+                                    title: Text('${data.ap5}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive: data.status5 == 'sudah dikerjakan'
+                                        ? true
+                                        : false,
+                                  ),
+                                  Step(
+                                    title: Text('${data.ap6}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive: data.status6 == 'sudah dikerjakan'
+                                        ? true
+                                        : false,
+                                  ),
+                                  Step(
+                                    title: Text('${data.ap7}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive: data.status7 == 'sudah dikerjakan'
+                                        ? true
+                                        : false,
+                                  ),
+                                  Step(
+                                    title: Text('${data.ap8}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive: data.status8 == 'sudah dikerjakan'
+                                        ? true
+                                        : false,
+                                  ),
+                                  Step(
+                                    title: Text('${data.ap9}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive: data.status9 == 'sudah dikerjakan'
+                                        ? true
+                                        : false,
+                                  ),
+                                  Step(
+                                    title: Text('${data.ap10}'),
+                                    content: Container(
+                                      height: 0,
+                                    ),
+                                    isActive:
+                                        data.status10 == 'sudah dikerjakan'
+                                            ? true
+                                            : false,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                    ),
-                    SizedBox(height: 20),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          _buildChartContainer('Nama Pt 3 - Kode Lot'),
-                          SizedBox(width: 20),
-                          _buildChartContainer('Nama Pt 4 - Kode Lot'),
-                          SizedBox(
-                            width: 20,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
           ],
@@ -175,8 +341,9 @@ class _DashboardState extends State<UserDashboard> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildListTile('Logout', Icons.logout, 7, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -191,7 +358,7 @@ class _DashboardState extends State<UserDashboard> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -202,10 +369,18 @@ class _DashboardState extends State<UserDashboard> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    UserDashboard(data: widget.data, nip: widget.nip),
+                    UserDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -213,8 +388,6 @@ class _DashboardState extends State<UserDashboard> {
                     AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
-          } else {
-            Navigator.pop(context);
           }
         }
       },
@@ -235,10 +408,9 @@ class _DashboardState extends State<UserDashboard> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -257,21 +429,13 @@ class _DashboardState extends State<UserDashboard> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 7) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -279,7 +443,7 @@ class _DashboardState extends State<UserDashboard> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -287,7 +451,7 @@ class _DashboardState extends State<UserDashboard> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -334,35 +498,87 @@ class _DashboardState extends State<UserDashboard> {
       },
     );
   }
-
-  Widget _buildChartContainer(String chartTitle) {
-    return Container(
-      width: 500.0,
-      height: 300.0,
-      child: SfCartesianChart(
-        primaryXAxis: CategoryAxis(),
-        primaryYAxis: NumericAxis(minimum: 0, maximum: 100, interval: 10),
-        tooltipBehavior: _tooltip,
-        series: <CartesianSeries<_ChartData, String>>[
-          BarSeries<_ChartData, String>(
-            dataSource: data,
-            xValueMapper: (_ChartData data, _) => data.x,
-            yValueMapper: (_ChartData data, _) => data.y,
-            name: chartTitle,
-            color: Color.fromRGBO(43, 56, 103, 1),
-          )
-        ],
-        title: ChartTitle(
-          text: chartTitle,
-          textStyle: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
-  }
 }
 
-class _ChartData {
-  _ChartData(this.x, this.y);
-  final String x;
-  final double y;
+class LotData {
+  final String nama;
+  final String kodeLot;
+  final String noProduk;
+  final int currentStep;
+  final String ap1;
+  final String ap2;
+  final String ap3;
+  final String ap4;
+  final String ap5;
+  final String ap6;
+  final String ap7;
+  final String ap8;
+  final String ap9;
+  final String ap10;
+  final String status1;
+  final String status2;
+  final String status3;
+  final String status4;
+  final String status5;
+  final String status6;
+  final String status7;
+  final String status8;
+  final String status9;
+  final String status10;
+
+  LotData({
+    required this.nama,
+    required this.kodeLot,
+    required this.noProduk,
+    required this.currentStep,
+    required this.ap1,
+    required this.ap2,
+    required this.ap3,
+    required this.ap4,
+    required this.ap5,
+    required this.ap6,
+    required this.ap7,
+    required this.ap8,
+    required this.ap9,
+    required this.ap10,
+    required this.status1,
+    required this.status2,
+    required this.status3,
+    required this.status4,
+    required this.status5,
+    required this.status6,
+    required this.status7,
+    required this.status8,
+    required this.status9,
+    required this.status10,
+  });
+
+  factory LotData.fromJson(Map<String, dynamic> json) {
+    return LotData(
+      nama: json['nama'],
+      kodeLot: json['kodeLot'],
+      noProduk: json['noProduk'],
+      currentStep: json['currentStep'] ?? 0,
+      ap1: json['ap1'].toString(),
+      ap2: json['ap2'].toString(),
+      ap3: json['ap3'].toString(),
+      ap4: json['ap4'].toString(),
+      ap5: json['ap5'].toString(),
+      ap6: json['ap6'].toString(),
+      ap7: json['ap7'].toString(),
+      ap8: json['ap8'].toString(),
+      ap9: json['ap9'].toString(),
+      ap10: json['ap10'].toString(),
+      status1: json['status1'].toString(),
+      status2: json['status2'].toString(),
+      status3: json['status3'].toString(),
+      status4: json['status4'].toString(),
+      status5: json['status5'].toString(),
+      status6: json['status6'].toString(),
+      status7: json['status7'].toString(),
+      status8: json['status8'].toString(),
+      status9: json['status9'].toString(),
+      status10: json['status10'].toString(),
+    );
+  }
 }

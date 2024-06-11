@@ -46,14 +46,19 @@ class _AfterSalesState extends State<AfterSales> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print(data);
+        final filteredData = data
+            .where((item) =>
+                item['saran'] != null && item['saran'].toString().isNotEmpty)
+            .toList();
+
         setState(() {
-          _listdata = data;
+          _listdata = filteredData;
           _isloading = false;
         });
       }
@@ -425,9 +430,10 @@ class _AfterSalesState extends State<AfterSales> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
           _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -442,7 +448,7 @@ class _AfterSalesState extends State<AfterSales> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -456,7 +462,15 @@ class _AfterSalesState extends State<AfterSales> {
                     AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -484,10 +498,9 @@ class _AfterSalesState extends State<AfterSales> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -506,21 +519,13 @@ class _AfterSalesState extends State<AfterSales> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -528,7 +533,7 @@ class _AfterSalesState extends State<AfterSales> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -536,7 +541,7 @@ class _AfterSalesState extends State<AfterSales> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -544,7 +549,7 @@ class _AfterSalesState extends State<AfterSales> {
                     InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 7) {
+          } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -552,7 +557,7 @@ class _AfterSalesState extends State<AfterSales> {
                     TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 8) {
+          } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -580,8 +585,8 @@ class _AfterSalesState extends State<AfterSales> {
         ],
       ),
       children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 6, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 7, 35),
       ],
     );
   }

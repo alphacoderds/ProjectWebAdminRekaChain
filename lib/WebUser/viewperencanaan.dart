@@ -46,7 +46,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -80,7 +80,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
         ),
         body: {
           "id_lot": id,
@@ -244,8 +244,8 @@ class _VperencanaanState extends State<Vperencanaan> {
             minHeight: MediaQuery.of(context).size.height - 50,
           ),
           child: DataTable(
-            columnSpacing: 200.0,
-            horizontalMargin: 50.0,
+            columnSpacing: 120.0,
+            horizontalMargin: 70.0,
             columns: [
               DataColumn(
                 label: Center(

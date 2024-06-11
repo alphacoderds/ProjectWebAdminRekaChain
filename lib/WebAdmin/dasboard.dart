@@ -95,18 +95,16 @@ class _DashboardState extends State<AdminDashboard> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
         ),
       );
       if (response.statusCode == 200) {
         final String responseBody = response.body;
 
-        // Print the raw response body to debug
         print('Response Body: $responseBody');
 
         final List<dynamic> rawData = jsonDecode(responseBody);
 
-        // Print the raw data to debug
         print('Raw Data: $rawData');
 
         List<LotData> lotDataList =
@@ -210,101 +208,11 @@ class _DashboardState extends State<AdminDashboard> {
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
-                              Stepper(
-                                currentStep: _listdata[index].currentStep,
-                                steps: [
-                                  Step(
-                                    title: Text('${data.ap1}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status1 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap2}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status2 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap3}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status3 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap4}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status4 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap5}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status5 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap6}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status6 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap7}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status7 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap8}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status8 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap9}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status9 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap10}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive:
-                                        data.status10 == 'sudah dikerjakan'
-                                            ? true
-                                            : false,
-                                  ),
-                                ],
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: _buildHorizontalSteps(data),
+                                ),
                               ),
                             ],
                           );
@@ -317,6 +225,58 @@ class _DashboardState extends State<AdminDashboard> {
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       ),
     );
+  }
+
+  List<Widget> _buildHorizontalSteps(LotData data) {
+    List<String> steps = [
+      data.ap1,
+      data.ap2,
+      data.ap3,
+      data.ap4,
+      data.ap5,
+      data.ap6,
+      data.ap7,
+      data.ap8,
+      data.ap9,
+      data.ap10,
+    ];
+
+    List<String> statuses = [
+      data.status1,
+      data.status2,
+      data.status3,
+      data.status4,
+      data.status5,
+      data.status6,
+      data.status7,
+      data.status8,
+      data.status9,
+      data.status10,
+    ];
+
+    return List<Widget>.generate(steps.length, (index) {
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          children: [
+            Icon(
+              statuses[index] == 'sudah dikerjakan'
+                  ? Icons.check_circle
+                  : statuses[index] == 'sedang dikerjakan'
+                      ? Icons.radio_button_unchecked
+                      : Icons.radio_button_unchecked,
+              color: statuses[index] == 'sudah dikerjakan'
+                  ? Colors.green
+                  : statuses[index] == 'sedang dikerjakan'
+                      ? Colors.yellow
+                      : Colors.grey,
+            ),
+            SizedBox(height: 4.0),
+            Text(steps[index]),
+          ],
+        ),
+      );
+    });
   }
 
   Widget _buildDrawer() {
@@ -343,9 +303,10 @@ class _DashboardState extends State<AdminDashboard> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
           _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -360,7 +321,7 @@ class _DashboardState extends State<AdminDashboard> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -374,7 +335,15 @@ class _DashboardState extends State<AdminDashboard> {
                     AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -402,10 +371,9 @@ class _DashboardState extends State<AdminDashboard> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -424,21 +392,13 @@ class _DashboardState extends State<AdminDashboard> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -446,7 +406,7 @@ class _DashboardState extends State<AdminDashboard> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -454,7 +414,7 @@ class _DashboardState extends State<AdminDashboard> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -462,7 +422,7 @@ class _DashboardState extends State<AdminDashboard> {
                     InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 7) {
+          } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -470,7 +430,7 @@ class _DashboardState extends State<AdminDashboard> {
                     TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 8) {
+          } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -498,8 +458,8 @@ class _DashboardState extends State<AdminDashboard> {
         ],
       ),
       children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 6, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 7, 35),
       ],
     );
   }

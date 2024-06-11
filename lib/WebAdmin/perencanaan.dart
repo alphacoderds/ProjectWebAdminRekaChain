@@ -194,114 +194,118 @@ class _PerencanaanState extends State<Perencanaan> {
   TextEditingController detail10controller = TextEditingController();
 
   Future<void> _simpan(BuildContext context) async {
-    final response = await http.post(
-      Uri.parse(
-        "http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
-      ),
-      body: {
-        "nama": selectedValuenamaProject ?? '',
-        "noIndukProduk": noProdukcontroller.text,
-        "noSeriAwal": noSeriAwalcontroller.text,
-        "targetMulai": tglMulaicontroller.text,
-        "namaProduk": namaProdukcontroller.text,
-        "jumlahLot": jumlahLotcontroller.text,
-        "kodeLot": kodeLotcontroller.text,
-        "noSeriAkhir": noSeriAkhircontroller.text,
-        "targetSelesai": tglSelesaicontroller.text,
-        "ap1": selectedValueAlurProses1 ?? '',
-        "kategori1": selectedValueKategori1 ?? '',
-        "keterangan1": detail1controller.text,
-        "ap2": selectedValueAlurProses2 ?? '',
-        "kategori2": selectedValueKategori2 ?? '',
-        "keterangan2": detail2controller.text,
-        "ap3": selectedValueAlurProses3 ?? '',
-        "kategori3": selectedValueKategori3 ?? '',
-        "keterangan3": detail3controller.text,
-        "ap4": selectedValueAlurProses4 ?? '',
-        "kategori4": selectedValueKategori4 ?? '',
-        "keterangan4": detail4controller.text,
-        "ap5": selectedValueAlurProses5 ?? '',
-        "kategori5": selectedValueKategori5 ?? '',
-        "keterangan5": detail5controller.text,
-        "ap6": selectedValueAlurProses6 ?? '',
-        "kategori6": selectedValueKategori6 ?? '',
-        "keterangan6": detail6controller.text,
-        "ap7": selectedValueAlurProses7 ?? '',
-        "kategori7": selectedValueKategori7 ?? '',
-        "keterangan7": detail7controller.text,
-        "ap8": selectedValueAlurProses8 ?? '',
-        "kategori8": selectedValueKategori8 ?? '',
-        "keterangan8": detail8controller.text,
-        "ap9": selectedValueAlurProses9 ?? '',
-        "kategori9": selectedValueKategori9 ?? '',
-        "keterangan9": detail9controller.text,
-        "ap10": selectedValueAlurProses10 ?? '',
-        "kategori10": selectedValueKategori10 ?? '',
-        "keterangan10": detail10controller.text,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final newProjectData = {
-        "id": response.body,
-        "nama": namaProjectcontroller.text,
-        "noIndukProduk": noProdukcontroller.text,
-        "noSeriAwal": noSeriAwalcontroller.text,
-        "targetMulai": tglMulaicontroller.text,
-        "namaProduk": namaProdukcontroller.text,
-        "jumlahLot": jumlahLotcontroller.text,
-        "kodeLot": kodeLotcontroller.text,
-        "noSeriAkhir": noSeriAkhircontroller.text,
-        "targetSelesai": tglSelesaicontroller.text,
-        "ap1": alurProses1controller.text,
-        "kategori1": kategori1controller.text,
-        "keterangan1": detail1controller.text,
-        "ap2": alurProses2controller.text,
-        "kategori2": kategori2controller.text,
-        "keterangan2": detail2controller.text,
-        "ap3": alurProses3controller.text,
-        "kategori3": kategori3controller.text,
-        "keterangan3": detail3controller.text,
-        "ap4": alurProses4controller.text,
-        "kategori4": kategori4controller.text,
-        "keterangan4": detail4controller.text,
-        "ap5": alurProses5controller.text,
-        "kategori5": kategori5controller.text,
-        "keterangan5": detail5controller.text,
-        "ap6": alurProses6controller.text,
-        "kategori6": kategori6controller.text,
-        "keterangan6": detail6controller.text,
-        "ap7": alurProses7controller.text,
-        "kategori7": kategori7controller.text,
-        "keterangan7": detail7controller.text,
-        "ap8": alurProses8controller.text,
-        "kategori8": kategori8controller.text,
-        "keterangan8": detail8controller.text,
-        "ap9": alurProses9controller.text,
-        "kategori9": kategori9controller.text,
-        "keterangan9": detail9controller.text,
-        "ap10": alurProses10controller.text,
-        "kategori10": kategori10controller.text,
-        "keterangan10": detail10controller.text,
-      };
-
-      _showFinishDialog();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Vperencanaan(
-              newProject: newProjectData, nip: widget.nip, data: widget.data),
+    if (selectedValuenamaProject != null && alurProses1controller != null) {
+      final response = await http.post(
+        Uri.parse(
+          "http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
         ),
+        body: {
+          "nama": selectedValuenamaProject ?? '',
+          "noIndukProduk": noProdukcontroller.text,
+          "noSeriAwal": noSeriAwalcontroller.text,
+          "targetMulai": tglMulaicontroller.text,
+          "namaProduk": namaProdukcontroller.text,
+          "jumlahLot": jumlahLotcontroller.text,
+          "kodeLot": kodeLotcontroller.text,
+          "noSeriAkhir": noSeriAkhircontroller.text,
+          "targetSelesai": tglSelesaicontroller.text,
+          "ap1": selectedValueAlurProses1 ?? '',
+          "kategori1": selectedValueKategori1 ?? '',
+          "keterangan1": detail1controller.text,
+          "ap2": selectedValueAlurProses2 ?? '',
+          "kategori2": selectedValueKategori2 ?? '',
+          "keterangan2": detail2controller.text,
+          "ap3": selectedValueAlurProses3 ?? '',
+          "kategori3": selectedValueKategori3 ?? '',
+          "keterangan3": detail3controller.text,
+          "ap4": selectedValueAlurProses4 ?? '',
+          "kategori4": selectedValueKategori4 ?? '',
+          "keterangan4": detail4controller.text,
+          "ap5": selectedValueAlurProses5 ?? '',
+          "kategori5": selectedValueKategori5 ?? '',
+          "keterangan5": detail5controller.text,
+          "ap6": selectedValueAlurProses6 ?? '',
+          "kategori6": selectedValueKategori6 ?? '',
+          "keterangan6": detail6controller.text,
+          "ap7": selectedValueAlurProses7 ?? '',
+          "kategori7": selectedValueKategori7 ?? '',
+          "keterangan7": detail7controller.text,
+          "ap8": selectedValueAlurProses8 ?? '',
+          "kategori8": selectedValueKategori8 ?? '',
+          "keterangan8": detail8controller.text,
+          "ap9": selectedValueAlurProses9 ?? '',
+          "kategori9": selectedValueKategori9 ?? '',
+          "keterangan9": detail9controller.text,
+          "ap10": selectedValueAlurProses10 ?? '',
+          "kategori10": selectedValueKategori10 ?? '',
+          "keterangan10": detail10controller.text,
+        },
       );
+
+      if (response.statusCode == 200) {
+        final newProjectData = {
+          "id": response.body,
+          "nama": namaProjectcontroller.text,
+          "noIndukProduk": noProdukcontroller.text,
+          "noSeriAwal": noSeriAwalcontroller.text,
+          "targetMulai": tglMulaicontroller.text,
+          "namaProduk": namaProdukcontroller.text,
+          "jumlahLot": jumlahLotcontroller.text,
+          "kodeLot": kodeLotcontroller.text,
+          "noSeriAkhir": noSeriAkhircontroller.text,
+          "targetSelesai": tglSelesaicontroller.text,
+          "ap1": alurProses1controller.text,
+          "kategori1": kategori1controller.text,
+          "keterangan1": detail1controller.text,
+          "ap2": alurProses2controller.text,
+          "kategori2": kategori2controller.text,
+          "keterangan2": detail2controller.text,
+          "ap3": alurProses3controller.text,
+          "kategori3": kategori3controller.text,
+          "keterangan3": detail3controller.text,
+          "ap4": alurProses4controller.text,
+          "kategori4": kategori4controller.text,
+          "keterangan4": detail4controller.text,
+          "ap5": alurProses5controller.text,
+          "kategori5": kategori5controller.text,
+          "keterangan5": detail5controller.text,
+          "ap6": alurProses6controller.text,
+          "kategori6": kategori6controller.text,
+          "keterangan6": detail6controller.text,
+          "ap7": alurProses7controller.text,
+          "kategori7": kategori7controller.text,
+          "keterangan7": detail7controller.text,
+          "ap8": alurProses8controller.text,
+          "kategori8": kategori8controller.text,
+          "keterangan8": detail8controller.text,
+          "ap9": alurProses9controller.text,
+          "kategori9": kategori9controller.text,
+          "keterangan9": detail9controller.text,
+          "ap10": alurProses10controller.text,
+          "kategori10": kategori10controller.text,
+          "keterangan10": detail10controller.text,
+        };
+
+        _showFinishDialog();
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Vperencanaan(
+                newProject: newProjectData, nip: widget.nip, data: widget.data),
+          ),
+        );
+      } else {
+        print('Gagal menyimpan data: ${response.statusCode}');
+      }
     } else {
-      print('Gagal menyimpan data: ${response.statusCode}');
+      print('Mohon lengkapi nama project.');
     }
   }
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -1730,9 +1734,10 @@ class _PerencanaanState extends State<Perencanaan> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
           _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -1747,7 +1752,7 @@ class _PerencanaanState extends State<Perencanaan> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -1758,10 +1763,18 @@ class _PerencanaanState extends State<Perencanaan> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AdminDashboard(data: widget.data, nip: widget.nip),
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1789,10 +1802,9 @@ class _PerencanaanState extends State<Perencanaan> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -1811,21 +1823,13 @@ class _PerencanaanState extends State<Perencanaan> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1833,7 +1837,7 @@ class _PerencanaanState extends State<Perencanaan> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1841,7 +1845,7 @@ class _PerencanaanState extends State<Perencanaan> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1849,7 +1853,7 @@ class _PerencanaanState extends State<Perencanaan> {
                     InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 7) {
+          } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1857,7 +1861,7 @@ class _PerencanaanState extends State<Perencanaan> {
                     TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 8) {
+          } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1885,43 +1889,9 @@ class _PerencanaanState extends State<Perencanaan> {
         ],
       ),
       children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 6, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 7, 35),
       ],
-    );
-  }
-
-  void _showFinishDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin simpan data?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Vperencanaan(data: widget.data, nip: widget.nip)),
-                );
-              },
-              child: Text("Ya", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -1952,6 +1922,40 @@ class _PerencanaanState extends State<Perencanaan> {
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showFinishDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin simpan data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Vperencanaan(data: widget.data, nip: widget.nip)),
+                );
+              },
+              child: Text("Ya", style: TextStyle(color: Colors.white)),
             ),
           ],
         );

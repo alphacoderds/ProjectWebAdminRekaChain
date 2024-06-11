@@ -91,7 +91,7 @@ class _InputMaterialState extends State<InputMaterial> {
           MultipartFile.fromBytes(
             file.bytes!,
             filename: file.name,
-            contentType: MediaType('text', 'csv'),
+            contentType: MediaType('xls', 'csv'),
           ),
         );
       }
@@ -104,7 +104,7 @@ class _InputMaterialState extends State<InputMaterial> {
 
       try {
         final response = await Dio().post(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/create_material.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/create_material.php',
           data: formData,
           options: Options(
             contentType: 'multipart/form-data',
@@ -129,7 +129,7 @@ class _InputMaterialState extends State<InputMaterial> {
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+        'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -570,7 +570,7 @@ class _InputMaterialState extends State<InputMaterial> {
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () async {
                                             final uri = Uri.parse(
-                                                'https://drive.google.com/drive/folders/1i6OxoJ8IHlSI5zso79puxtYLK4rO1Ns7?usp=drive_link');
+                                                'https://drive.google.com/file/d/1XEKzACP3Nz19LDtquCcKahi1v02mMBXV/view?usp=sharing');
                                             if (uri != null &&
                                                 await canLaunchUrl(uri)) {
                                               await launchUrl(uri);
@@ -667,9 +667,10 @@ class _InputMaterialState extends State<InputMaterial> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
           _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -684,7 +685,7 @@ class _InputMaterialState extends State<InputMaterial> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -695,10 +696,18 @@ class _InputMaterialState extends State<InputMaterial> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AdminDashboard(data: widget.data, nip: widget.nip),
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -726,10 +735,9 @@ class _InputMaterialState extends State<InputMaterial> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -748,21 +756,13 @@ class _InputMaterialState extends State<InputMaterial> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -770,7 +770,7 @@ class _InputMaterialState extends State<InputMaterial> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -778,7 +778,7 @@ class _InputMaterialState extends State<InputMaterial> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -786,7 +786,7 @@ class _InputMaterialState extends State<InputMaterial> {
                     InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 7) {
+          } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -794,7 +794,7 @@ class _InputMaterialState extends State<InputMaterial> {
                     TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 8) {
+          } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -822,9 +822,43 @@ class _InputMaterialState extends State<InputMaterial> {
         ],
       ),
       children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 6, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 7, 35),
       ],
+    );
+  }
+
+  void _showLogoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Logout", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin logout?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoginPage(data: widget.data, nip: widget.nip)),
+                );
+              },
+              child: Text("Logout", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -856,41 +890,6 @@ class _InputMaterialState extends State<InputMaterial> {
                 );
               },
               child: Text("Ya", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showLogoutDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Logout", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin logout?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          LoginPage(data: widget.data, nip: widget.nip)),
-                );
-              },
-              child: Text("Logout", style: TextStyle(color: Colors.white)),
             ),
           ],
         );

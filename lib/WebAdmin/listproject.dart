@@ -48,7 +48,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/readproject.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readproject.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -83,7 +83,7 @@ class _ListProjectState extends State<ListProject> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/hapus_tambahproject.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/hapus_tambahproject.php',
         ),
         body: {
           "kodeProject": id,
@@ -255,8 +255,8 @@ class _ListProjectState extends State<ListProject> {
             minHeight: MediaQuery.of(context).size.height - 50,
           ),
           child: DataTable(
-            columnSpacing: 200.0,
-            horizontalMargin: 50.0,
+            columnSpacing: 120.0,
+            horizontalMargin: 70.0,
             columns: [
               DataColumn(
                 label: Center(
@@ -437,9 +437,10 @@ class _ListProjectState extends State<ListProject> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
           _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -454,7 +455,7 @@ class _ListProjectState extends State<ListProject> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -465,10 +466,18 @@ class _ListProjectState extends State<ListProject> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AdminDashboard(data: widget.data, nip: widget.nip),
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -496,10 +505,9 @@ class _ListProjectState extends State<ListProject> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -518,21 +526,13 @@ class _ListProjectState extends State<ListProject> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -540,7 +540,7 @@ class _ListProjectState extends State<ListProject> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -548,7 +548,7 @@ class _ListProjectState extends State<ListProject> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -556,7 +556,7 @@ class _ListProjectState extends State<ListProject> {
                     InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 7) {
+          } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -564,7 +564,7 @@ class _ListProjectState extends State<ListProject> {
                     TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 8) {
+          } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -592,8 +592,8 @@ class _ListProjectState extends State<ListProject> {
         ],
       ),
       children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 6, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 7, 35),
       ],
     );
   }

@@ -85,7 +85,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => Notifikasi(nip: widget.nip, data: widget.data)),
+                                    builder: (context) => Notifikasi(
+                                        nip: widget.nip, data: widget.data)),
                               );
                             },
                           ),
@@ -299,7 +300,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
       ),
       children: [
         _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 8, 35),
       ],
     );
   }
@@ -339,50 +340,51 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   }
 
   Widget ListViewItem(BuildContext context, int index) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              PesanNotifikasi(nip: widget.nip, data: widget.data,)
-        ),
-      );
-    },
-    child: Container(
-      margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          prefixIcon(),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  message(index),
-                ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PesanNotifikasi(
+                    nip: widget.nip,
+                    data: widget.data,
+                  )),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            prefixIcon(),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    message(index),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-Widget _ListView() {
-  return ListView.separated(
-    itemBuilder: (context, index) {
-      return ListViewItem(context, index);
-    },
-    separatorBuilder: (context, index) {
-      return Divider(height: 0);
-    },
-    itemCount: 15,
-  );
-}
+  Widget _ListView() {
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return ListViewItem(context, index);
+      },
+      separatorBuilder: (context, index) {
+        return Divider(height: 0);
+      },
+      itemCount: 15,
+    );
+  }
 }
 
 Widget prefixIcon() {

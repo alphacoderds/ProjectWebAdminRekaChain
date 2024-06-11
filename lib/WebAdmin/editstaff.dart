@@ -67,7 +67,7 @@ class _EditStaffState extends State<EditStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php?kode_staff=${widget.selectedStaff['kode_staff']}&nip=${widget.selectedStaff['nip']}'),
+            'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php?kode_staff=${widget.selectedStaff['kode_staff']}&nip=${widget.selectedStaff['nip']}'),
       );
       if (response.statusCode == 200) {
         try {
@@ -122,7 +122,7 @@ class _EditStaffState extends State<EditStaff> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php'),
+            'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/edit_tambahstaff.php'),
         body: {
           'no': widget.selectedStaff['no'].toString(),
           "kode_staff": kodestaffController.text,
@@ -704,7 +704,7 @@ class _EditStaffState extends State<EditStaff> {
       ),
       children: [
         _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 8, 35),
       ],
     );
   }

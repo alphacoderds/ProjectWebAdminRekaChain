@@ -12,7 +12,6 @@ import 'package:RekaChain/WebAdmin/profile.dart';
 import 'package:RekaChain/WebAdmin/reportsttpp.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
-import 'package:RekaChain/WebAdmin/viewikm.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -61,7 +60,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readmaterial.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -79,7 +78,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/readmaterial.php'));
+        'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readmaterial.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -489,9 +488,10 @@ class _ViewMaterialState extends State<ViewMaterial> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
           _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -506,7 +506,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -520,12 +520,20 @@ class _ViewMaterialState extends State<ViewMaterial> {
                     AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AfterSales(nip: widget.nip, data: widget.data),
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    AfterSales(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -548,10 +556,9 @@ class _ViewMaterialState extends State<ViewMaterial> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -570,18 +577,26 @@ class _ViewMaterialState extends State<ViewMaterial> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    ReportSTTPP(nip: widget.nip, data: widget.data),
+                    Perencanaan(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 3) {
@@ -589,23 +604,15 @@ class _ViewMaterialState extends State<ViewMaterial> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    Perencanaan(nip: widget.nip, data: widget.data),
+                    InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    InputMaterial(nip: widget.nip, data: widget.data),
-              ),
-            );
-          } else if (index == 5) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    InputDokumen(nip: widget.nip, data: widget.data),
+                    TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
           } else if (index == 7) {
@@ -613,15 +620,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    TambahProject(nip: widget.nip, data: widget.data),
-              ),
-            );
-          } else if (index == 8) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    TambahStaff(nip: widget.nip, data: widget.data),
+                    TambahStaff(data: widget.data, nip: widget.nip),
               ),
             );
           }
@@ -644,8 +643,8 @@ class _ViewMaterialState extends State<ViewMaterial> {
         ],
       ),
       children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 6, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 7, 35),
       ],
     );
   }
@@ -673,7 +672,7 @@ class _ViewMaterialState extends State<ViewMaterial> {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          LoginPage(nip: widget.nip, data: widget.data)),
+                          LoginPage(data: widget.data, nip: widget.nip)),
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),

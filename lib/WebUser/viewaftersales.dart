@@ -49,7 +49,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
+            'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=${widget.selectedProject['nama']}&noProduk=${widget.selectedProject['noProduk']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -269,7 +269,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
           scrollDirection: Axis.horizontal,
           child: DataTable(
             columnSpacing: 150.0,
-            horizontalMargin: 50.0,
+            horizontalMargin: 70.0,
             columns: [
               DataColumn(
                 label: Container(
@@ -516,7 +516,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
       ),
       children: [
         _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 8, 35),
       ],
     );
   }

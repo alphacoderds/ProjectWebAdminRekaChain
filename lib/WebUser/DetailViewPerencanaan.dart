@@ -103,7 +103,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -1460,9 +1460,9 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -1477,7 +1477,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -1488,10 +1488,18 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    UserDashboard(data: widget.data, nip: widget.nip),
+                    UserDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1519,10 +1527,9 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -1541,21 +1548,13 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1563,7 +1562,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1571,7 +1570,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -1581,60 +1580,6 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
             );
           }
         }
-      },
-    );
-  }
-
-  Widget _buildAdminMenu() {
-    return ExpansionTile(
-      title: Row(
-        children: [
-          Icon(
-            Icons.admin_panel_settings,
-            size: 35,
-            color: Color.fromARGB(255, 6, 37, 55),
-          ),
-          SizedBox(width: 12),
-          Text('Menu Admin'),
-        ],
-      ),
-      children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
-      ],
-    );
-  }
-
-  void _showFinishDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin simpan data?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Vperencanaan(data: widget.data, nip: widget.nip)),
-                );
-              },
-              child: Text("Ya", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
       },
     );
   }
@@ -1666,6 +1611,40 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showFinishDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Simpan Data", style: TextStyle(color: Colors.white)),
+          content: Text("Apakah Anda yakin ingin simpan data?",
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Batal", style: TextStyle(color: Colors.white)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Vperencanaan(data: widget.data, nip: widget.nip)),
+                );
+              },
+              child: Text("Ya", style: TextStyle(color: Colors.white)),
             ),
           ],
         );

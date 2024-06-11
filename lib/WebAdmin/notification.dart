@@ -16,7 +16,8 @@ class Notifikasi extends StatefulWidget {
   final Map<String, dynamic>? newProject;
   final DataModel data;
   final String nip;
-  const Notifikasi({Key? key, this.newProject, required this.data, required this.nip});
+  const Notifikasi(
+      {Key? key, this.newProject, required this.data, required this.nip});
 
   @override
   State<Notifikasi> createState() => _NotifikasiState();
@@ -300,7 +301,7 @@ class _NotifikasiState extends State<Notifikasi> {
       ),
       children: [
         _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 8, 35),
       ],
     );
   }
@@ -338,54 +339,52 @@ class _NotifikasiState extends State<Notifikasi> {
       },
     );
   }
-  
-  Widget _ListView() {
-  return ListView.separated(
-    itemBuilder: (context, index) {
-      return ListViewItem(context, index);
-    },
-    separatorBuilder: (context, index) {
-      return Divider(height: 0);
-    },
-    itemCount: 15,
-  );
-}
 
-Widget ListViewItem(BuildContext context, int index) {
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              Subnotifikasi(data: widget.data, nip: widget.nip)),
-      );
-    },
-    child: Container(
-      margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          prefixIcon(),
-          Expanded(
-            child: Container(
-              margin: EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  message(index),
-                ],
+  Widget _ListView() {
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return ListViewItem(context, index);
+      },
+      separatorBuilder: (context, index) {
+        return Divider(height: 0);
+      },
+      itemCount: 15,
+    );
+  }
+
+  Widget ListViewItem(BuildContext context, int index) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  Subnotifikasi(data: widget.data, nip: widget.nip)),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            prefixIcon(),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.only(left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    message(index),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
-}
-
-
 
 Widget prefixIcon() {
   return Container(

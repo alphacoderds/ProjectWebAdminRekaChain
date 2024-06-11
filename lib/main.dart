@@ -1,6 +1,8 @@
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
+import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
+import 'package:RekaChain/WebAdmin/inputdokumen.dart';
 import 'package:RekaChain/WebAdmin/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +53,7 @@ class MyApp1 extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: LoginPage(data: data, nip: nip),
+          home: AdminDashboard(data: data, nip: nip),
         );
       },
     );

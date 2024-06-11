@@ -40,15 +40,16 @@ class _AfterSalesState extends State<AfterSales> {
     });
   }
 
-  Future<void> _getdata() async {
+  Future _getdata() async {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/readaftersales.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        print(data);
         setState(() {
           _listdata = data;
           _isloading = false;
@@ -63,28 +64,6 @@ class _AfterSalesState extends State<AfterSales> {
   void initState() {
     _getdata();
     super.initState();
-  }
-
-  Future<void> _hapusData(String id) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/hapus_perencanaan.php',
-        ),
-        body: {
-          "noProduk": id,
-        },
-      );
-
-      print('Delete response: ${response.statusCode} - ${response.body}');
-
-      if (response.statusCode == 200) {
-      } else {
-        print('Failed to delete data: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error deleting data: $e');
-    }
   }
 
   @override
@@ -219,10 +198,16 @@ class _AfterSalesState extends State<AfterSales> {
 
   Widget _buildMainTable() {
     List filteredData = _listdata.where((data) {
+      String id_lot = data['id_lot'] ?? '';
+      String id_project = data['id_project'] ?? '';
       String nama = data['nama'] ?? '';
+      String kodeLot = data['kodeLot'] ?? '';
       String noProduk = data['noProduk'] ?? '';
       String targetMulai = data['targetMulai'] ?? '';
-      return nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+      return id_lot.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          id_project.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          kodeLot.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           noProduk.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           targetMulai.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
@@ -237,8 +222,8 @@ class _AfterSalesState extends State<AfterSales> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              columnSpacing: 200.0,
-              horizontalMargin: 50.0,
+              columnSpacing: 100.0,
+              horizontalMargin: 110.0,
               columns: [
                 DataColumn(
                   label: Center(
@@ -253,6 +238,15 @@ class _AfterSalesState extends State<AfterSales> {
                   label: Center(
                     child: Text(
                       'Nama Project',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Kode Lot',
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
@@ -316,6 +310,15 @@ class _AfterSalesState extends State<AfterSales> {
                               scrollDirection: Axis.horizontal,
                               child: Container(
                                 alignment: Alignment.center,
+                                child: Text(data['kodeLot'] ?? ''),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
                                 child: Text(data['noProduk'] ?? ''),
                               ),
                             ),
@@ -346,9 +349,13 @@ class _AfterSalesState extends State<AfterSales> {
                                               nip: widget.nip,
                                               data: widget.data,
                                               selectedProject: {
-                                                "no_aftersales":
+                                                "id_lot": filteredData[index]
+                                                    ['id_lot'],
+                                                "kodeLot": filteredData[index]
+                                                    ['kodeLot'],
+                                                "id_project":
                                                     filteredData[index]
-                                                        ['no_aftersales'],
+                                                        ['id_project'],
                                                 "noProduk": filteredData[index]
                                                     ['noProduk'],
                                                 "nama": filteredData[index]
@@ -356,9 +363,9 @@ class _AfterSalesState extends State<AfterSales> {
                                                 "targetMulai":
                                                     filteredData[index]
                                                         ['targetMulai'],
-                                                "dtlKekurangan":
+                                                "detail_kerusakan":
                                                     filteredData[index]
-                                                        ['dtlKekurangan'],
+                                                        ['detail_kerusakan'],
                                                 "item": filteredData[index]
                                                     ['item'],
                                                 "keterangan":
@@ -372,15 +379,6 @@ class _AfterSalesState extends State<AfterSales> {
                                         ).then((result) {
                                           if (result != null && result) {}
                                         });
-                                      },
-                                    ),
-                                    SizedBox(width: 10),
-                                    IconButton(
-                                      icon: Icon(Icons.delete),
-                                      onPressed: () {
-                                        _showDeleteDialog(filteredData[index]
-                                                ['noProduk']
-                                            .toString());
                                       },
                                     ),
                                   ],
@@ -425,9 +423,9 @@ class _AfterSalesState extends State<AfterSales> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
-          _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -442,14 +440,29 @@ class _AfterSalesState extends State<AfterSales> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
           if (index == 0) {
-          } else if (index == 6) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    UserDashboard(nip: widget.nip, data: widget.data),
+              ),
+            );
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -477,10 +490,9 @@ class _AfterSalesState extends State<AfterSales> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -499,21 +511,13 @@ class _AfterSalesState extends State<AfterSales> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -521,7 +525,7 @@ class _AfterSalesState extends State<AfterSales> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -529,7 +533,7 @@ class _AfterSalesState extends State<AfterSales> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -540,26 +544,6 @@ class _AfterSalesState extends State<AfterSales> {
           }
         }
       },
-    );
-  }
-
-  Widget _buildAdminMenu() {
-    return ExpansionTile(
-      title: Row(
-        children: [
-          Icon(
-            Icons.admin_panel_settings,
-            size: 35,
-            color: Color.fromARGB(255, 6, 37, 55),
-          ),
-          SizedBox(width: 12),
-          Text('Menu Admin'),
-        ],
-      ),
-      children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
-      ],
     );
   }
 
@@ -590,35 +574,6 @@ class _AfterSalesState extends State<AfterSales> {
                 );
               },
               child: Text("Logout", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showDeleteDialog(String id) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Delete", style: TextStyle(color: Colors.white)),
-          content: Text("Apakah Anda yakin ingin menghapus data?",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Batal", style: TextStyle(color: Colors.white)),
-            ),
-            TextButton(
-              onPressed: () async {
-                await _hapusData(id);
-                Navigator.of(context).pop();
-              },
-              child: Text("Hapus", style: TextStyle(color: Colors.white)),
             ),
           ],
         );

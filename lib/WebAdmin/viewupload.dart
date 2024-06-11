@@ -50,7 +50,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -77,7 +77,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php'),
+            'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php'),
         body: {
           "no": no,
         },
@@ -117,7 +117,7 @@ class _ViewUploadState extends State<ViewUpload> {
 
       try {
         String fileUrl =
-            'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/uploads/$fileRelativePath';
+            'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/uploads/$fileRelativePath';
 
         var response = await http.get(Uri.parse(fileUrl));
         Uint8List fileBytes = response.bodyBytes;
@@ -321,8 +321,8 @@ class _ViewUploadState extends State<ViewUpload> {
             minHeight: MediaQuery.of(context).size.height - 50,
           ),
           child: DataTable(
-            columnSpacing: 200.0,
-            horizontalMargin: 150.0,
+            columnSpacing: 120.0,
+            horizontalMargin: 70.0,
             columns: [
               DataColumn(
                 label: Center(
@@ -487,9 +487,10 @@ class _ViewUploadState extends State<ViewUpload> {
           ),
           _buildListTile('Dashboard', Icons.dashboard, 0, 35),
           _buildSubMenu(),
-          _buildListTile('After Sales', Icons.headset_mic, 6, 35),
+          _buildListTile('Report STTPP', Icons.receipt, 4, 35),
+          _buildListTile('After Sales', Icons.headset_mic, 5, 35),
           _buildAdminMenu(),
-          _buildListTile('Logout', Icons.logout, 9, 35),
+          _buildListTile('Logout', Icons.logout, 8, 35),
         ],
       ),
     );
@@ -504,7 +505,7 @@ class _ViewUploadState extends State<ViewUpload> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
@@ -515,10 +516,18 @@ class _ViewUploadState extends State<ViewUpload> {
               context,
               MaterialPageRoute(
                 builder: (context) =>
-                    AdminDashboard(data: widget.data, nip: widget.nip),
+                    AdminDashboard(nip: widget.nip, data: widget.data),
               ),
             );
-          } else if (index == 6) {
+          } else if (index == 4) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ReportSTTPP(data: widget.data, nip: widget.nip),
+              ),
+            );
+          } else if (index == 5) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -546,10 +555,9 @@ class _ViewUploadState extends State<ViewUpload> {
         ],
       ),
       children: [
-        _buildSubListTile('Report STTPP', Icons.receipt, 2, 35),
-        _buildSubListTile('Perencanaan', Icons.calendar_today, 3, 35),
-        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 4, 35),
-        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 5, 35),
+        _buildSubListTile('Perencanaan', Icons.calendar_today, 1, 35),
+        _buildSubListTile('Input Kebutuhan Material', Icons.assignment, 2, 35),
+        _buildSubListTile('Input Dokumen Pendukung', Icons.file_present, 3, 35),
       ],
     );
   }
@@ -568,21 +576,13 @@ class _ViewUploadState extends State<ViewUpload> {
         color: Color.fromARGB(255, 6, 37, 55),
       ),
       onTap: () {
-        if (index == 9) {
+        if (index == 8) {
           _showLogoutDialog();
         } else {
           setState(() {
             _selectedIndex = index;
           });
-          if (index == 2) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    ReportSTTPP(data: widget.data, nip: widget.nip),
-              ),
-            );
-          } else if (index == 3) {
+          if (index == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -590,7 +590,7 @@ class _ViewUploadState extends State<ViewUpload> {
                     Perencanaan(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 4) {
+          } else if (index == 2) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -598,7 +598,7 @@ class _ViewUploadState extends State<ViewUpload> {
                     InputMaterial(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 5) {
+          } else if (index == 3) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -606,7 +606,7 @@ class _ViewUploadState extends State<ViewUpload> {
                     InputDokumen(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 7) {
+          } else if (index == 6) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -614,7 +614,7 @@ class _ViewUploadState extends State<ViewUpload> {
                     TambahProject(data: widget.data, nip: widget.nip),
               ),
             );
-          } else if (index == 8) {
+          } else if (index == 7) {
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -642,8 +642,8 @@ class _ViewUploadState extends State<ViewUpload> {
         ],
       ),
       children: [
-        _buildSubListTile('Tambah Project', Icons.assignment_add, 7, 35),
-        _buildSubListTile('Tambah User', Icons.assignment_ind_rounded, 8, 35),
+        _buildSubListTile('Tambah Project', Icons.assignment_add, 6, 35),
+        _buildSubListTile('Tambah Staff', Icons.assignment_ind_rounded, 7, 35),
       ],
     );
   }
