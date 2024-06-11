@@ -33,7 +33,7 @@ if (isset($_POST['nama'], $_POST['jabatan'], $_POST['unit_kerja'], $_POST['depar
         $uploadfile = $uploadDir . $new_filename;
 
         if (move_uploaded_file($_FILES['profile']['tmp_name'], $uploadfile)) {
-            $base_url = "http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/upload/$new_filename";
+            $base_url = "http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/upload/$new_filename";
         }
     }
 
