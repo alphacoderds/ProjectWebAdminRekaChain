@@ -356,7 +356,7 @@ class _TambahStaffState extends State<TambahStaff> {
             Container(
               alignment: Alignment.center,
               width: screenWidth * 0.8,
-              height: screenHeight * 0.88,
+              height: screenHeight * 0.91,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black54),
                 borderRadius: BorderRadius.circular(10),
