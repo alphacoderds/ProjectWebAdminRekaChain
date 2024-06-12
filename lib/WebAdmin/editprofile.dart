@@ -142,7 +142,8 @@ class _EditProfileState extends State<EditProfile> {
             nipController.text = data['nip'] ?? '';
             passwordController.text = data['password'] ?? '';
             statusController.text = data['status'] ?? '';
-            profileController.text = data['profile'] ?? '';
+            // profileController.text = data['profile'] ?? '';
+            _saveProfileImage(data['profile'] ?? '');
           });
         } catch (e) {
           print('Error parsing JSON: $e');
@@ -168,6 +169,7 @@ class _EditProfileState extends State<EditProfile> {
     request.fields['unit_kerja'] = unitKerjaController.text;
     request.fields['departemen'] = departemenController.text;
     request.fields['divisi'] = divisiController.text;
+    request.fields['email'] = emailController.text; // Tambahkan email
     request.fields['no_telp'] = noTelpController.text;
     request.fields['status'] = statusController.text;
     request.fields['password'] = passwordController.text;
@@ -182,7 +184,19 @@ class _EditProfileState extends State<EditProfile> {
       ));
     }
 
-    final response = await request.send();
+    request.fields['kode_staff'] = kodeStaffController.text;
+    request.fields['nama'] = namaController.text;
+    request.fields['jabatan'] = jabatanController.text;
+    request.fields['departemen'] = departemenController.text;
+    request.fields['unit_kerja'] = unitKerjaController.text;
+    request.fields['divisi'] = divisiController.text;
+    request.fields['no_telp'] = noTelpController.text;
+    request.fields['status'] = statusController.text;
+    request.fields['nip'] = nipController.text;
+    request.fields['password'] = passwordController.text;
+    request.fields['profile'] = profileController.text;
+
+    var response = await request.send();
 
     if (response.statusCode == 200) {
       final responseBody = await response.stream.bytesToString();
@@ -190,8 +204,7 @@ class _EditProfileState extends State<EditProfile> {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                ListStaff(data: widget.data, nip: widget.nip)),
+            builder: (context) => Profile(data: widget.data, nip: widget.nip)),
       );
     } else {
       print('Gagal memperbarui data: ${response.statusCode}');
@@ -306,30 +319,8 @@ class _EditProfileState extends State<EditProfile> {
                     child: Container(
                       margin: const EdgeInsets.only(top: 20),
                       child: ElevatedButton(
-                        onPressed: () async {
-                          await http.post(
-                              body: {
-                                'nama': namaController.text,
-                                'jabatan': jabatanController.text,
-                                'unit_kerja': unitKerjaController.text,
-                                'departemen': departemenController.text,
-                                'divisi': divisiController.text,
-                                'email': emailController.text,
-                                'no_telp': noTelpController.text,
-                                'nip': nipController.text,
-                                'status': statusController.text,
-                                'profile': profileController.text,
-                              },
-                              Uri.parse(
-                                  "http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  Profile(nip: widget.nip, data: widget.data),
-                            ),
-                          );
-                        },
+                        onPressed:
+                            _simpan, // Panggil metode _simpan saat tombol ditekan
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
