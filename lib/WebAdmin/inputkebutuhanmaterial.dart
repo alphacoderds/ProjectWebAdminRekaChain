@@ -204,6 +204,7 @@ class _InputMaterialState extends State<InputMaterial> {
         barrierDismissible: false,
         builder: (_) => AlertDialog(
           title: Text('QR Code Kode Lot'),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
           content: Container(
             width: 245,
             height: 245,
@@ -214,8 +215,7 @@ class _InputMaterialState extends State<InputMaterial> {
               onPressed: () {
                 saveQRCodeAsImage(_qrCodeKey, kodeLot);
               },
-              child: Text("Download",
-                  style: TextStyle(color: ui.Color.fromRGBO(43, 56, 86, 1))),
+              child: Text("Download", style: TextStyle(color: Colors.white)),
             ),
             SizedBox(width: 40),
             TextButton(

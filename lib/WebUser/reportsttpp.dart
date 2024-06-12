@@ -56,7 +56,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
         final data = jsonDecode(response.body);
         print(data);
         setState(() {
-          _listdata = _removeDuplicates(data);
+          _listdata = _removeDuplicates(data).reversed.toList();
           _isloading = false;
         });
       }

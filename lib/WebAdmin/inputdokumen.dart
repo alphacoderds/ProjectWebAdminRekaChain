@@ -77,11 +77,14 @@ class _InputDokumenState extends State<InputDokumen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('File Gagal Diunggah'),
-          content: Text('File $fileName terlalu besar atau bukan PDF.'),
+          title: Text('File Gagal Diunggah',
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          content: Text('File $fileName terlalu besar atau bukan PDF.',
+              style: TextStyle(color: Colors.white)),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: Text('OK', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

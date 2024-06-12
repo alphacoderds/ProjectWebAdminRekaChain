@@ -129,7 +129,7 @@ class _UserDashboardState extends State<UserDashboard> {
             rawData.map((item) => LotData.fromJson(item)).toList();
 
         setState(() {
-          _listdata = lotDataList;
+          _listdata = lotDataList.reversed.toList();
           _isloading = false;
         });
       }

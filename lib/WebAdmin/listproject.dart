@@ -55,7 +55,7 @@ class _ListProjectState extends State<ListProject> {
         final data = jsonDecode(response.body);
         print(data);
         setState(() {
-          _listdata = data;
+          _listdata = data.reversed.toList();
           _isloading = false;
         });
       }

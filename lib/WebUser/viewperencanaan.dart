@@ -52,7 +52,7 @@ class _VperencanaanState extends State<Vperencanaan> {
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
         setState(() {
-          _listdata = data;
+          _listdata = data.reversed.toList();
           _isloading = false;
         });
       }
