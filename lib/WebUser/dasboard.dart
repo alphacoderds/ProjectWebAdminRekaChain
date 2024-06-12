@@ -31,6 +31,26 @@ class _UserDashboardState extends State<UserDashboard> {
   List<LotData> _listdata = [];
   bool _isloading = true;
 
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+    if (query.isNotEmpty) {
+      List<LotData> filteredList = _listdata
+          .where((lotData) =>
+              lotData.nama.toLowerCase().contains(query.toLowerCase()) ||
+              lotData.noProduk.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+      setState(() {
+        _listdata = filteredList;
+      });
+    } else {
+      _getdata();
+    }
+  }
+
   TextEditingController idLotcontroller = TextEditingController();
   TextEditingController namaProjectcontroller = TextEditingController();
   TextEditingController noProdukcontroller = TextEditingController();
@@ -93,18 +113,16 @@ class _UserDashboardState extends State<UserDashboard> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
         ),
       );
       if (response.statusCode == 200) {
         final String responseBody = response.body;
 
-        // Print the raw response body to debug
         print('Response Body: $responseBody');
 
         final List<dynamic> rawData = jsonDecode(responseBody);
 
-        // Print the raw data to debug
         print('Raw Data: $rawData');
 
         List<LotData> lotDataList =
@@ -155,6 +173,36 @@ class _UserDashboardState extends State<UserDashboard> {
                         children: [
                           SizedBox(
                             width: screenWidth * 0.005,
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            width: 250,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: TextField(
+                                    onChanged: _updateSearchQuery,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Cari',
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
                           ),
                           IconButton(
                             icon: Icon(
@@ -208,101 +256,12 @@ class _UserDashboardState extends State<UserDashboard> {
                                 style: TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.bold),
                               ),
-                              Stepper(
-                                currentStep: _listdata[index].currentStep,
-                                steps: [
-                                  Step(
-                                    title: Text('${data.ap1}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status1 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap2}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status2 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap3}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status3 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap4}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status4 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap5}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status5 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap6}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status6 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap7}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status7 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap8}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status8 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap9}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive: data.status9 == 'sudah dikerjakan'
-                                        ? true
-                                        : false,
-                                  ),
-                                  Step(
-                                    title: Text('${data.ap10}'),
-                                    content: Container(
-                                      height: 0,
-                                    ),
-                                    isActive:
-                                        data.status10 == 'sudah dikerjakan'
-                                            ? true
-                                            : false,
-                                  ),
-                                ],
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: _buildHorizontalSteps(data),
+                                ),
                               ),
                             ],
                           );
@@ -315,6 +274,83 @@ class _UserDashboardState extends State<UserDashboard> {
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       ),
     );
+  }
+
+  List<Widget> _buildHorizontalSteps(LotData data) {
+    List<String> steps = [
+      data.ap1,
+      data.ap2,
+      data.ap3,
+      data.ap4,
+      data.ap5,
+      data.ap6,
+      data.ap7,
+      data.ap8,
+      data.ap9,
+      data.ap10,
+    ];
+
+    List<String> statuses = [
+      data.status1,
+      data.status2,
+      data.status3,
+      data.status4,
+      data.status5,
+      data.status6,
+      data.status7,
+      data.status8,
+      data.status9,
+      data.status10,
+    ];
+
+    List<Widget> stepWidgets = [];
+
+    for (int index = 0; index < steps.length; index++) {
+      if (steps[index].isNotEmpty) {
+        stepWidgets.add(
+          Container(
+            margin: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              border: Border.all(),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Column(
+              children: [
+                Tooltip(
+                  message: statuses[index] == 'sudah dikerjakan'
+                      ? 'Sudah dikerjakan'
+                      : statuses[index] == 'sedang dikerjakan'
+                          ? 'Sedang dikerjakan'
+                          : '',
+                  child: Icon(
+                    statuses[index] == 'sudah dikerjakan'
+                        ? Icons.check_circle
+                        : statuses[index] == 'sedang dikerjakan'
+                            ? Icons.radio_button_unchecked
+                            : Icons.radio_button_unchecked_rounded,
+                    color: statuses[index] == 'sudah dikerjakan'
+                        ? const Color.fromRGBO(43, 56, 86, 1)
+                        : statuses[index] == 'sedang dikerjakan'
+                            ? const Color.fromRGBO(43, 56, 86, 1)
+                            : Colors.grey,
+                    size: 40,
+                  ),
+                ),
+                SizedBox(height: 4.0),
+                Text(
+                  steps[index].length > 15
+                      ? steps[index].substring(0, 15) + '...'
+                      : steps[index],
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    return stepWidgets;
   }
 
   Widget _buildDrawer() {

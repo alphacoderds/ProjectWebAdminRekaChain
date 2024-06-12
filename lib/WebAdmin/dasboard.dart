@@ -33,6 +33,26 @@ class _DashboardState extends State<AdminDashboard> {
   List<LotData> _listdata = [];
   bool _isloading = true;
 
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+    if (query.isNotEmpty) {
+      List<LotData> filteredList = _listdata
+          .where((lotData) =>
+              lotData.nama.toLowerCase().contains(query.toLowerCase()) ||
+              lotData.noProduk.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+      setState(() {
+        _listdata = filteredList;
+      });
+    } else {
+      _getdata();
+    }
+  }
+
   TextEditingController idLotcontroller = TextEditingController();
   TextEditingController namaProjectcontroller = TextEditingController();
   TextEditingController noProdukcontroller = TextEditingController();
@@ -95,7 +115,7 @@ class _DashboardState extends State<AdminDashboard> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
+          'http://192.168.9.97/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -156,6 +176,36 @@ class _DashboardState extends State<AdminDashboard> {
                           SizedBox(
                             width: screenWidth * 0.005,
                           ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            width: 250,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: TextField(
+                                    onChanged: _updateSearchQuery,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Cari',
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
+                          ),
                           IconButton(
                             icon: Icon(
                               Icons.notifications_active,
@@ -211,6 +261,7 @@ class _DashboardState extends State<AdminDashboard> {
                               SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: _buildHorizontalSteps(data),
                                 ),
                               ),
@@ -254,29 +305,54 @@ class _DashboardState extends State<AdminDashboard> {
       data.status10,
     ];
 
-    return List<Widget>.generate(steps.length, (index) {
-      return Container(
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          children: [
-            Icon(
-              statuses[index] == 'sudah dikerjakan'
-                  ? Icons.check_circle
-                  : statuses[index] == 'sedang dikerjakan'
-                      ? Icons.radio_button_unchecked
-                      : Icons.radio_button_unchecked,
-              color: statuses[index] == 'sudah dikerjakan'
-                  ? Colors.green
-                  : statuses[index] == 'sedang dikerjakan'
-                      ? Colors.yellow
-                      : Colors.grey,
+    List<Widget> stepWidgets = [];
+
+    for (int index = 0; index < steps.length; index++) {
+      if (steps[index].isNotEmpty) {
+        stepWidgets.add(
+          Container(
+            margin: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(8.0),
+            decoration: BoxDecoration(
+              border: Border.all(),
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            SizedBox(height: 4.0),
-            Text(steps[index]),
-          ],
-        ),
-      );
-    });
+            child: Column(
+              children: [
+                Tooltip(
+                  message: statuses[index] == 'sudah dikerjakan'
+                      ? 'Sudah dikerjakan'
+                      : statuses[index] == 'sedang dikerjakan'
+                          ? 'Sedang dikerjakan'
+                          : '',
+                  child: Icon(
+                    statuses[index] == 'sudah dikerjakan'
+                        ? Icons.check_circle
+                        : statuses[index] == 'sedang dikerjakan'
+                            ? Icons.radio_button_unchecked
+                            : Icons.radio_button_unchecked_rounded,
+                    color: statuses[index] == 'sudah dikerjakan'
+                        ? const Color.fromRGBO(43, 56, 86, 1)
+                        : statuses[index] == 'sedang dikerjakan'
+                            ? const Color.fromRGBO(43, 56, 86, 1)
+                            : Colors.grey,
+                    size: 40,
+                  ),
+                ),
+                SizedBox(height: 4.0),
+                Text(
+                  steps[index].length > 15
+                      ? steps[index].substring(0, 15) + '...'
+                      : steps[index],
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    return stepWidgets;
   }
 
   Widget _buildDrawer() {

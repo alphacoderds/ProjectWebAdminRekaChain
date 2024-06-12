@@ -50,8 +50,13 @@ class _AfterSalesState extends State<AfterSales> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print(data);
+        final filteredData = data
+            .where((item) =>
+                item['saran'] != null && item['saran'].toString().isNotEmpty)
+            .toList();
+
         setState(() {
-          _listdata = data;
+          _listdata = filteredData;
           _isloading = false;
         });
       }
