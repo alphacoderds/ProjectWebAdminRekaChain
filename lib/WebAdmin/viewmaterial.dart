@@ -36,11 +36,8 @@ class _ViewMaterialState extends State<ViewMaterial> {
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
 
-  late List<String> dropdownItemsIdProject = [];
-  String? selectedValueIdProject;
-
-  late List<String> dropdownItemsNoProduk = [];
-  String? selectedValueNoProduk;
+  late List<String> dropdownItems = [];
+  String? selectedValue;
 
   List _listdata = [];
   bool _isloading = true;
@@ -83,22 +80,17 @@ class _ViewMaterialState extends State<ViewMaterial> {
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
 
-      Map<String, List<String>> projectMap = {};
+      Set<String> projectSet = {};
 
       for (var project in data) {
         String id_project = project['id_project'].toString();
         String kodeLot = project['kodeLot'].toString();
-
-        if (projectMap.containsKey(id_project)) {
-          projectMap[id_project]!.add(kodeLot);
-        } else {
-          projectMap[id_project] = [kodeLot];
-        }
+        projectSet.add('$id_project | $kodeLot');
       }
 
       setState(() {
-        dropdownItemsIdProject = ['--Pilih Nama/Kode Project--'];
-        dropdownItemsIdProject.addAll(projectMap.keys);
+        dropdownItems = ['--Pilih Nama Project | Kode Lot--'];
+        dropdownItems.addAll(projectSet);
       });
     } else {
       throw Exception('Failed to load project names');
@@ -107,10 +99,15 @@ class _ViewMaterialState extends State<ViewMaterial> {
 
   void _filterData() {
     setState(() {
-      if (selectedValueIdProject != null &&
-          selectedValueIdProject != '--Pilih Nama/Kode Project--') {
+      if (selectedValue != null &&
+          selectedValue != '--Pilih Nama Project | Kode Lot--') {
+        final parts = selectedValue!.split(' | ');
+        final selectedIdProject = parts[0];
+        final selectedKodeLot = parts[1];
+
         _filteredData = _listdata.where((data) {
-          return data['id_project'] == selectedValueIdProject;
+          return data['id_project'] == selectedIdProject &&
+              data['kodeLot'] == selectedKodeLot;
         }).toList();
       } else {
         _filteredData = _listdata;
@@ -172,8 +169,8 @@ class _ViewMaterialState extends State<ViewMaterial> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 7),
-                                width: 250,
+                                padding: EdgeInsets.symmetric(horizontal: 30),
+                                width: 360,
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   border: Border.all(),
@@ -181,12 +178,12 @@ class _ViewMaterialState extends State<ViewMaterial> {
                                 ),
                                 child: DropdownButton<String>(
                                   alignment: Alignment.center,
-                                  hint: Text('--Pilih Nama Project--'),
-                                  value: selectedValueIdProject,
+                                  hint:
+                                      Text('--Pilih Nama Project | Kode Lot--'),
+                                  value: selectedValue,
                                   underline: SizedBox(),
                                   borderRadius: BorderRadius.circular(5),
-                                  items: dropdownItemsIdProject
-                                      .map((String value) {
+                                  items: dropdownItems.map((String value) {
                                     return DropdownMenuItem<String>(
                                       value: value,
                                       child: Text(value),
@@ -194,13 +191,12 @@ class _ViewMaterialState extends State<ViewMaterial> {
                                   }).toList(),
                                   onChanged: (newValue) {
                                     setState(() {
-                                      selectedValueIdProject = newValue;
+                                      selectedValue = newValue;
                                       _filterData();
                                     });
                                   },
                                 ),
                               ),
-                              SizedBox(width: 20),
                             ],
                           ),
                         ),

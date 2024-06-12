@@ -43,6 +43,7 @@ class _DashboardState extends State<AdminDashboard> {
       List<LotData> filteredList = _listdata
           .where((lotData) =>
               lotData.nama.toLowerCase().contains(query.toLowerCase()) ||
+              lotData.kodeLot.toLowerCase().contains(query.toLowerCase()) ||
               lotData.noProduk.toLowerCase().contains(query.toLowerCase()))
           .toList();
       setState(() {
