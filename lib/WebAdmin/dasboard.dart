@@ -252,21 +252,26 @@ class _DashboardState extends State<AdminDashboard> {
                         itemBuilder: (context, index) {
                           LotData data = _listdata[index];
 
-                          return Column(
-                            children: [
-                              Text(
-                                '${data.nama} | ${data.kodeLot} | ${data.noProduk}',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: _buildHorizontalSteps(data),
+                          return Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${data.nama} | ${data.kodeLot} | ${data.noProduk}',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                              ),
-                            ],
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: _buildHorizontalSteps(data),
+                                  ),
+                                ),
+                              ],
+                            ),
                           );
                         },
                       ),
