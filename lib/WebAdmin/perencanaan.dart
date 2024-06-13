@@ -547,7 +547,7 @@ class _PerencanaanState extends State<Perencanaan> {
                             child: Padding(
                               padding: EdgeInsets.symmetric(
                                   vertical: screenHeight * 0.05,
-                                  horizontal: screenWidth * 0.02),
+                                  horizontal: screenWidth * 0.09),
                               child: Column(
                                 children: [
                                   SizedBox(
@@ -656,6 +656,8 @@ class _PerencanaanState extends State<Perencanaan> {
                                                                 BorderSide(
                                                                     width: 1),
                                                           ),
+                                                          hintText:
+                                                              'Contoh : BJAS',
                                                         ),
                                                       ),
                                                     ),
@@ -699,6 +701,8 @@ class _PerencanaanState extends State<Perencanaan> {
                                                                 BorderSide(
                                                                     width: 1),
                                                           ),
+                                                          hintText:
+                                                              'Contoh : 1',
                                                         ),
                                                       ),
                                                     ),
@@ -794,6 +798,8 @@ class _PerencanaanState extends State<Perencanaan> {
                                                                 BorderSide(
                                                                     width: 1),
                                                           ),
+                                                          hintText:
+                                                              'Contoh : PANEL',
                                                         ),
                                                       ),
                                                     ),
@@ -805,7 +811,7 @@ class _PerencanaanState extends State<Perencanaan> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      'Jumlah dalam 1 lot',
+                                                      'Jumlah dalam 1 Lot',
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.w600,
@@ -836,6 +842,8 @@ class _PerencanaanState extends State<Perencanaan> {
                                                                 BorderSide(
                                                                     width: 1),
                                                           ),
+                                                          hintText:
+                                                              'Contoh : 5',
                                                         ),
                                                       ),
                                                     ),
@@ -878,6 +886,8 @@ class _PerencanaanState extends State<Perencanaan> {
                                                                 BorderSide(
                                                                     width: 1),
                                                           ),
+                                                          hintText:
+                                                              'Contoh : 5',
                                                         ),
                                                       ),
                                                     ),
