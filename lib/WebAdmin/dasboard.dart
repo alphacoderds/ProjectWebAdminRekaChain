@@ -116,7 +116,7 @@ class _DashboardState extends State<AdminDashboard> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.8.207/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
+          'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
         ),
       );
       if (response.statusCode == 200) {
