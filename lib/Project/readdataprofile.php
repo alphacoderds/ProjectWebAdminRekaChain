@@ -12,7 +12,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Membuat koneksi ke database
-$conn = new mysqli("localhost", "root", "", "db_rekachain");
+$conn = new mysqli("localhost", "id22313015_rekachain", "49Nc-YpTT-gxNAu", "id22313015_db_rekachain");
 
 // Memeriksa koneksi
 if ($conn->connect_error) {

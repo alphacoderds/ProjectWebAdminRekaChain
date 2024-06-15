@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: POST");
 
 // Koneksi ke database
-$conn = new mysqli("localhost", "root", "", "db_rekachain");
+$conn = new mysqli("localhost", "id22313015_rekachain", "49Nc-YpTT-gxNAu", "id22313015_db_rekachain");
 
 $nama = $_POST['nama'];
 $jabatan = $_POST['jabatan'];

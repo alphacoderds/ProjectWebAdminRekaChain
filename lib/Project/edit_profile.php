@@ -3,7 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 
-$conn = mysqli_connect('localhost', 'root', '', 'db_rekachain');
+$conn = mysqli_connect('localhost', 'id22313015_rekachain', '49Nc-YpTT-gxNAu', 'id22313015_db_rekachain');
 
 if (!$conn) {
     die(json_encode(["message" => "Failed to connect to database: " . mysqli_connect_error()]));

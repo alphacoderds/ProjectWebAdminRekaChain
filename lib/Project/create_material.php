@@ -1,6 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-$conn = new mysqli("localhost", "root", "", "db_rekachain");
+$conn = new mysqli("localhost", "id22313015_rekachain", "49Nc-YpTT-gxNAu", "id22313015_db_rekachain");
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);

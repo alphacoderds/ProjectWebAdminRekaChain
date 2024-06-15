@@ -4,7 +4,7 @@ header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 
 // Koneksi ke database
-$connect = new mysqli("localhost", "root", "", "db_rekachain");
+$connect = new mysqli("localhost", "id22313015_rekachain", "49Nc-YpTT-gxNAu", "did22313015_db_rekachain");
 
 // sPeriksa koneksi
 if ($connect->connect_error) {

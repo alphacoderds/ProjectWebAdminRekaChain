@@ -6,7 +6,7 @@ header('Content-Type: application/json; charset=utf-8');
 header("Cache-Control: no-cache, no-store, must-revalidate");
 
 // Koneksi ke database
-$connect = new mysqli("localhost", "root", "", "db_rekachain");
+$connect = new mysqli("localhost", "id22313015_rekachain", "49Nc-YpTT-gxNAu", "id22313015_db_rekachain");
 
 // Periksa koneksi
 if ($connect->connect_error) {
