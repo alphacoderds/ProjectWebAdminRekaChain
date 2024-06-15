@@ -113,7 +113,7 @@ class _UserDashboardState extends State<UserDashboard> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/read_dashboard.php',
+          'https://rekachain.000webhostapp.com/Project/read_dashboard.php',
         ),
       );
       if (response.statusCode == 200) {

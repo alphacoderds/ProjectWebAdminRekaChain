@@ -59,7 +59,7 @@ class _TambahProjectState extends State<TambahProject> {
 
       final response = await http.post(
         Uri.parse(
-            'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/create_tambahproject.php'),
+            'https://rekachain.000webhostapp.com/Project/create_tambahproject.php'),
         body: {
           "kodeProject": kdprojectController.text,
           "namaProject": nmprojectController.text,

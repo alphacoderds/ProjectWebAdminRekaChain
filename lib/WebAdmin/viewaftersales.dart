@@ -57,7 +57,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=$nama&noProduk=$noProduk',
+          'https://rekachain.000webhostapp.com/Project/edit_aftersales.php?nama=$nama&noProduk=$noProduk',
         ),
       );
 
@@ -85,7 +85,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/read_aftersales.php?id_project=$idProject',
+          'https://rekachain.000webhostapp.com/Project/read_aftersales.php?id_project=$idProject',
         ),
       );
 

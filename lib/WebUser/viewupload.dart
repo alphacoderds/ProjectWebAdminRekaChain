@@ -48,7 +48,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/readdokumen.php',
+          'https://rekachain.000webhostapp.com/Project/readdokumen.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -75,7 +75,7 @@ class _ViewUploadState extends State<ViewUpload> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/hapus_dokumen.php'),
+            'https://rekachain.000webhostapp.com/Project/hapus_dokumen.php'),
         body: {
           "no": no,
         },
@@ -115,7 +115,7 @@ class _ViewUploadState extends State<ViewUpload> {
 
       try {
         String fileUrl =
-            'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/uploads/$fileRelativePath';
+            'https://rekachain.000webhostapp.com/Project/uploads/$fileRelativePath';
 
         var response = await http.get(Uri.parse(fileUrl));
         Uint8List fileBytes = response.bodyBytes;

@@ -142,7 +142,7 @@ class _InputMaterialState extends State<InputMaterial> {
 
       try {
         final response = await Dio().post(
-          'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/create_material.php',
+          'https://rekachain.000webhostapp.com/Project/create_material.php',
           data: formData,
           options: Options(
             contentType: 'multipart/form-data',
@@ -167,7 +167,7 @@ class _InputMaterialState extends State<InputMaterial> {
 
   Future<void> fetchProject() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/readlistproject.php'));
+        'https://rekachain.000webhostapp.com/Project/readlistproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);

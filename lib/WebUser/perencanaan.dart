@@ -195,7 +195,7 @@ class _PerencanaanState extends State<Perencanaan> {
     if (selectedValuenamaProject != null && alurProses1controller != null) {
       final response = await http.post(
         Uri.parse(
-          "http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
+          "https://rekachain.000webhostapp.com/Project/create_perencanaan.php",
         ),
         body: {
           "nama": selectedValuenamaProject ?? '',
@@ -303,7 +303,7 @@ class _PerencanaanState extends State<Perencanaan> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.1.4/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'https://rekachain.000webhostapp.com/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
