@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nip = $_POST["nip"];
 
     // Koneksi ke database
-    $conn = new mysqli("localhost", "id22313015_rekachain", "49Nc-YpTT-gxNAu", "id22313015_db_rekachain");
+    $conn = new mysqli("localhost", "root", "", "db_rekachain");
 
     // Periksa koneksi
     if ($conn->connect_error) {

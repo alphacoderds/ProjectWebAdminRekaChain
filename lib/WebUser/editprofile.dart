@@ -236,7 +236,7 @@ class _EditProfileState extends State<EditProfile> {
                                 'status': statusController.text,
                               },
                               Uri.parse(
-                                  "https://rekachain.000webhostapp.com/Project/edit_profile.php"));
+                                  "http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
                           Navigator.push(
                             context,
                             MaterialPageRoute(

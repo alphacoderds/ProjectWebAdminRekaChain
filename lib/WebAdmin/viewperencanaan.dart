@@ -48,7 +48,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-          'https://rekachain.000webhostapp.com/Project/readlot.php',
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {

@@ -3,7 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 // Koneksi ke database
-$conn = mysqli_connect('localhost', 'id22313015_rekachain', '49Nc-YpTT-gxNAu', 'id22313015_db_rekachain');
+$conn = mysqli_connect("localhost", "root", "", "db_rekachain");
 
 // Periksa apakah parameter id_lot telah diterima
 if (isset($_GET['id_lot'])) {

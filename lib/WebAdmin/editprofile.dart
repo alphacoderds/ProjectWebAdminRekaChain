@@ -110,7 +110,7 @@ class _EditProfileState extends State<EditProfile> {
     });
 
     final response = await Dio().post(
-      'https://rekachain.000webhostapp.com/Project/edit_profile.php',
+      'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_profile.php',
       data: formData,
       options: Options(
         contentType: 'multipart/form-data',
@@ -127,7 +127,7 @@ class _EditProfileState extends State<EditProfile> {
   Future _getdata() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://rekachain.000webhostapp.com/Project/readdataprofile.php'));
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'));
       if (response.statusCode == 200) {
         try {
           final data = jsonDecode(response.body);
@@ -160,7 +160,7 @@ class _EditProfileState extends State<EditProfile> {
 
   Future<void> _simpan() async {
     final uri = Uri.parse(
-        'https://rekachain.000webhostapp.com/Project/edit_profile.php');
+        'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_profile.php');
     final request = http.MultipartRequest('POST', uri);
 
     request.fields['nip'] = widget.data.nip;
@@ -254,7 +254,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _update() async {
     final response = await http.post(
       Uri.parse(
-          'https://rekachain.000webhostapp.com/Project/create_tambahstaff.php'),
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php'),
       body: {
         "nama": namaController.text,
         "jabatan": jabatanController.text,
@@ -460,7 +460,7 @@ class _EditProfileState extends State<EditProfile> {
       var request = http.MultipartRequest(
         'POST',
         Uri.parse(
-            'https://rekachain.000webhostapp.com/Project/edit_profile.php'),
+            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_profile.php'),
       );
 
       if (_selectedImage.isNotEmpty) {
@@ -490,7 +490,7 @@ class _EditProfileState extends State<EditProfile> {
         var responseBody = await response.stream.bytesToString();
         print('Update successful: $responseBody');
         var newProfileUrl =
-            'https://rekachain.000webhostapp.com/Project/upload/$new_filename';
+            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/upload/$new_filename';
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('profile', newProfileUrl);
         DataModel updatedData = DataModel(

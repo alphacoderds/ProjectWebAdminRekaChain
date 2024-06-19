@@ -50,7 +50,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://rekachain.000webhostapp.com/Project/edit_tambahproject.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
+            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php?kodeProject=${widget.selectedProject['kodeProject']}&namaProject=${widget.selectedProject['namaProject']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -242,7 +242,7 @@ class _EditProjectState extends State<EditProject> {
     try {
       final response = await http.post(
         Uri.parse(
-            'https://rekachain.000webhostapp.com/Project/edit_tambahproject.php'),
+            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_tambahproject.php'),
         body: {
           'no_tambahproject':
               widget.selectedProject['no_tambahproject'].toString(),

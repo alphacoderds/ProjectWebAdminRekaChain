@@ -78,7 +78,7 @@ class _ProfileState extends State<Profile> {
       final response = await http.post(
         body: map,
         Uri.parse(
-          'https://rekachain.000webhostapp.com/Project/readdataprofile.php',
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -225,7 +225,10 @@ class _ProfileState extends State<Profile> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildAvatar(),
+                      Consumer<UserProvider>(
+                          builder: (context, provider, child) {
+                        return _buildAvatar(provider.dataModel);
+                      }),
                       Center(
                         child: Consumer<UserProvider>(
                             builder: (context, provider, child) {
@@ -390,7 +393,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  Widget _buildAvatar() {
+  Widget _buildAvatar(DataModel data) {
     return Container(
       width: double.infinity,
       height: 125.0,
@@ -404,11 +407,16 @@ class _ProfileState extends State<Profile> {
           ),
         ],
         shape: BoxShape.circle,
-        image: const DecorationImage(
-          fit: BoxFit.cover,
-          alignment: Alignment.center,
-          image: AssetImage('assets/images/profil.png'),
-        ),
+        image: data.profile == ''
+            ? DecorationImage(
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                image: AssetImage('assets/images/profil.png'),
+              )
+            : DecorationImage(
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                image: NetworkImage(data.profile)),
       ),
     );
   }
