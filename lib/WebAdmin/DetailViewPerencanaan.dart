@@ -105,7 +105,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'https://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?namaProject=${widget.selectedProject['namaProject']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'https://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?namaProject=${widget.selectedProject['namaProject']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);

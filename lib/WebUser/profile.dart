@@ -71,21 +71,22 @@ class _ProfileState extends State<Profile> {
   String _errorMessage = 'Terjadi kesalahan saat mengambil data';
 
   Future<void> _getdata() async {
-  try {
-    print(widget.nip);
-    final map = <String, dynamic>{};
-    map['nip'] = widget.nip;
-    final response = await http.post(
-      Uri.parse('http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept": "application/json",
-      },
-      body: map,
-    );
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      print("Response data: $data");
+    try {
+      print(widget.nip);
+      final map = <String, dynamic>{};
+      map['nip'] = widget.nip;
+      final response = await http.post(
+        Uri.parse(
+            'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Accept": "application/json",
+        },
+        body: map,
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print("Response data: $data");
         // Ambil NIP dari SharedPreferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         String? nip = prefs.getString('nip');
@@ -394,32 +395,34 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-Widget _buildAvatar(DataModel data) {
-  return Container(
-    width: double.infinity,
-    height: 125.0,
-    decoration: BoxDecoration(
-      border: Border.all(width: 4, color: Colors.white),
-      boxShadow: [
-        BoxShadow(
-          spreadRadius: 2,
-          blurRadius: 10,
-          color: Colors.black.withOpacity(0.1),
-        ),
-      ],
-      shape: BoxShape.circle,
-      image: data.profile.isEmpty
-          ? DecorationImage(
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
-              image: AssetImage('assets/images/profil.png'),
-            )
-          : DecorationImage(
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
-              image: NetworkImage('http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/server_image.php?path=' + Uri.encodeComponent(data.profile)),
-            ),
-    ),
-  );
-}
+  Widget _buildAvatar(DataModel data) {
+    return Container(
+      width: double.infinity,
+      height: 125.0,
+      decoration: BoxDecoration(
+        border: Border.all(width: 4, color: Colors.white),
+        boxShadow: [
+          BoxShadow(
+            spreadRadius: 2,
+            blurRadius: 10,
+            color: Colors.black.withOpacity(0.1),
+          ),
+        ],
+        shape: BoxShape.circle,
+        image: data.profile.isEmpty
+            ? DecorationImage(
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                image: AssetImage('assets/images/profil.png'),
+              )
+            : DecorationImage(
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                image: NetworkImage(
+                    'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/server_image.php?path=' +
+                        Uri.encodeComponent(data.profile)),
+              ),
+      ),
+    );
+  }
 }
