@@ -1,6 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: *");
-$conn=new mysqli("localhost","id22313015_rekachain","49Nc-YpTT-gxNAu","id22313015_db_rekachain");
+$conn=new mysqli("localhost", "root", "", "db_rekachain");
 $no = $_POST["no"];
 $kode_staff = $_POST["kode_staff"];
 $nama = $_POST["nama"];

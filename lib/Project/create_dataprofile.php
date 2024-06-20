@@ -1,7 +1,19 @@
 <?php
+// Mengaktifkan error reporting untuk debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Menangani permintaan OPTIONS (preflight)
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    exit(0);
+}
+
 // Set header agar response berupa JSON
 header("Content-Type: application/json");
-
 // Header untuk mengizinkan akses dari berbagai domain (CORS)
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");

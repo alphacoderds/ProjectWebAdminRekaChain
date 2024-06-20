@@ -3,9 +3,9 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 $servername = "localhost";
-$username = "id22313015_rekachain";
-$password = "49Nc-YpTT-gxNAu";
-$dbname = "id22313015_db_rekachain";
+$username = "root";
+$password = "";
+$dbname = "db_rekachain";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

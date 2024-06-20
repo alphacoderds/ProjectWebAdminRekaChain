@@ -1,7 +1,24 @@
 <?php
+// Mengaktifkan error reporting untuk debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+// Menangani permintaan OPTIONS (preflight)
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+    exit(0);
+}
+
+header("Access-Control-Allow-Origin:");
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: POST");
-header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Headers: *");
+header("Access-Cross-Origin Resource Sharing");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Content-Type: application/json");
 
 $conn = mysqli_connect("localhost", "root", "", "db_rekachain");
 
@@ -33,7 +50,10 @@ if (isset($_POST['nama'], $_POST['jabatan'], $_POST['unit_kerja'], $_POST['depar
         $uploadfile = $uploadDir . $new_filename;
 
         if (move_uploaded_file($_FILES['profile']['tmp_name'], $uploadfile)) {
-            $base_url = "http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/upload/$new_filename";
+            $base_url = "http://192.168.10.102/ProjectWebAdminRekaChain/lib/upload/$new_filename";
+        } else {
+            echo json_encode(["message" => "Failed to move uploaded file"]);
+            exit;
         }
     }
 
@@ -61,7 +81,7 @@ if (isset($_POST['nama'], $_POST['jabatan'], $_POST['unit_kerja'], $_POST['depar
         echo json_encode(["message" => "Failed", "error" => mysqli_error($conn)]);
     }
 } else {
-    echo json_encode(["message" => "Incomplete data received"]);
+    echo json_encode(["error" => "NIP is required"]);
 }
 
 mysqli_close($conn);
