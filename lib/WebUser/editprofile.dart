@@ -1,10 +1,18 @@
 import 'package:RekaChain/WebUser/profile.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:html';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:RekaChain/WebAdmin/data_model.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker_web/image_picker_web.dart';
+import 'package:uuid/uuid.dart';
+import 'package:mime/mime.dart';
 
 class EditProfile extends StatefulWidget {
   final String nip;
@@ -43,12 +51,76 @@ class _EditProfileState extends State<EditProfile> {
       TextEditingController(text: widget.data.password);
   late TextEditingController konfirmasiPasswordController =
       TextEditingController(text: widget.data.konfirmasi_password);
+  late TextEditingController profileController =
+      TextEditingController(text: widget.data.profile);
+
+  late Uint8List _selectedImage = Uint8List(0);
+  late String _originalFileName = '';
 
   @override
   void initState() {
     super.initState();
     _getdata();
     fetchData();
+  }
+
+  Future<void> _pickImage() async {
+    FileUploadInputElement uploadInput = FileUploadInputElement();
+    uploadInput.accept = 'image/*';
+    uploadInput.click();
+
+    uploadInput.onChange.listen((e) {
+      final files = uploadInput.files;
+      if (files!.isNotEmpty) {
+        final reader = FileReader();
+        reader.readAsArrayBuffer(files[0]);
+        reader.onLoadEnd.listen((e) async {
+          setState(() {
+            _selectedImage = reader.result as Uint8List;
+            _originalFileName = files[0].name; // Save the original file name
+          });
+          await _saveProfileImage(_selectedImage);
+        });
+      }
+    });
+  }
+
+  Future<void> _loadProfileImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? base64Image = prefs.getString('profile');
+    if (base64Image != null) {
+      setState(() {
+        _selectedImage = base64Decode(base64Image);
+      });
+    }
+  }
+
+  Future<void> _saveProfileImage(Uint8List image) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String base64Image = base64Encode(image);
+    await prefs.setString('profile', base64Image);
+
+    final formData = FormData.fromMap({
+      'profile': MultipartFile.fromBytes(
+        image,
+        filename: _originalFileName, // Provide a filename
+        contentType: MediaType('image', 'jpeg'),
+      ),
+    });
+
+    final response = await Dio().post(
+      'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_profile.php',
+      data: formData,
+      options: Options(
+        contentType: 'multipart/form-data',
+      ),
+    );
+
+    if (response.statusCode == 200) {
+      print('Image uploaded successfully');
+    } else {
+      print('Failed to upload image: ${response.statusCode}');
+    }
   }
 
   Future _getdata() async {
@@ -69,6 +141,7 @@ class _EditProfileState extends State<EditProfile> {
             nipController.text = data['nip'] ?? '';
             passwordController.text = data['password'] ?? '';
             statusController.text = data['status'] ?? '';
+            _saveProfileImage(data['profile'] ?? '');
           });
         } catch (e) {
           print('Error parsing JSON: $e');
@@ -84,38 +157,57 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> _simpan() async {
-    final response = await http.post(
-      Uri.parse(
-          'http://192.168.10.102/ProjectScanner/lib/API/edit_profile.php'),
-      body: {
-        "nip": widget.data.nip,
-        "nama": namaController.text,
-        "jabatan": jabatanController.text,
-        "unit_kerja": unitKerjaController.text,
-        "departemen": departemenController.text,
-        "divisi": divisiController.text,
-        "no_telp": noTelpController.text,
-        "status": statusController.text,
-        "password": passwordController.text,
-        "konfirmasi_password": konfirmasiPasswordController.text,
-      },
-    );
+    final uri = Uri.parse(
+        'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_profile.php');
+    final request = http.MultipartRequest('POST', uri);
+
+    request.fields['nip'] = widget.data.nip;
+    request.fields['nama'] = namaController.text;
+    request.fields['jabatan'] = jabatanController.text;
+    request.fields['unit_kerja'] = unitKerjaController.text;
+    request.fields['departemen'] = departemenController.text;
+    request.fields['divisi'] = divisiController.text;
+    request.fields['email'] = emailController.text; // Tambahkan email
+    request.fields['no_telp'] = noTelpController.text;
+    request.fields['status'] = statusController.text;
+    request.fields['password'] = passwordController.text;
+    request.fields['konfirmasi_password'] = konfirmasiPasswordController.text;
+
+    if (_selectedImage.isNotEmpty) {
+      request.files.add(http.MultipartFile.fromBytes(
+        'profile',
+        _selectedImage,
+        filename: _originalFileName, // Provide a filename
+        contentType: MediaType('image', 'jpeg'),
+      ));
+    }
+
+    request.fields['kode_staff'] = kodeStaffController.text;
+    request.fields['nama'] = namaController.text;
+    request.fields['jabatan'] = jabatanController.text;
+    request.fields['departemen'] = departemenController.text;
+    request.fields['unit_kerja'] = unitKerjaController.text;
+    request.fields['divisi'] = divisiController.text;
+    request.fields['no_telp'] = noTelpController.text;
+    request.fields['status'] = statusController.text;
+    request.fields['nip'] = nipController.text;
+    request.fields['password'] = passwordController.text;
+    request.fields['profile'] = profileController.text;
+
+    var response = await request.send();
 
     if (response.statusCode == 200) {
-      final newProjectData = {
-        "kode_staff": widget.data.kode_staff,
-        "nama": namaController.text,
-        "jabatan": jabatanController.text,
-        "unit_kerja": unitKerjaController.text,
-        "departemen": departemenController.text,
-        "divisi": divisiController.text,
-        "no_telp": noTelpController.text,
-        "password": passwordController.text,
-        "status": statusController.text,
-        "konfirmasi_password": konfirmasiPasswordController.text,
-      };
+      final responseBody = await response.stream.bytesToString();
+      print('Data berhasil diperbarui: $responseBody');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => Profile(data: widget.data, nip: widget.nip)),
+      );
     } else {
-      print('Gagal menyimpan data: ${response.statusCode}');
+      print('Gagal memperbarui data: ${response.statusCode}');
+      final responseBody = await response.stream.bytesToString();
+      print('Response: $responseBody');
     }
   }
 
@@ -134,6 +226,7 @@ class _EditProfileState extends State<EditProfile> {
           nipController.text = data.nip.toString();
           passwordController.text = data.password;
           statusController.text = data.status;
+          passwordController.text = data.profile;
         });
       }
     }
@@ -155,8 +248,6 @@ class _EditProfileState extends State<EditProfile> {
     }
     return null;
   }
-
-  XFile? _selectedImage;
 
   Future<void> _update() async {
     final response = await http.post(
@@ -183,6 +274,8 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    screenWidth = MediaQuery.of(context).size.width;
+    screenHeight = MediaQuery.of(context).size.height;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       onGenerateRoute: (settings) {
@@ -381,34 +474,139 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  Future<void> _updateDataAndNavigateToProfile() async {
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_profile.php'),
+      );
+
+      if (_selectedImage.isNotEmpty) {
+        request.files.add(http.MultipartFile.fromBytes(
+          'profile',
+          _selectedImage,
+          filename: _originalFileName,
+        ));
+      }
+
+      request.fields['kode_staff'] = kodeStaffController.text;
+      request.fields['nama'] = namaController.text;
+      request.fields['jabatan'] = jabatanController.text;
+      request.fields['departemen'] = departemenController.text;
+      request.fields['unit_kerja'] = unitKerjaController.text;
+      request.fields['divisi'] = divisiController.text;
+      request.fields['no_telp'] = noTelpController.text;
+      request.fields['status'] = statusController.text;
+      request.fields['nip'] = nipController.text;
+      request.fields['password'] = passwordController.text;
+      request.fields['profile'] = profileController.text;
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        String new_filename = '${Uuid().v4()}_${_originalFileName}';
+        var responseBody = await response.stream.bytesToString();
+        print('Update successful: $responseBody');
+        var newProfileUrl =
+            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/upload/$new_filename';
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('profile', newProfileUrl);
+        DataModel updatedData = DataModel(
+          kode_staff: kodeStaffController.text,
+          nama: namaController.text,
+          jabatan: jabatanController.text,
+          unit_kerja: unitKerjaController.text,
+          departemen: departemenController.text,
+          divisi: divisiController.text,
+          email: emailController.text,
+          noTelp: noTelpController.text,
+          nip: nipController.text,
+          status: statusController.text,
+          password: passwordController.text,
+          konfirmasi_password: konfirmasiPasswordController.text,
+          profile: profileController.text,
+        );
+
+        String dataKaryawanJson = jsonEncode(updatedData.toJson());
+        await prefs.setString('dataKaryawan', dataKaryawanJson);
+
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    Profile(nip: widget.nip, data: widget.data)));
+      } else {
+        print('Failed to update data: ${response.statusCode}');
+        var responseBody = await response.stream.bytesToString();
+        print('Response: $responseBody');
+      }
+    } catch (e) {
+      print('Error updating data: $e');
+    }
+  }
+
   Widget _buildDivider() {
     return const Divider(
       color: Colors.grey,
       thickness: 1.0,
       height: 16.0,
+      indent: 0,
+      endIndent: 0,
     );
   }
 
   Widget _buildAvatar() {
-    return Container(
-      width: double.infinity,
-      height: 125.0,
-      decoration: BoxDecoration(
-        border: Border.all(width: 4, color: Colors.white),
-        boxShadow: [
-          BoxShadow(
-            spreadRadius: 2,
-            blurRadius: 10,
-            color: Colors.black.withOpacity(0.1),
+    return Stack(
+      children: [
+        Container(
+          width: double.infinity,
+          height: 125.0,
+          decoration: BoxDecoration(
+            border: Border.all(width: 4, color: Colors.white),
+            boxShadow: [
+              BoxShadow(
+                spreadRadius: 2,
+                blurRadius: 10,
+                color: Colors.black.withOpacity(0.1),
+              ),
+            ],
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              alignment: Alignment.center,
+              image: _selectedImage.isNotEmpty
+                  ? MemoryImage(_selectedImage)
+                  : NetworkImage(widget.data.profile) as ImageProvider,
+            ),
           ),
-        ],
-        shape: BoxShape.circle,
-        image: const DecorationImage(
-          fit: BoxFit.cover,
-          alignment: Alignment.center,
-          image: AssetImage('assets/images/profil.png'),
         ),
-      ),
+        Positioned(
+          bottom: 0,
+          right: 80,
+          child: InkWell(
+            onTap: () {
+              _pickImage();
+            },
+            child: Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 4,
+                  color: Colors.white,
+                ),
+                color: const Color.fromARGB(255, 17, 46, 70),
+              ),
+              child: const Icon(
+                Icons.edit,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
