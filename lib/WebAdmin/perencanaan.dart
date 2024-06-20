@@ -200,7 +200,7 @@ class _PerencanaanState extends State<Perencanaan> {
           "http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
         ),
         body: {
-          "nama": selectedValuenamaProject ?? '',
+          "namaProject": selectedValuenamaProject ?? '',
           "noIndukProduk": noProdukcontroller.text,
           "noSeriAwal": noSeriAwalcontroller.text,
           "targetMulai": tglMulaicontroller.text,
@@ -245,7 +245,7 @@ class _PerencanaanState extends State<Perencanaan> {
       if (response.statusCode == 200) {
         final newProjectData = {
           "id": response.body,
-          "nama": namaProjectcontroller.text,
+          "namaProject": namaProjectcontroller.text,
           "noIndukProduk": noProdukcontroller.text,
           "noSeriAwal": noSeriAwalcontroller.text,
           "targetMulai": tglMulaicontroller.text,

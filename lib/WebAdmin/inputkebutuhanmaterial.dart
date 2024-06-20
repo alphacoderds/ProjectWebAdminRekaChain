@@ -175,13 +175,13 @@ class _InputMaterialState extends State<InputMaterial> {
       Map<String, List<String>> projectMap = {};
 
       for (var project in data) {
-        String nama = project['nama'].toString();
+        String namaProject = project['namaProject'].toString();
         String kodeLot = project['kodeLot'].toString();
 
-        if (projectMap.containsKey(nama)) {
-          projectMap[nama]!.add(kodeLot);
+        if (projectMap.containsKey(namaProject)) {
+          projectMap[namaProject]!.add(kodeLot);
         } else {
-          projectMap[nama] = [kodeLot];
+          projectMap[namaProject] = [kodeLot];
         }
       }
 

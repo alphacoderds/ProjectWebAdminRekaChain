@@ -58,18 +58,56 @@ class _InputMaterialState extends State<InputMaterial> {
 
   Map<String, List<String>> projectMap = {};
 
+  Future<bool> _isValidCSV(Uint8List fileBytes) async {
+    try {
+      final csvData = utf8.decode(fileBytes);
+      final List<List<dynamic>> csvList =
+          const CsvToListConverter().convert(csvData);
+      return csvList.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> _uploadDocument() async {
     FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: true);
+        await FilePicker.platform.pickFiles(allowMultiple: false);
     if (result != null) {
-      setState(() {
-        uploadFiles.addAll(result.files);
-      });
-      print(
-          'Dokumen berhasil diunggah: ${result.files.map((file) => file.name)}');
-    } else {
-      print('Pengguna membatalkan memilih file');
+      Uint8List fileBytes = result.files.single.bytes!;
+      bool isValidCSV = await _isValidCSV(fileBytes);
+
+      if (isValidCSV) {
+        setState(() {
+          uploadFiles.add(result.files.single);
+        });
+        print('Dokumen berhasil diunggah: ${result.files.single.name}');
+      } else {
+        _showErrorDialog(result.files.single.name);
+      }
     }
+  }
+
+  void _showErrorDialog(String fileName) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('File Gagal Diunggah',
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          content: Text('File $fileName tidak valid atau bukan file CSV.',
+              style: TextStyle(color: Colors.white)),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK', style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<List<List<dynamic>>> parseCSV(io.File file) async {
@@ -135,13 +173,13 @@ class _InputMaterialState extends State<InputMaterial> {
       Map<String, List<String>> projectMap = {};
 
       for (var project in data) {
-        String nama = project['nama'].toString();
+        String namaProject = project['namaProject'].toString();
         String kodeLot = project['kodeLot'].toString();
 
-        if (projectMap.containsKey(nama)) {
-          projectMap[nama]!.add(kodeLot);
+        if (projectMap.containsKey(namaProject)) {
+          projectMap[namaProject]!.add(kodeLot);
         } else {
-          projectMap[nama] = [kodeLot];
+          projectMap[namaProject] = [kodeLot];
         }
       }
 
@@ -201,7 +239,9 @@ class _InputMaterialState extends State<InputMaterial> {
         context: context,
         barrierDismissible: false,
         builder: (_) => AlertDialog(
-          title: Text('QR Code Kode Lot'),
+          title:
+              Text('QR Code Kode Lot', style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
           content: Container(
             width: 245,
             height: 245,
@@ -212,8 +252,7 @@ class _InputMaterialState extends State<InputMaterial> {
               onPressed: () {
                 saveQRCodeAsImage(_qrCodeKey, kodeLot);
               },
-              child: Text("Download",
-                  style: TextStyle(color: ui.Color.fromRGBO(43, 56, 86, 1))),
+              child: Text("Download", style: TextStyle(color: Colors.white)),
             ),
             SizedBox(width: 40),
             TextButton(
@@ -235,8 +274,7 @@ class _InputMaterialState extends State<InputMaterial> {
                   ),
                 );
               },
-              child: Text("Selesai",
-                  style: TextStyle(color: ui.Color.fromRGBO(43, 56, 86, 1))),
+              child: Text("Selesai", style: TextStyle(color: Colors.white)),
             ),
           ],
         ),

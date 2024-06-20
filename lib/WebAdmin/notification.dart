@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:RekaChain/WebAdmin/AfterSales.dart';
 import 'package:RekaChain/WebAdmin/dasboard.dart';
 import 'package:RekaChain/WebAdmin/data_model.dart';
@@ -11,6 +13,7 @@ import 'package:RekaChain/WebAdmin/subnotifikasi.dart';
 import 'package:RekaChain/WebAdmin/tambahproject.dart';
 import 'package:RekaChain/WebAdmin/tambahstaff.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Notifikasi extends StatefulWidget {
   final Map<String, dynamic>? newProject;
@@ -27,6 +30,55 @@ class _NotifikasiState extends State<Notifikasi> {
   int _selectedIndex = 0;
   late double screenWidth;
   late double screenHeight;
+
+  List _listdata = [];
+  bool _isloading = true;
+  Map<String, List<dynamic>> _groupedData = {};
+
+  String _searchQuery = '';
+
+  void _updateSearchQuery(String query) {
+    setState(() {
+      _searchQuery = query;
+    });
+  }
+
+  Future _getdata() async {
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+        ),
+      );
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print(data);
+        setState(() {
+          _listdata = _removeDuplicates(data).reversed.toList();
+          _isloading = false;
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  List _removeDuplicates(List data) {
+    final Map<String, dynamic> resultMap = {};
+
+    data.forEach((item) {
+      final uniqueIdentifier = '${item['namaProject']}-${item['kodeLot']}';
+      resultMap[uniqueIdentifier] = item;
+    });
+
+    return resultMap.values.toList();
+  }
+
+  @override
+  void initState() {
+    _getdata();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +128,36 @@ class _NotifikasiState extends State<Notifikasi> {
                           SizedBox(
                             width: screenWidth * 0.005,
                           ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 7),
+                            width: 250,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 8),
+                                Expanded(
+                                  child: TextField(
+                                    onChanged: _updateSearchQuery,
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Cari',
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.search,
+                                    size: 30,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                              ],
+                            ),
+                          ),
                           IconButton(
                             icon: Icon(
                               Icons.notifications_active,
@@ -111,12 +193,254 @@ class _NotifikasiState extends State<Notifikasi> {
                     )
                   ],
                 ),
-                body: _ListView(),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Center(
+                    child: _buildMainTable(),
+                  ),
+                ),
               ),
             ),
           ],
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      ),
+    );
+  }
+
+  Widget _buildMainTable() {
+    List filteredData = _listdata.where((data) {
+      String namaProject = data['namaProject'] ?? '';
+      String kodeLot = data['kodelot'] ?? '';
+      return namaProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
+    }).toList();
+    return Container(
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - 50,
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columnSpacing: 120.0,
+              horizontalMargin: 200.0,
+              columns: [
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'No',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Nama Project',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'Kode Lot',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+                DataColumn(
+                  label: Center(
+                    child: Text(
+                      'View',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ],
+              rows: filteredData
+                  .asMap()
+                  .map(
+                    (index, data) => MapEntry(
+                      index,
+                      DataRow(
+                        cells: [
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text((index + 1).toString()),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(data['namaProject'] ?? ''),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(data['kodeLot'] ?? ''),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        Icons.notifications,
+                                        color: Color.fromARGB(255, 6, 37, 55),
+                                      ),
+                                      onPressed: () async {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => Subnotifikasi(
+                                              nip: widget.nip,
+                                              data: widget.data,
+                                              selectedProject: {
+                                                "id_lot": filteredData[index]
+                                                    ['id_lot'],
+                                                "noProduk": filteredData[index]
+                                                    ['noProduk'],
+                                                "namaProject":
+                                                    filteredData[index]
+                                                        ['namaProject'],
+                                                "noIndukProduk":
+                                                    filteredData[index]
+                                                        ['noIndukProduk'],
+                                                "noSeriAwal":
+                                                    filteredData[index]
+                                                        ['noSeriAwal'],
+                                                "targetMulai":
+                                                    filteredData[index]
+                                                        ['targetMulai'],
+                                                "namaProduk":
+                                                    filteredData[index]
+                                                        ['namaProduk'],
+                                                "jumlahLot": filteredData[index]
+                                                    ['jumlahLot'],
+                                                "kodeLot": filteredData[index]
+                                                    ['kodeLot'],
+                                                "noSeriAkhir":
+                                                    filteredData[index]
+                                                        ['noSeriAkhir'],
+                                                "targetSelesai":
+                                                    filteredData[index]
+                                                        ['targetSelesai'],
+                                                "ap1": filteredData[index]
+                                                    ['ap1'],
+                                                "kategori1": filteredData[index]
+                                                    ['kategori1'],
+                                                "keterangan1":
+                                                    filteredData[index]
+                                                        ['keterangan1'],
+                                                "ap2": filteredData[index]
+                                                    ['ap2'],
+                                                "kategori2": filteredData[index]
+                                                    ['kategori2'],
+                                                "keterangan2":
+                                                    filteredData[index]
+                                                        ['keterangan2'],
+                                                "ap3": filteredData[index]
+                                                    ['ap3'],
+                                                "kategori3": filteredData[index]
+                                                    ['kategori3'],
+                                                "keterangan3":
+                                                    filteredData[index]
+                                                        ['keterangan3'],
+                                                "ap4": filteredData[index]
+                                                    ['ap4'],
+                                                "kategori4": filteredData[index]
+                                                    ['kategori4'],
+                                                "keterangan4":
+                                                    filteredData[index]
+                                                        ['keterangan4'],
+                                                "ap5": filteredData[index]
+                                                    ['ap5'],
+                                                "kategori5": filteredData[index]
+                                                    ['kategori5'],
+                                                "keterangan5":
+                                                    filteredData[index]
+                                                        ['keterangan5'],
+                                                "ap6": filteredData[index]
+                                                    ['ap6'],
+                                                "kategori6": filteredData[index]
+                                                    ['kategori6'],
+                                                "keterangan6":
+                                                    filteredData[index]
+                                                        ['keterangan6'],
+                                                "ap7": filteredData[index]
+                                                    ['ap7'],
+                                                "kategori7": filteredData[index]
+                                                    ['kategori7'],
+                                                "keterangan7":
+                                                    filteredData[index]
+                                                        ['keterangan7'],
+                                                "ap8": filteredData[index]
+                                                    ['ap8'],
+                                                "kategori8": filteredData[index]
+                                                    ['kategori8'],
+                                                "keterangan8":
+                                                    filteredData[index]
+                                                        ['keterangan8'],
+                                                "ap9": filteredData[index]
+                                                    ['ap9'],
+                                                "kategori9": filteredData[index]
+                                                    ['kategori9'],
+                                                "keterangan9":
+                                                    filteredData[index]
+                                                        ['keterangan9'],
+                                                "ap10": filteredData[index]
+                                                    ['ap10'],
+                                                "kategori10":
+                                                    filteredData[index]
+                                                        ['kategori10'],
+                                                "keterangan10":
+                                                    filteredData[index]
+                                                        ['keterangan10'],
+                                              },
+                                            ),
+                                          ),
+                                        ).then((result) {
+                                          if (result != null && result) {}
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                  .values
+                  .toList(),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -339,115 +663,4 @@ class _NotifikasiState extends State<Notifikasi> {
       },
     );
   }
-
-  Widget _ListView() {
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        return ListViewItem(context, index);
-      },
-      separatorBuilder: (context, index) {
-        return Divider(height: 0);
-      },
-      itemCount: 15,
-    );
-  }
-
-  Widget ListViewItem(BuildContext context, int index) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  Subnotifikasi(data: widget.data, nip: widget.nip)),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            prefixIcon(),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    message(index),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-Widget prefixIcon() {
-  return Container(
-    height: 80,
-    width: 60,
-    margin: EdgeInsets.only(left: 4),
-    padding: EdgeInsets.all(10),
-    decoration: BoxDecoration(
-      shape: BoxShape.circle,
-      color: Colors.grey.shade300,
-    ),
-    child: Icon(
-      Icons.notifications,
-      size: 35,
-      color: Color.fromARGB(255, 6, 37, 55),
-    ),
-  );
-}
-
-Widget message(int index) {
-  double textsize = 14;
-  return Container(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 15,
-        ),
-        Text(
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-          'Panel ${index + 1}',
-          style: TextStyle(
-            fontSize: 17,
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(top: 5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                '23-2-2024',
-                style: TextStyle(
-                  fontSize: 12,
-                ),
-              ),
-              SizedBox(
-                width: 7,
-              ),
-              Text(
-                '07:00 AM',
-                style: TextStyle(
-                  fontSize: 12,
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
 }

@@ -103,7 +103,7 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'https://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_perencanaan.php?namaProject=${widget.selectedProject['namaProject']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -132,8 +132,8 @@ class _DetailViewPerencanaanState extends State<DetailViewPerencanaan> {
         TextEditingController(text: widget.selectedProject['noProduk'] ?? '');
     noIndukProdukcontroller = TextEditingController(
         text: widget.selectedProject['noIndukProduk'] ?? '');
-    namaProjectcontroller =
-        TextEditingController(text: widget.selectedProject['nama'] ?? '');
+    namaProjectcontroller = TextEditingController(
+        text: widget.selectedProject['namaProject'] ?? '');
     noSeriAwalcontroller =
         TextEditingController(text: widget.selectedProject['noSeriAwal'] ?? '');
     namaProdukcontroller =

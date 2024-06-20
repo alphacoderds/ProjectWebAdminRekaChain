@@ -205,13 +205,13 @@ class _AfterSalesState extends State<AfterSales> {
     List filteredData = _listdata.where((data) {
       String id_lot = data['id_lot'] ?? '';
       String id_project = data['id_project'] ?? '';
-      String nama = data['nama'] ?? '';
+      String namaProject = data['namaProject'] ?? '';
       String kodeLot = data['kodeLot'] ?? '';
       String noProduk = data['noProduk'] ?? '';
       String targetMulai = data['targetMulai'] ?? '';
       return id_lot.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           id_project.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          namaProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           kodeLot.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           noProduk.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           targetMulai.toLowerCase().contains(_searchQuery.toLowerCase());
@@ -306,7 +306,7 @@ class _AfterSalesState extends State<AfterSales> {
                               scrollDirection: Axis.horizontal,
                               child: Container(
                                 alignment: Alignment.center,
-                                child: Text(data['nama'] ?? ''),
+                                child: Text(data['namaProject'] ?? ''),
                               ),
                             ),
                           ),
@@ -363,8 +363,9 @@ class _AfterSalesState extends State<AfterSales> {
                                                         ['id_project'],
                                                 "noProduk": filteredData[index]
                                                     ['noProduk'],
-                                                "nama": filteredData[index]
-                                                    ['nama'],
+                                                "namaProject":
+                                                    filteredData[index]
+                                                        ['namaProject'],
                                                 "targetMulai":
                                                     filteredData[index]
                                                         ['targetMulai'],

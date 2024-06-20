@@ -208,10 +208,10 @@ class _VperencanaanState extends State<Vperencanaan> {
 
   Widget _buildMainTable() {
     List filteredData = _listdata.where((data) {
-      String nama = data['nama'] ?? '';
+      String namaProject = data['namaProject'] ?? '';
       String kodeLot = data['kodeLot'] ?? '';
       String namaProduk = data['namaProduk'] ?? '';
-      return nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+      return namaProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           namaProduk.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
@@ -297,7 +297,7 @@ class _VperencanaanState extends State<Vperencanaan> {
                             scrollDirection: Axis.horizontal,
                             child: Container(
                               alignment: Alignment.center,
-                              child: Text(data['nama'] ?? ''),
+                              child: Text(data['namaProject'] ?? ''),
                             ),
                           ),
                         ),
@@ -349,8 +349,8 @@ class _VperencanaanState extends State<Vperencanaan> {
                                                   ['id_lot'],
                                               "noProduk": filteredData[index]
                                                   ['noProduk'],
-                                              "nama": filteredData[index]
-                                                  ['nama'],
+                                              "namaProject": filteredData[index]
+                                                  ['namaProject'],
                                               "noIndukProduk":
                                                   filteredData[index]
                                                       ['noIndukProduk'],

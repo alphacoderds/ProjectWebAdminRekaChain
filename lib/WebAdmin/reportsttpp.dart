@@ -71,7 +71,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
     final Map<String, dynamic> resultMap = {};
 
     data.forEach((item) {
-      final uniqueIdentifier = '${item['nama']}-${item['kodeLot']}';
+      final uniqueIdentifier = '${item['namaProject']}-${item['kodeLot']}';
       resultMap[uniqueIdentifier] = item;
     });
 
@@ -219,9 +219,9 @@ class _ReportSTTPState extends State<ReportSTTPP> {
 
   Widget _buildMainTable() {
     List filteredData = _listdata.where((data) {
-      String nama = data['nama'] ?? '';
+      String namaProject = data['namaProject'] ?? '';
       String kodeLot = data['kodelot'] ?? '';
-      return nama.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+      return namaProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
     return Container(
@@ -296,7 +296,7 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                               scrollDirection: Axis.horizontal,
                               child: Container(
                                 alignment: Alignment.center,
-                                child: Text(data['nama'] ?? ''),
+                                child: Text(data['namaProject'] ?? ''),
                               ),
                             ),
                           ),
@@ -330,8 +330,9 @@ class _ReportSTTPState extends State<ReportSTTPP> {
                                                     ['id_lot'],
                                                 "noProduk": filteredData[index]
                                                     ['noProduk'],
-                                                "nama": filteredData[index]
-                                                    ['nama'],
+                                                "namaProject":
+                                                    filteredData[index]
+                                                        ['namaProject'],
                                                 "noIndukProduk":
                                                     filteredData[index]
                                                         ['noIndukProduk'],

@@ -180,13 +180,13 @@ class _InputDokumenState extends State<InputDokumen> {
       Map<String, List<String>> projectMap = {};
 
       for (var project in data) {
-        String nama = project['nama'].toString();
+        String namaProject = project['namaProject'].toString();
         String noProduk = project['noProduk'].toString();
 
-        if (projectMap.containsKey(nama)) {
-          projectMap[nama]!.add(noProduk);
+        if (projectMap.containsKey(namaProject)) {
+          projectMap[namaProject]!.add(noProduk);
         } else {
-          projectMap[nama] = [noProduk];
+          projectMap[namaProject] = [noProduk];
         }
       }
 

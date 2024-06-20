@@ -53,11 +53,11 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
   void fetchData() async {
     try {
       final noProduk = widget.selectedProject['noProduk'] ?? '';
-      final nama = widget.selectedProject['nama'] ?? '';
+      final namaProject = widget.selectedProject['namaProject'] ?? '';
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=$nama&noProduk=$noProduk',
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?namaProject=$namaProject&noProduk=$noProduk',
         ),
       );
 
@@ -67,7 +67,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
         setState(() {
           noProdukcontroller.text = responseData['noProduk'] ?? 'N/A';
           kodeLotcontroller.text = responseData['kodeLot'] ?? 'N/A';
-          namaProjectcontroller.text = responseData['nama'] ?? 'N/A';
+          namaProjectcontroller.text = responseData['namaProject'] ?? 'N/A';
           sarancontroller.text = responseData['saran'] ?? 'N/A';
         });
       } else {
@@ -135,12 +135,13 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
               onPressed: () {
                 Navigator.of(context).pop();
                 // Kode pengunduhan CSV dimulai dari sini
-                String? nama =
-                    _listdata.isNotEmpty ? _listdata[0]['nama'] : 'default';
+                String? namaProject = _listdata.isNotEmpty
+                    ? _listdata[0]['namaProject']
+                    : 'default';
                 String? kodeLot =
                     _listdata.isNotEmpty ? _listdata[0]['kodeLot'] : 'default';
 
-                String finalNama = nama ?? 'default';
+                String finalNamaProject = namaProject ?? 'default';
                 String finalKodeLot = kodeLot ?? 'default';
 
                 List<List<dynamic>> rows = [
@@ -158,12 +159,12 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
 
                 int rowIndex = 1;
                 for (var data in _listdata) {
-                  final nama = data['nama'];
+                  final namaProject = data['namaProject'];
                   final kodeLot = data['kodeLot'];
 
                   rows.add([
                     rowIndex.toString(),
-                    nama ?? '',
+                    namaProject ?? '',
                     kodeLot ?? '',
                     data['noProduk'] ?? '',
                     data['detail_kerusakan'] ?? '',
@@ -179,8 +180,8 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                 final blob = Blob([bytes]);
                 final url = Url.createObjectUrlFromBlob(blob);
                 AnchorElement(href: url)
-                  ..setAttribute(
-                      "download", "Aftersales/$finalNama-$finalKodeLot.csv")
+                  ..setAttribute("download",
+                      "Aftersales/$finalNamaProject-$finalKodeLot.csv")
                   ..click();
                 Url.revokeObjectUrl(url);
               },
@@ -202,8 +203,8 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
         TextEditingController(text: widget.selectedProject['noProduk'] ?? '');
     kodeLotcontroller =
         TextEditingController(text: widget.selectedProject['kodeLot'] ?? '');
-    namaProjectcontroller =
-        TextEditingController(text: widget.selectedProject['nama'] ?? '');
+    namaProjectcontroller = TextEditingController(
+        text: widget.selectedProject['namaProject'] ?? '');
     tglMulaicontroller = TextEditingController(
         text: widget.selectedProject['targetMulai'] ?? '');
     dtlKekurangancontroller = TextEditingController(
@@ -234,199 +235,228 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
             return null;
         }
       },
-      home: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        onGenerateRoute: (settings) {
-          switch (settings.name) {
-            case '/':
-              return MaterialPageRoute(
-                builder: (context) =>
-                    ViewAfterSales(data: widget.data, nip: widget.nip),
-              );
-            default:
-              return null;
-          }
-        },
-        home: Scaffold(
-          body: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDrawer(),
-              Expanded(
-                child: Scaffold(
-                  appBar: AppBar(
-                    backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
-                    toolbarHeight: 65,
-                    title: Padding(
-                      padding: EdgeInsets.only(left: screenHeight * 0.02),
-                      child: Text(
-                        'Detail After Sales',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Donegal One',
-                          color: Colors.white,
-                        ),
+      home: Scaffold(
+        body: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildDrawer(),
+            Expanded(
+              child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+                  toolbarHeight: 65,
+                  title: Padding(
+                    padding: EdgeInsets.only(left: screenHeight * 0.02),
+                    child: Text(
+                      'Detail After Sales',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Donegal One',
+                        color: Colors.white,
                       ),
                     ),
-                    actions: [
-                      Padding(
-                        padding: EdgeInsets.only(right: screenHeight * 0.11),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: screenWidth * 0.005,
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.file_download_outlined,
-                                size: 33,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                _downloadCSV();
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.notifications_active,
-                                size: 35,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Notifikasi(
-                                        nip: widget.nip, data: widget.data),
-                                  ),
-                                );
-                              },
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.account_circle_rounded,
-                                size: 38,
-                                color: Color.fromARGB(255, 255, 255, 255),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Profile(
-                                          data: widget.data, nip: widget.nip)),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
                   ),
-                  body: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: screenHeight * 0.05,
-                          horizontal: screenWidth * 0.08),
-                      child: Center(
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                              margin: EdgeInsets.all(50.0),
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.black),
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20.0, horizontal: 20.0),
+                  actions: [
+                    Padding(
+                      padding: EdgeInsets.only(right: screenHeight * 0.11),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: screenWidth * 0.005,
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.file_download_outlined,
+                              size: 33,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                            onPressed: () {
+                              _downloadCSV();
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.notifications_active,
+                              size: 35,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Notifikasi(
+                                      nip: widget.nip, data: widget.data),
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.account_circle_rounded,
+                              size: 38,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Profile(
+                                        data: widget.data, nip: widget.nip)),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.05,
+                        horizontal: screenWidth * 0.08),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            margin: EdgeInsets.all(50.0),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 20.0, horizontal: 20.0),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: DataTable(
+                                  columnSpacing: 150.0,
+                                  horizontalMargin: 70.0,
+                                  columns: [
+                                    DataColumn(
+                                      label: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Nama Project',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    DataColumn(
+                                      label: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'Kode Lot',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    DataColumn(
+                                      label: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              'No Produk',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  rows: _listdata.length > 0
+                                      ? [
+                                          DataRow(
+                                            cells: [
+                                              DataCell(Text(_listdata[0]
+                                                      ['namaProject'] ??
+                                                  '')),
+                                              DataCell(Text(_listdata[0]
+                                                      ['kodeLot'] ??
+                                                  '')),
+                                              DataCell(Text(_listdata[0]
+                                                      ['noProduk'] ??
+                                                  '')),
+                                            ],
+                                          ),
+                                        ]
+                                      : [],
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 40),
+                          Container(
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            margin: EdgeInsets.all(50.0),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(10)),
+                            child: Column(
+                              children: [
+                                Container(child: _buildMainTable()),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                        top: BorderSide(color: Colors.black45)),
+                                  ),
+                                  height: screenHeight * 0.3,
+                                  padding: EdgeInsets.fromLTRB(30, 30, 0, 10),
+                                  alignment: Alignment.topLeft,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Text('Nama Project : ',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            Text(namaProjectcontroller.text,
-                                                style: TextStyle(fontSize: 16)),
-                                          ],
+                                        Text(
+                                          'Saran :',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16),
                                         ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Text('Kode Lot         : ',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            Text(kodeLotcontroller.text,
-                                                style: TextStyle(fontSize: 16)),
-                                          ],
+                                        SizedBox(
+                                          height: 20,
                                         ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Text('No Produk      : ',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16)),
-                                            Text(noProdukcontroller.text,
-                                                style: TextStyle(fontSize: 16)),
-                                          ],
-                                        ),
+                                        Text(sarancontroller.text,
+                                            style: TextStyle(fontSize: 16)),
                                       ],
                                     ),
                                   ),
-                                  Container(child: _buildMainTable()),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                          top: BorderSide(
-                                              color: Colors.black45)),
-                                    ),
-                                    height: screenHeight * 0.3,
-                                    padding: EdgeInsets.fromLTRB(30, 30, 0, 10),
-                                    alignment: Alignment.topLeft,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Saran :',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 16),
-                                          ),
-                                          SizedBox(
-                                            height: 20,
-                                          ),
-                                          Text(sarancontroller.text,
-                                              style: TextStyle(fontSize: 16)),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+            ),
+          ],
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       ),
     );
   }

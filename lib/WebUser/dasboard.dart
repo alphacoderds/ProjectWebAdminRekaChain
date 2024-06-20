@@ -40,7 +40,8 @@ class _UserDashboardState extends State<UserDashboard> {
     if (query.isNotEmpty) {
       List<LotData> filteredList = _listdata
           .where((lotData) =>
-              lotData.nama.toLowerCase().contains(query.toLowerCase()) ||
+              lotData.namaProject.toLowerCase().contains(query.toLowerCase()) ||
+              lotData.kodeLot.toLowerCase().contains(query.toLowerCase()) ||
               lotData.noProduk.toLowerCase().contains(query.toLowerCase()))
           .toList();
       setState(() {
@@ -255,7 +256,7 @@ class _UserDashboardState extends State<UserDashboard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${data.nama} | ${data.kodeLot} | ${data.noProduk}',
+                                  '${data.namaProject} | ${data.kodeLot} | ${data.noProduk}',
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -354,6 +355,7 @@ class _UserDashboardState extends State<UserDashboard> {
         );
       }
     }
+
     return stepWidgets;
   }
 
@@ -541,7 +543,7 @@ class _UserDashboardState extends State<UserDashboard> {
 }
 
 class LotData {
-  final String nama;
+  final String namaProject;
   final String kodeLot;
   final String noProduk;
   final int currentStep;
@@ -567,7 +569,7 @@ class LotData {
   final String status10;
 
   LotData({
-    required this.nama,
+    required this.namaProject,
     required this.kodeLot,
     required this.noProduk,
     required this.currentStep,
@@ -595,7 +597,7 @@ class LotData {
 
   factory LotData.fromJson(Map<String, dynamic> json) {
     return LotData(
-      nama: json['nama'],
+      namaProject: json['namaProject'],
       kodeLot: json['kodeLot'],
       noProduk: json['noProduk'],
       currentStep: json['currentStep'] ?? 0,

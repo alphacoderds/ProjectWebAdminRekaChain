@@ -4,7 +4,7 @@ $conn = new mysqli("localhost", "root", "", "db_rekachain");
 
 // Data dari form pertama
 $id = $_POST["id"];
-$nama = $_POST["nama"];
+$namaProject = $_POST["namaProject"];
 $noIndukProduk = $_POST["noIndukProduk"];
 $noSeriAwal = $_POST["noSeriAwal"];
 $targetMulai = $_POST["targetMulai"];
@@ -50,7 +50,7 @@ $noProduk = $_POST["noProduk"];
 
 $conn->begin_transaction();
 
-$query1 = "INSERT INTO tbl_project (id, nama, noIndukProduk, noSeriAwal, targetMulai, namaProduk, jumlahLot, kodeLot, noSeriAkhir, targetSelesai, 
+$query1 = "INSERT INTO tbl_project (id, namaProject, noIndukProduk, noSeriAwal, targetMulai, namaProduk, jumlahLot, kodeLot, noSeriAkhir, targetSelesai, 
 ap1, kategori1, keterangan1, 
 ap2, kategori2, keterangan2, 
 ap3, kategori3, keterangan3, 
@@ -60,7 +60,7 @@ ap6, kategori6, keterangan6,
 ap7, kategori7, keterangan7, 
 ap8, kategori8, keterangan8, 
 ap9, kategori9, keterangan9, 
-ap10, kategori10, keterangan10) VALUES ('$id', '$nama', '$noIndukProduk', '$noSeriAwal', '$targetMulai', '$namaProduk', '$jumlahLot', '$kodeLot', '$noSeriAkhir', '$targetSelesai', 
+ap10, kategori10, keterangan10) VALUES ('$id', '$namaProject', '$noIndukProduk', '$noSeriAwal', '$targetMulai', '$namaProduk', '$jumlahLot', '$kodeLot', '$noSeriAkhir', '$targetSelesai', 
 '$ap1', '$kategori1', '$keterangan1', 
 '$ap2', '$kategori2', '$keterangan2', 
 '$ap3', '$kategori3', '$keterangan3', 

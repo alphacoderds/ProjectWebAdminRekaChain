@@ -75,11 +75,14 @@ class _InputDokumenState extends State<InputDokumen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('File Gagal Diunggah'),
-          content: Text('File $fileName terlalu besar atau bukan PDF.'),
+          title: Text('File Gagal Diunggah',
+              style: TextStyle(color: Colors.white)),
+          backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
+          content: Text('File $fileName terlalu besar atau bukan PDF.',
+              style: TextStyle(color: Colors.white)),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: Text('OK', style: TextStyle(color: Colors.white)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -175,13 +178,13 @@ class _InputDokumenState extends State<InputDokumen> {
       Map<String, List<String>> projectMap = {};
 
       for (var project in data) {
-        String nama = project['nama'].toString();
+        String namaProject = project['namaProject'].toString();
         String noProduk = project['noProduk'].toString();
 
-        if (projectMap.containsKey(nama)) {
-          projectMap[nama]!.add(noProduk);
+        if (projectMap.containsKey(namaProject)) {
+          projectMap[namaProject]!.add(noProduk);
         } else {
-          projectMap[nama] = [noProduk];
+          projectMap[namaProject] = [noProduk];
         }
       }
 

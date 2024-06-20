@@ -65,48 +65,78 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
   TextEditingController alurProses1controller = TextEditingController();
   TextEditingController kategori1controller = TextEditingController();
   TextEditingController detail1controller = TextEditingController();
+  TextEditingController nip1controller = TextEditingController();
+  TextEditingController tanggalMulai1controller = TextEditingController();
+  TextEditingController tanggalSelesai1controller = TextEditingController();
 
   TextEditingController alurProses2controller = TextEditingController();
   TextEditingController kategori2controller = TextEditingController();
   TextEditingController detail2controller = TextEditingController();
+  TextEditingController nip2controller = TextEditingController();
+  TextEditingController tanggalMulai2controller = TextEditingController();
+  TextEditingController tanggalSelesai2controller = TextEditingController();
 
   TextEditingController alurProses3controller = TextEditingController();
   TextEditingController kategori3controller = TextEditingController();
   TextEditingController detail3controller = TextEditingController();
+  TextEditingController nip3controller = TextEditingController();
+  TextEditingController tanggalMulai3controller = TextEditingController();
+  TextEditingController tanggalSelesai3controller = TextEditingController();
 
   TextEditingController alurProses4controller = TextEditingController();
   TextEditingController kategori4controller = TextEditingController();
   TextEditingController detail4controller = TextEditingController();
+  TextEditingController nip4controller = TextEditingController();
+  TextEditingController tanggalMulai4controller = TextEditingController();
+  TextEditingController tanggalSelesai4controller = TextEditingController();
 
   TextEditingController alurProses5controller = TextEditingController();
   TextEditingController kategori5controller = TextEditingController();
   TextEditingController detail5controller = TextEditingController();
+  TextEditingController nip5controller = TextEditingController();
+  TextEditingController tanggalMulai5controller = TextEditingController();
+  TextEditingController tanggalSelesai5controller = TextEditingController();
 
   TextEditingController alurProses6controller = TextEditingController();
   TextEditingController kategori6controller = TextEditingController();
   TextEditingController detail6controller = TextEditingController();
+  TextEditingController nip6controller = TextEditingController();
+  TextEditingController tanggalMulai6controller = TextEditingController();
+  TextEditingController tanggalSelesai6controller = TextEditingController();
 
   TextEditingController alurProses7controller = TextEditingController();
   TextEditingController kategori7controller = TextEditingController();
   TextEditingController detail7controller = TextEditingController();
+  TextEditingController nip7controller = TextEditingController();
+  TextEditingController tanggalMulai7controller = TextEditingController();
+  TextEditingController tanggalSelesai7controller = TextEditingController();
 
   TextEditingController alurProses8controller = TextEditingController();
   TextEditingController kategori8controller = TextEditingController();
   TextEditingController detail8controller = TextEditingController();
+  TextEditingController nip8controller = TextEditingController();
+  TextEditingController tanggalMulai8controller = TextEditingController();
+  TextEditingController tanggalSelesai8controller = TextEditingController();
 
   TextEditingController alurProses9controller = TextEditingController();
   TextEditingController kategori9controller = TextEditingController();
   TextEditingController detail9controller = TextEditingController();
+  TextEditingController nip9controller = TextEditingController();
+  TextEditingController tanggalMulai9controller = TextEditingController();
+  TextEditingController tanggalSelesai9controller = TextEditingController();
 
   TextEditingController alurProses10controller = TextEditingController();
   TextEditingController kategori10controller = TextEditingController();
   TextEditingController detail10controller = TextEditingController();
+  TextEditingController nip10controller = TextEditingController();
+  TextEditingController tanggalMulai10controller = TextEditingController();
+  TextEditingController tanggalSelesai10controller = TextEditingController();
 
   void fetchData() async {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/read_perencanaan.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/read_reportsttpp.php?namaProject=${widget.selectedProject['namaProject']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -141,12 +171,13 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                String? nama =
-                    _listdata.isNotEmpty ? _listdata[0]['nama'] : 'default';
+                String? namaProject = _listdata.isNotEmpty
+                    ? _listdata[0]['namaProject']
+                    : 'default';
                 String? kodeLot =
                     _listdata.isNotEmpty ? _listdata[0]['kodeLot'] : 'default';
 
-                String finalNama = nama ?? 'default';
+                String finalNamaProject = namaProject ?? 'default';
                 String finalKodeLot = kodeLot ?? 'default';
 
                 List<List<dynamic>> rows = [];
@@ -167,29 +198,35 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
 
                 int rowIndex = 1;
                 for (var data in _listdata) {
-                  final nama = data['nama'];
+                  final namaProject = data['namaProject'];
                   final kodeLot = data['kodeLot'];
                   final idLot = data['id_lot'];
 
                   for (var i = 1; i <= 10; i++) {
                     final alurProsesKey = 'ap$i';
+                    final namaKey = 'nama$i';
                     final detailKey = 'keterangan$i';
+                    final tanggalMulaiKey = 'tanggal_mulai$i';
+                    final tanggalSelesaiKey = 'tanggal_selesai$i';
 
                     final alurProses = data[alurProsesKey];
+                    final nama = data[namaKey];
                     final detail = data[detailKey];
+                    final tanggalMulai = data[tanggalMulaiKey];
+                    final tanggalSelesai = data[tanggalSelesaiKey];
 
                     if (alurProses != null && alurProses.isNotEmpty) {
                       rows.add([
                         rowIndex.toString(),
-                        nama ?? '',
+                        namaProject ?? '',
                         kodeLot ?? '',
                         namaProdukcontroller.text,
                         data['noProduk'] ?? '',
                         data['id_lot'] ?? '',
                         alurProses ?? '',
-                        tglMulaicontroller.text,
-                        tglSelesaicontroller.text,
-                        detail ?? '',
+                        tanggalMulai ?? '',
+                        tanggalSelesai ?? '',
+                        nama ?? '',
                         detail ?? ''
                       ]);
                       rowIndex++;
@@ -202,8 +239,8 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                 final blob = Blob([bytes]);
                 final url = Url.createObjectUrlFromBlob(blob);
                 AnchorElement(href: url)
-                  ..setAttribute(
-                      "download", "ReportSTTPP/$finalNama - $finalKodeLot.csv")
+                  ..setAttribute("download",
+                      "ReportSTTPP/$finalNamaProject - $finalKodeLot.csv")
                   ..click();
                 Url.revokeObjectUrl(url);
               },
@@ -226,8 +263,8 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['noProduk'] ?? '');
     noIndukProdukcontroller = TextEditingController(
         text: widget.selectedProject['noIndukProduk'] ?? '');
-    namaProjectcontroller =
-        TextEditingController(text: widget.selectedProject['nama'] ?? '');
+    namaProjectcontroller = TextEditingController(
+        text: widget.selectedProject['namaProject'] ?? '');
     noSeriAwalcontroller =
         TextEditingController(text: widget.selectedProject['noSeriAwal'] ?? '');
     namaProdukcontroller =
@@ -249,6 +286,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori1'] ?? '');
     detail1controller = TextEditingController(
         text: widget.selectedProject['keterangan1'] ?? '');
+    nip1controller =
+        TextEditingController(text: widget.selectedProject['nip1'] ?? '');
+    tanggalMulai1controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai1'] ?? '');
+    tanggalSelesai1controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai1'] ?? '');
 
     alurProses2controller =
         TextEditingController(text: widget.selectedProject['ap2'] ?? '');
@@ -256,6 +299,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori2'] ?? '');
     detail2controller = TextEditingController(
         text: widget.selectedProject['keterangan2'] ?? '');
+    nip2controller =
+        TextEditingController(text: widget.selectedProject['nip2'] ?? '');
+    tanggalMulai2controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai2'] ?? '');
+    tanggalSelesai2controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai2'] ?? '');
 
     alurProses3controller =
         TextEditingController(text: widget.selectedProject['ap3'] ?? '');
@@ -263,6 +312,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori3'] ?? '');
     detail3controller = TextEditingController(
         text: widget.selectedProject['keterangan3'] ?? '');
+    nip3controller =
+        TextEditingController(text: widget.selectedProject['nip3'] ?? '');
+    tanggalMulai3controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai3'] ?? '');
+    tanggalSelesai3controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai3'] ?? '');
 
     alurProses4controller =
         TextEditingController(text: widget.selectedProject['ap4'] ?? '');
@@ -270,6 +325,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori4'] ?? '');
     detail4controller = TextEditingController(
         text: widget.selectedProject['keterangan4'] ?? '');
+    nip4controller =
+        TextEditingController(text: widget.selectedProject['nip4'] ?? '');
+    tanggalMulai4controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai4'] ?? '');
+    tanggalSelesai4controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai4'] ?? '');
 
     alurProses5controller =
         TextEditingController(text: widget.selectedProject['ap5'] ?? '');
@@ -277,6 +338,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori5'] ?? '');
     detail5controller = TextEditingController(
         text: widget.selectedProject['keterangan5'] ?? '');
+    nip5controller =
+        TextEditingController(text: widget.selectedProject['nip5'] ?? '');
+    tanggalMulai5controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai5'] ?? '');
+    tanggalSelesai5controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai5'] ?? '');
 
     alurProses6controller =
         TextEditingController(text: widget.selectedProject['ap6'] ?? '');
@@ -284,6 +351,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori6'] ?? '');
     detail6controller = TextEditingController(
         text: widget.selectedProject['keterangan6'] ?? '');
+    nip6controller =
+        TextEditingController(text: widget.selectedProject['nip6'] ?? '');
+    tanggalMulai6controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai6'] ?? '');
+    tanggalSelesai6controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai6'] ?? '');
 
     alurProses7controller =
         TextEditingController(text: widget.selectedProject['ap7'] ?? '');
@@ -291,6 +364,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori7'] ?? '');
     detail7controller = TextEditingController(
         text: widget.selectedProject['keterangan7'] ?? '');
+    nip7controller =
+        TextEditingController(text: widget.selectedProject['nip7'] ?? '');
+    tanggalMulai7controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai7'] ?? '');
+    tanggalSelesai7controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai7'] ?? '');
 
     alurProses8controller =
         TextEditingController(text: widget.selectedProject['ap8'] ?? '');
@@ -298,6 +377,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori8'] ?? '');
     detail8controller = TextEditingController(
         text: widget.selectedProject['keterangan8'] ?? '');
+    nip8controller =
+        TextEditingController(text: widget.selectedProject['nip8'] ?? '');
+    tanggalMulai8controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai8'] ?? '');
+    tanggalSelesai8controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai8'] ?? '');
 
     alurProses9controller =
         TextEditingController(text: widget.selectedProject['ap9'] ?? '');
@@ -305,6 +390,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori9'] ?? '');
     detail9controller = TextEditingController(
         text: widget.selectedProject['keterangan9'] ?? '');
+    nip9controller =
+        TextEditingController(text: widget.selectedProject['nip9'] ?? '');
+    tanggalMulai9controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai9'] ?? '');
+    tanggalSelesai9controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai9'] ?? '');
 
     alurProses10controller =
         TextEditingController(text: widget.selectedProject['ap10'] ?? '');
@@ -312,6 +403,12 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['kategori10'] ?? '');
     detail10controller = TextEditingController(
         text: widget.selectedProject['keterangan10'] ?? '');
+    nip10controller =
+        TextEditingController(text: widget.selectedProject['nip10'] ?? '');
+    tanggalMulai10controller = TextEditingController(
+        text: widget.selectedProject['tanggal_mulai10'] ?? '');
+    tanggalSelesai10controller = TextEditingController(
+        text: widget.selectedProject['tanggal_selesai10'] ?? '');
 
     _generateBarcode();
   }
@@ -464,67 +561,97 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         {
           'alurProses': alurProses1controller,
           'detail': detail1controller,
+          'nama': nip1controller,
+          'tanggal_mulai': tanggalMulai1controller,
+          'tanggal_selesai': tanggalSelesai1controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
         {
           'alurProses': alurProses2controller,
           'detail': detail2controller,
+          'nama': nip2controller,
+          'tanggal_mulai': tanggalMulai2controller,
+          'tanggal_selesai': tanggalSelesai2controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
         {
           'alurProses': alurProses3controller,
           'detail': detail3controller,
+          'nama': nip3controller,
+          'tanggal_mulai': tanggalMulai3controller,
+          'tanggal_selesai': tanggalSelesai3controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
         {
           'alurProses': alurProses4controller,
           'detail': detail4controller,
+          'nama': nip4controller,
+          'tanggal_mulai': tanggalMulai4controller,
+          'tanggal_selesai': tanggalSelesai4controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
         {
           'alurProses': alurProses5controller,
           'detail': detail5controller,
+          'nama': nip5controller,
+          'tanggal_mulai': tanggalMulai5controller,
+          'tanggal_selesai': tanggalSelesai5controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
         {
           'alurProses': alurProses6controller,
           'detail': detail6controller,
+          'nama': nip6controller,
+          'tanggal_mulai': tanggalMulai6controller,
+          'tanggal_selesai': tanggalSelesai6controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
         {
           'alurProses': alurProses7controller,
           'detail': detail7controller,
+          'nama': nip7controller,
+          'tanggal_mulai': tanggalMulai7controller,
+          'tanggal_selesai': tanggalSelesai7controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
         {
           'alurProses': alurProses8controller,
           'detail': detail8controller,
+          'nama': nip8controller,
+          'tanggal_mulai': tanggalMulai8controller,
+          'tanggal_selesai': tanggalSelesai8controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
         {
           'alurProses': alurProses9controller,
           'detail': detail9controller,
+          'nama': nip9controller,
+          'tanggal_mulai': tanggalMulai9controller,
+          'tanggal_selesai': tanggalSelesai9controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
         {
           'alurProses': alurProses10controller,
           'detail': detail10controller,
+          'nama': nip10controller,
+          'tanggal_mulai': tanggalMulai10controller,
+          'tanggal_selesai': tanggalSelesai10controller,
           'noProduk': noProdukcontroller,
           'id_lot': idLotcontroller
         },
       ];
       for (var data in _listdata) {
         // Ekstrak 'nama' dan 'kodeLot'
-        final nama = data['nama'];
+        final namaProject = data['namaProject'];
         final kodeLot = data['kodeLot'];
         final idLot = data['id_lot'];
 
@@ -532,9 +659,15 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         for (var i = 1; i <= 10; i++) {
           final alurProsesKey = 'ap$i';
           final detailKey = 'keterangan$i';
+          final namaKey = 'nama$i';
+          final tanggalMulaiKey = 'tanggal_mulai$i';
+          final tanggalSelesaiKey = 'tanggal_selesai$i';
 
           final alurProses = data[alurProsesKey];
           final detail = data[detailKey];
+          final nama = data[namaKey];
+          final tanggalMulai = data[tanggalMulaiKey];
+          final tanggalSelesai = data[tanggalSelesaiKey];
 
           if (alurProses != null && alurProses.isNotEmpty) {
             rows.add(
@@ -553,7 +686,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       alignment: Alignment.center,
-                      child: Text(nama ?? ''),
+                      child: Text(namaProject ?? ''),
                     ),
                   ),
                 ),
@@ -622,7 +755,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       alignment: Alignment.center,
-                      child: Text(tglMulaicontroller.text),
+                      child: Text(tanggalMulai ?? ''),
                     ),
                   ),
                 ),
@@ -631,7 +764,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       alignment: Alignment.center,
-                      child: Text(tglSelesaicontroller.text),
+                      child: Text(tanggalSelesai ?? ''),
                     ),
                   ),
                 ),
@@ -640,7 +773,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       alignment: Alignment.center,
-                      child: Text(detail ?? ''),
+                      child: Text(nama ?? ''),
                     ),
                   ),
                 ),
