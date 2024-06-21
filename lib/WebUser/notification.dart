@@ -45,7 +45,7 @@ class _NotifikasiState extends State<Notifikasi> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -65,7 +65,7 @@ class _NotifikasiState extends State<Notifikasi> {
     final Map<String, dynamic> resultMap = {};
 
     data.forEach((item) {
-      final uniqueIdentifier = '${item['namaProject']}-${item['kodeLot']}';
+      final uniqueIdentifier = '${item['nama']}-${item['kodeLot']}';
       resultMap[uniqueIdentifier] = item;
     });
 
@@ -208,7 +208,7 @@ class _NotifikasiState extends State<Notifikasi> {
 
   Widget _buildMainTable() {
     List filteredData = _listdata.where((data) {
-      String namaProject = data['namaProject'] ?? '';
+      String namaProject = data['nama'] ?? '';
       String kodeLot = data['kodelot'] ?? '';
       return namaProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           kodeLot.toLowerCase().contains(_searchQuery.toLowerCase());
@@ -285,7 +285,7 @@ class _NotifikasiState extends State<Notifikasi> {
                               scrollDirection: Axis.horizontal,
                               child: Container(
                                 alignment: Alignment.center,
-                                child: Text(data['namaProject'] ?? ''),
+                                child: Text(data['nama'] ?? ''),
                               ),
                             ),
                           ),
@@ -321,9 +321,8 @@ class _NotifikasiState extends State<Notifikasi> {
                                                     ['id_lot'],
                                                 "noProduk": filteredData[index]
                                                     ['noProduk'],
-                                                "namaProject":
-                                                    filteredData[index]
-                                                        ['namaProject'],
+                                                "nama": filteredData[index]
+                                                    ['nama'],
                                                 "noIndukProduk":
                                                     filteredData[index]
                                                         ['noIndukProduk'],

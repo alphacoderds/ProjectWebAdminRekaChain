@@ -27,7 +27,7 @@ $sql = $conn->prepare("
     SELECT 
         lot.noProduk,
         lot.kodeLot, 
-        lot.namaProject, 
+        lot.nama, 
         lot.saran, 
         kerusakan.detail_kerusakan, 
         kerusakan.item, 

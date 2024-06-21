@@ -46,7 +46,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -206,7 +206,7 @@ class _VperencanaanState extends State<Vperencanaan> {
 
   Widget _buildMainTable() {
     List filteredData = _listdata.where((data) {
-      String namaProject = data['namaProject'] ?? '';
+      String namaProject = data['nama'] ?? '';
       String kodeLot = data['kodeLot'] ?? '';
       String namaProduk = data['namaProduk'] ?? '';
       return namaProject.toLowerCase().contains(_searchQuery.toLowerCase()) ||
@@ -295,7 +295,7 @@ class _VperencanaanState extends State<Vperencanaan> {
                             scrollDirection: Axis.horizontal,
                             child: Container(
                               alignment: Alignment.center,
-                              child: Text(data['namaProject'] ?? ''),
+                              child: Text(data['nama'] ?? ''),
                             ),
                           ),
                         ),
@@ -347,8 +347,8 @@ class _VperencanaanState extends State<Vperencanaan> {
                                                   ['id_lot'],
                                               "noProduk": filteredData[index]
                                                   ['noProduk'],
-                                              "namaProject": filteredData[index]
-                                                  ['namaProject'],
+                                              "nama": filteredData[index]
+                                                  ['nama'],
                                               "noIndukProduk":
                                                   filteredData[index]
                                                       ['noIndukProduk'],

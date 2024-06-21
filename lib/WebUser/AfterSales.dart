@@ -44,7 +44,7 @@ class _AfterSalesState extends State<AfterSales> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -205,7 +205,7 @@ class _AfterSalesState extends State<AfterSales> {
     List filteredData = _listdata.where((data) {
       String id_lot = data['id_lot'] ?? '';
       String id_project = data['id_project'] ?? '';
-      String namaProject = data['namaProject'] ?? '';
+      String namaProject = data['nama'] ?? '';
       String kodeLot = data['kodeLot'] ?? '';
       String noProduk = data['noProduk'] ?? '';
       String targetMulai = data['targetMulai'] ?? '';
@@ -306,7 +306,7 @@ class _AfterSalesState extends State<AfterSales> {
                               scrollDirection: Axis.horizontal,
                               child: Container(
                                 alignment: Alignment.center,
-                                child: Text(data['namaProject'] ?? ''),
+                                child: Text(data['nama'] ?? ''),
                               ),
                             ),
                           ),
@@ -363,9 +363,8 @@ class _AfterSalesState extends State<AfterSales> {
                                                         ['id_project'],
                                                 "noProduk": filteredData[index]
                                                     ['noProduk'],
-                                                "namaProject":
-                                                    filteredData[index]
-                                                        ['namaProject'],
+                                                "nama": filteredData[index]
+                                                    ['nama'],
                                                 "targetMulai":
                                                     filteredData[index]
                                                         ['targetMulai'],

@@ -136,7 +136,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/read_reportsttpp.php?namaProject=${widget.selectedProject['namaProject']}&kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/read_reportsttpp.php?nama=${widget.selectedProject['nama']}&kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -171,9 +171,8 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                String? namaProject = _listdata.isNotEmpty
-                    ? _listdata[0]['namaProject']
-                    : 'default';
+                String? namaProject =
+                    _listdata.isNotEmpty ? _listdata[0]['nama'] : 'default';
                 String? kodeLot =
                     _listdata.isNotEmpty ? _listdata[0]['kodeLot'] : 'default';
 
@@ -198,7 +197,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
 
                 int rowIndex = 1;
                 for (var data in _listdata) {
-                  final namaProject = data['namaProject'];
+                  final namaProject = data['nama'];
                   final kodeLot = data['kodeLot'];
                   final idLot = data['id_lot'];
 
@@ -263,8 +262,8 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
         TextEditingController(text: widget.selectedProject['noProduk'] ?? '');
     noIndukProdukcontroller = TextEditingController(
         text: widget.selectedProject['noIndukProduk'] ?? '');
-    namaProjectcontroller = TextEditingController(
-        text: widget.selectedProject['namaProject'] ?? '');
+    namaProjectcontroller =
+        TextEditingController(text: widget.selectedProject['nama'] ?? '');
     noSeriAwalcontroller =
         TextEditingController(text: widget.selectedProject['noSeriAwal'] ?? '');
     namaProdukcontroller =
@@ -651,7 +650,7 @@ class _ViewReportSTTPState extends State<ViewReportSTTPP> {
       ];
       for (var data in _listdata) {
         // Ekstrak 'nama' dan 'kodeLot'
-        final namaProject = data['namaProject'];
+        final namaProject = data['nama'];
         final kodeLot = data['kodeLot'];
         final idLot = data['id_lot'];
 

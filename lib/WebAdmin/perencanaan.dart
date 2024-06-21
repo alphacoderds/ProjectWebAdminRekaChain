@@ -197,10 +197,10 @@ class _PerencanaanState extends State<Perencanaan> {
     if (selectedValuenamaProject != null && alurProses1controller != null) {
       final response = await http.post(
         Uri.parse(
-          "http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
+          "http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
         ),
         body: {
-          "namaProject": selectedValuenamaProject ?? '',
+          "nama": selectedValuenamaProject ?? '',
           "noIndukProduk": noProdukcontroller.text,
           "noSeriAwal": noSeriAwalcontroller.text,
           "targetMulai": tglMulaicontroller.text,
@@ -245,7 +245,7 @@ class _PerencanaanState extends State<Perencanaan> {
       if (response.statusCode == 200) {
         final newProjectData = {
           "id": response.body,
-          "namaProject": namaProjectcontroller.text,
+          "nama": namaProjectcontroller.text,
           "noIndukProduk": noProdukcontroller.text,
           "noSeriAwal": noSeriAwalcontroller.text,
           "targetMulai": tglMulaicontroller.text,
@@ -305,7 +305,7 @@ class _PerencanaanState extends State<Perencanaan> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
@@ -374,8 +374,6 @@ class _PerencanaanState extends State<Perencanaan> {
     kategori10controller = TextEditingController();
     detail10controller = TextEditingController();
 
-    jumlahLotcontroller.addListener(_batasiNoSeriAkhir);
-
     noProdukcontroller.addListener(_calculateKodeLot);
     noSeriAwalcontroller.addListener(_calculateKodeLot);
     noSeriAkhircontroller.addListener(_calculateKodeLot);
@@ -413,17 +411,6 @@ class _PerencanaanState extends State<Perencanaan> {
       setState(() {
         final formattedDate = DateFormat('dd-MM-yy').format(_picked);
         controller.text = formattedDate;
-      });
-    }
-  }
-
-  void _batasiNoSeriAkhir() {
-    int jumlahLot = int.tryParse(jumlahLotcontroller.text) ?? 0;
-    int noSeriAkhir = int.tryParse(noSeriAkhircontroller.text) ?? 0;
-
-    if (noSeriAkhir > jumlahLot) {
-      setState(() {
-        noSeriAkhircontroller.text = jumlahLot.toString();
       });
     }
   }

@@ -6,9 +6,7 @@ import 'package:RekaChain/WebUser/dasboard.dart';
 import 'package:RekaChain/WebUser/inputdokumen.dart';
 import 'package:RekaChain/WebUser/inputkebutuhanmaterial.dart';
 import 'package:RekaChain/WebAdmin/login.dart';
-import 'package:RekaChain/WebUser/notification.dart';
 import 'package:RekaChain/WebUser/perencanaan.dart';
-import 'package:RekaChain/WebUser/pesannotif.dart';
 import 'package:RekaChain/WebUser/profile.dart';
 import 'package:RekaChain/WebUser/reportsttpp.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +54,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip1controller = TextEditingController();
   TextEditingController tanggalMulai1controller = TextEditingController();
   TextEditingController tanggalSelesai1controller = TextEditingController();
+  TextEditingController keteranganProduk1controller = TextEditingController();
 
   TextEditingController alurProses2controller = TextEditingController();
   TextEditingController kategori2controller = TextEditingController();
@@ -63,6 +62,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip2controller = TextEditingController();
   TextEditingController tanggalMulai2controller = TextEditingController();
   TextEditingController tanggalSelesai2controller = TextEditingController();
+  TextEditingController keteranganProduk2controller = TextEditingController();
 
   TextEditingController alurProses3controller = TextEditingController();
   TextEditingController kategori3controller = TextEditingController();
@@ -70,6 +70,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip3controller = TextEditingController();
   TextEditingController tanggalMulai3controller = TextEditingController();
   TextEditingController tanggalSelesai3controller = TextEditingController();
+  TextEditingController keteranganProduk3controller = TextEditingController();
 
   TextEditingController alurProses4controller = TextEditingController();
   TextEditingController kategori4controller = TextEditingController();
@@ -77,6 +78,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip4controller = TextEditingController();
   TextEditingController tanggalMulai4controller = TextEditingController();
   TextEditingController tanggalSelesai4controller = TextEditingController();
+  TextEditingController keteranganProduk4controller = TextEditingController();
 
   TextEditingController alurProses5controller = TextEditingController();
   TextEditingController kategori5controller = TextEditingController();
@@ -84,6 +86,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip5controller = TextEditingController();
   TextEditingController tanggalMulai5controller = TextEditingController();
   TextEditingController tanggalSelesai5controller = TextEditingController();
+  TextEditingController keteranganProduk5controller = TextEditingController();
 
   TextEditingController alurProses6controller = TextEditingController();
   TextEditingController kategori6controller = TextEditingController();
@@ -91,6 +94,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip6controller = TextEditingController();
   TextEditingController tanggalMulai6controller = TextEditingController();
   TextEditingController tanggalSelesai6controller = TextEditingController();
+  TextEditingController keteranganProduk6controller = TextEditingController();
 
   TextEditingController alurProses7controller = TextEditingController();
   TextEditingController kategori7controller = TextEditingController();
@@ -98,6 +102,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip7controller = TextEditingController();
   TextEditingController tanggalMulai7controller = TextEditingController();
   TextEditingController tanggalSelesai7controller = TextEditingController();
+  TextEditingController keteranganProduk7controller = TextEditingController();
 
   TextEditingController alurProses8controller = TextEditingController();
   TextEditingController kategori8controller = TextEditingController();
@@ -105,6 +110,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip8controller = TextEditingController();
   TextEditingController tanggalMulai8controller = TextEditingController();
   TextEditingController tanggalSelesai8controller = TextEditingController();
+  TextEditingController keteranganProduk8controller = TextEditingController();
 
   TextEditingController alurProses9controller = TextEditingController();
   TextEditingController kategori9controller = TextEditingController();
@@ -112,6 +118,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip9controller = TextEditingController();
   TextEditingController tanggalMulai9controller = TextEditingController();
   TextEditingController tanggalSelesai9controller = TextEditingController();
+  TextEditingController keteranganProduk9controller = TextEditingController();
 
   TextEditingController alurProses10controller = TextEditingController();
   TextEditingController kategori10controller = TextEditingController();
@@ -119,12 +126,13 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
   TextEditingController nip10controller = TextEditingController();
   TextEditingController tanggalMulai10controller = TextEditingController();
   TextEditingController tanggalSelesai10controller = TextEditingController();
+  TextEditingController keteranganProduk10controller = TextEditingController();
 
   void fetchDataProduk() async {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/read_notifproduk.php?kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/read_notifproduk.php?kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -146,7 +154,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/read_notifmaterial.php?kodeLot=$kodeLot',
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/read_notifmaterial.php?kodeLot=$kodeLot',
         ),
       );
 
@@ -183,8 +191,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
     fetchDataProduk();
     fetchDataMaterial();
 
-    namaProjectcontroller = TextEditingController(
-        text: widget.selectedProject['namaProject'] ?? '');
+    namaProjectcontroller =
+        TextEditingController(text: widget.selectedProject['nama'] ?? '');
     kodeLotcontroller =
         TextEditingController(text: widget.selectedProject['kodeLot'] ?? '');
     namaProdukcontroller =
@@ -205,6 +213,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai1'] ?? '');
     tanggalSelesai1controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai1'] ?? '');
+    keteranganProduk1controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk1'] ?? '');
 
     alurProses2controller =
         TextEditingController(text: widget.selectedProject['ap2'] ?? '');
@@ -218,6 +228,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai2'] ?? '');
     tanggalSelesai2controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai2'] ?? '');
+    keteranganProduk1controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk2'] ?? '');
 
     alurProses3controller =
         TextEditingController(text: widget.selectedProject['ap3'] ?? '');
@@ -231,6 +243,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai3'] ?? '');
     tanggalSelesai3controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai3'] ?? '');
+    keteranganProduk3controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk3'] ?? '');
 
     alurProses4controller =
         TextEditingController(text: widget.selectedProject['ap4'] ?? '');
@@ -244,6 +258,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai4'] ?? '');
     tanggalSelesai4controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai4'] ?? '');
+    keteranganProduk4controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk4'] ?? '');
 
     alurProses5controller =
         TextEditingController(text: widget.selectedProject['ap5'] ?? '');
@@ -257,6 +273,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai5'] ?? '');
     tanggalSelesai5controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai5'] ?? '');
+    keteranganProduk5controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk5'] ?? '');
 
     alurProses6controller =
         TextEditingController(text: widget.selectedProject['ap6'] ?? '');
@@ -270,6 +288,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai6'] ?? '');
     tanggalSelesai6controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai6'] ?? '');
+    keteranganProduk6controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk6'] ?? '');
 
     alurProses7controller =
         TextEditingController(text: widget.selectedProject['ap7'] ?? '');
@@ -283,6 +303,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai7'] ?? '');
     tanggalSelesai7controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai7'] ?? '');
+    keteranganProduk7controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk7'] ?? '');
 
     alurProses8controller =
         TextEditingController(text: widget.selectedProject['ap8'] ?? '');
@@ -296,6 +318,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai8'] ?? '');
     tanggalSelesai8controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai8'] ?? '');
+    keteranganProduk8controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk8'] ?? '');
 
     alurProses9controller =
         TextEditingController(text: widget.selectedProject['ap9'] ?? '');
@@ -309,6 +333,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai9'] ?? '');
     tanggalSelesai9controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai9'] ?? '');
+    keteranganProduk9controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk9'] ?? '');
 
     alurProses10controller =
         TextEditingController(text: widget.selectedProject['ap10'] ?? '');
@@ -322,6 +348,8 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai10'] ?? '');
     tanggalSelesai10controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai10'] ?? '');
+    keteranganProduk10controller = TextEditingController(
+        text: widget.selectedProject['keterangan_produk10'] ?? '');
   }
 
   @override
@@ -409,7 +437,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                                 borderRadius: BorderRadius.circular(10)),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 20.0, horizontal: 20.0),
+                                  vertical: 10.0, horizontal: 20.0),
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: DataTable(
@@ -470,7 +498,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                                           DataRow(
                                             cells: [
                                               DataCell(Text(_listdataProduk[0]
-                                                      ['namaProject'] ??
+                                                      ['nama'] ??
                                                   '')),
                                               DataCell(Text(_listdataProduk[0]
                                                       ['kodeLot'] ??
@@ -514,13 +542,13 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: DataTable(
-                                columnSpacing: 150.0,
+                                columnSpacing: 95.0,
                                 horizontalMargin: 70.0,
                                 columns: [
                                   DataColumn(
                                     label: Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                          EdgeInsets.symmetric(horizontal: 4.0),
                                       child: Row(
                                         children: [
                                           Text(
@@ -536,7 +564,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                                   DataColumn(
                                     label: Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                          EdgeInsets.symmetric(horizontal: 4.0),
                                       child: Row(
                                         children: [
                                           Text(
@@ -552,7 +580,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                                   DataColumn(
                                     label: Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                          EdgeInsets.symmetric(horizontal: 4.0),
                                       child: Row(
                                         children: [
                                           Text(
@@ -568,7 +596,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                                   DataColumn(
                                     label: Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                          EdgeInsets.symmetric(horizontal: 4.0),
                                       child: Row(
                                         children: [
                                           Text(
@@ -584,7 +612,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                                   DataColumn(
                                     label: Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                          EdgeInsets.symmetric(horizontal: 4.0),
                                       child: Row(
                                         children: [
                                           Text(
@@ -600,7 +628,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                                   DataColumn(
                                     label: Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 8.0),
+                                          EdgeInsets.symmetric(horizontal: 4.0),
                                       child: Row(
                                         children: [
                                           Text(
@@ -653,7 +681,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
       List<Map<String, TextEditingController>> data = [
         {
           'alurProses': alurProses1controller,
-          'detail': detail1controller,
+          'keterangan_produk': keteranganProduk1controller,
           'nama': nip1controller,
           'tanggal_mulai': tanggalMulai1controller,
           'tanggal_selesai': tanggalSelesai1controller,
@@ -661,7 +689,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         },
         {
           'alurProses': alurProses2controller,
-          'detail': detail2controller,
+          'keterangan_produk': keteranganProduk2controller,
           'nama': nip2controller,
           'tanggal_mulai': tanggalMulai2controller,
           'tanggal_selesai': tanggalSelesai2controller,
@@ -669,7 +697,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         },
         {
           'alurProses': alurProses3controller,
-          'detail': detail3controller,
+          'keterangan_produk': keteranganProduk3controller,
           'nama': nip3controller,
           'tanggal_mulai': tanggalMulai3controller,
           'tanggal_selesai': tanggalSelesai3controller,
@@ -677,7 +705,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         },
         {
           'alurProses': alurProses4controller,
-          'detail': detail4controller,
+          'keterangan_produk': keteranganProduk4controller,
           'nama': nip4controller,
           'tanggal_mulai': tanggalMulai4controller,
           'tanggal_selesai': tanggalSelesai4controller,
@@ -685,7 +713,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         },
         {
           'alurProses': alurProses5controller,
-          'detail': detail5controller,
+          'keterangan_produk': keteranganProduk5controller,
           'nama': nip5controller,
           'tanggal_mulai': tanggalMulai5controller,
           'tanggal_selesai': tanggalSelesai5controller,
@@ -693,7 +721,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         },
         {
           'alurProses': alurProses6controller,
-          'detail': detail6controller,
+          'keterangan_produk': keteranganProduk6controller,
           'nama': nip6controller,
           'tanggal_mulai': tanggalMulai6controller,
           'tanggal_selesai': tanggalSelesai6controller,
@@ -701,7 +729,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         },
         {
           'alurProses': alurProses7controller,
-          'detail': detail7controller,
+          'keterangan_produk': keteranganProduk7controller,
           'nama': nip7controller,
           'tanggal_mulai': tanggalMulai7controller,
           'tanggal_selesai': tanggalSelesai7controller,
@@ -709,7 +737,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         },
         {
           'alurProses': alurProses8controller,
-          'detail': detail8controller,
+          'keterangan_produk': keteranganProduk8controller,
           'nama': nip8controller,
           'tanggal_mulai': tanggalMulai8controller,
           'tanggal_selesai': tanggalSelesai8controller,
@@ -717,7 +745,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         },
         {
           'alurProses': alurProses9controller,
-          'detail': detail9controller,
+          'keterangan_produk': keteranganProduk9controller,
           'nama': nip9controller,
           'tanggal_mulai': tanggalMulai9controller,
           'tanggal_selesai': tanggalSelesai9controller,
@@ -725,7 +753,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         },
         {
           'alurProses': alurProses10controller,
-          'detail': detail10controller,
+          'keterangan_produk': keteranganProduk10controller,
           'nama': nip10controller,
           'tanggal_mulai': tanggalMulai10controller,
           'tanggal_selesai': tanggalSelesai10controller,
@@ -740,11 +768,13 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
           final namaKey = 'nama$i';
           final tanggalMulaiKey = 'tanggal_mulai$i';
           final tanggalSelesaiKey = 'tanggal_selesai$i';
+          final keteranganProdukKey = 'keterangan_produk$i';
 
           final alurProses = data[alurProsesKey];
           final nama = data[namaKey];
           final tanggalMulai = data[tanggalMulaiKey];
           final tanggalSelesai = data[tanggalSelesaiKey];
+          final keteranganProduk = data[keteranganProdukKey];
 
           if (alurProses != null && alurProses.isNotEmpty) {
             rows.add(
@@ -794,6 +824,15 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                     ),
                   ),
                 ),
+                DataCell(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(keteranganProduk ?? ''),
+                    ),
+                  ),
+                ),
               ]),
             );
             rowIndex++;
@@ -812,7 +851,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
-            columnSpacing: 150.0,
+            columnSpacing: 95.0,
             horizontalMargin: 70.0,
             columns: [
               DataColumn(
@@ -851,6 +890,14 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                 label: Center(
                   child: Text(
                     'Personil',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+              ),
+              DataColumn(
+                label: Center(
+                  child: Text(
+                    'Keterangan Produk',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ),

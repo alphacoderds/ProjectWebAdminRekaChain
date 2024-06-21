@@ -195,10 +195,10 @@ class _PerencanaanState extends State<Perencanaan> {
     if (selectedValuenamaProject != null && alurProses1controller != null) {
       final response = await http.post(
         Uri.parse(
-          "http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
+          "http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/create_perencanaan.php",
         ),
         body: {
-          "namaProject": selectedValuenamaProject ?? '',
+          "nama": selectedValuenamaProject ?? '',
           "noIndukProduk": noProdukcontroller.text,
           "noSeriAwal": noSeriAwalcontroller.text,
           "targetMulai": tglMulaicontroller.text,
@@ -243,7 +243,7 @@ class _PerencanaanState extends State<Perencanaan> {
       if (response.statusCode == 200) {
         final newProjectData = {
           "id": response.body,
-          "namaProject": namaProjectcontroller.text,
+          "nama": namaProjectcontroller.text,
           "noIndukProduk": noProdukcontroller.text,
           "noSeriAwal": noSeriAwalcontroller.text,
           "targetMulai": tglMulaicontroller.text,
@@ -303,7 +303,7 @@ class _PerencanaanState extends State<Perencanaan> {
 
   Future<void> fetchProjectNames() async {
     final response = await http.get(Uri.parse(
-        'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
+        'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readproject.php'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);

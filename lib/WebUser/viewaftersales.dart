@@ -51,11 +51,11 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
   void fetchData() async {
     try {
       final noProduk = widget.selectedProject['noProduk'] ?? '';
-      final namaProject = widget.selectedProject['namaProject'] ?? '';
+      final namaProject = widget.selectedProject['nama'] ?? '';
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?namaProject=$namaProject&noProduk=$noProduk',
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/edit_aftersales.php?nama=$namaProject&noProduk=$noProduk',
         ),
       );
 
@@ -65,7 +65,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
         setState(() {
           noProdukcontroller.text = responseData['noProduk'] ?? 'N/A';
           kodeLotcontroller.text = responseData['kodeLot'] ?? 'N/A';
-          namaProjectcontroller.text = responseData['namaProject'] ?? 'N/A';
+          namaProjectcontroller.text = responseData['nama'] ?? 'N/A';
           sarancontroller.text = responseData['saran'] ?? 'N/A';
         });
       } else {
@@ -83,7 +83,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.11.107/ProjectWebAdminRekaChain/lib/Project/read_aftersales.php?id_project=$idProject',
+          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/read_aftersales.php?id_project=$idProject',
         ),
       );
 
@@ -133,9 +133,8 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
               onPressed: () {
                 Navigator.of(context).pop();
                 // Kode pengunduhan CSV dimulai dari sini
-                String? namaProject = _listdata.isNotEmpty
-                    ? _listdata[0]['namaProject']
-                    : 'default';
+                String? namaProject =
+                    _listdata.isNotEmpty ? _listdata[0]['nama'] : 'default';
                 String? kodeLot =
                     _listdata.isNotEmpty ? _listdata[0]['kodeLot'] : 'default';
 
@@ -157,7 +156,7 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
 
                 int rowIndex = 1;
                 for (var data in _listdata) {
-                  final namaProject = data['namaProject'];
+                  final namaProject = data['nama'];
                   final kodeLot = data['kodeLot'];
 
                   rows.add([
@@ -201,8 +200,8 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
         TextEditingController(text: widget.selectedProject['noProduk'] ?? '');
     kodeLotcontroller =
         TextEditingController(text: widget.selectedProject['kodeLot'] ?? '');
-    namaProjectcontroller = TextEditingController(
-        text: widget.selectedProject['namaProject'] ?? '');
+    namaProjectcontroller =
+        TextEditingController(text: widget.selectedProject['nama'] ?? '');
     tglMulaicontroller = TextEditingController(
         text: widget.selectedProject['targetMulai'] ?? '');
     dtlKekurangancontroller = TextEditingController(
@@ -386,9 +385,8 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
                                       ? [
                                           DataRow(
                                             cells: [
-                                              DataCell(Text(_listdata[0]
-                                                      ['namaProject'] ??
-                                                  '')),
+                                              DataCell(Text(
+                                                  _listdata[0]['nama'] ?? '')),
                                               DataCell(Text(_listdata[0]
                                                       ['kodeLot'] ??
                                                   '')),
