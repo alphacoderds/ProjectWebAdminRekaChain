@@ -408,7 +408,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                           IconButton(
                             icon: Icon(
                               Icons.account_circle_rounded,
-                              size: 38,
+                              size: 35,
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
                             onPressed: () {

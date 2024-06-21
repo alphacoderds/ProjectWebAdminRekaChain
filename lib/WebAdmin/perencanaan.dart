@@ -465,7 +465,7 @@ class _PerencanaanState extends State<Perencanaan> {
                             actions: [
                               Padding(
                                 padding:
-                                    EdgeInsets.only(right: screenHeight * 0.13),
+                                    EdgeInsets.only(right: screenHeight * 0.11),
                                 child: Row(
                                   children: [
                                     IconButton(
