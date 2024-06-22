@@ -221,7 +221,7 @@ class _EditProjectState extends State<EditProject> {
                     _updateDataAndNavigateToListProject();
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: const Color.fromRGBO(43, 56, 86, 1),
+                    backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                   ),
                   child: Text(
                     'Simpan',

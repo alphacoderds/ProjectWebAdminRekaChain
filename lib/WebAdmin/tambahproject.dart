@@ -249,7 +249,7 @@ class _TambahProjectState extends State<TambahProject> {
                     _simpan();
                   },
                   style: ElevatedButton.styleFrom(
-                      primary: const Color.fromRGBO(43, 56, 86, 1),
+                      backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       )),

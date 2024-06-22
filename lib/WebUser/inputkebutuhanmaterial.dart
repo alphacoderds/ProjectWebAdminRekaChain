@@ -438,7 +438,7 @@ class _InputMaterialState extends State<InputMaterial> {
                     _simpan();
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: const Color.fromRGBO(43, 56, 86, 1),
+                    backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
                   ),
                   child: Text(
                     'Simpan',

@@ -91,19 +91,51 @@ class _TambahStaffState extends State<TambahStaff> {
   bool isViewVisible = true;
 
   int _selectedIndex = 0;
-  List<String> dropdownItemsJabatan = ['Jabatan 1', 'Jabatan 2'];
+  List<String> dropdownItemsJabatan = [
+    'Direktur',
+    'General Manager',
+    'Senior Manager',
+    'Manager',
+    'SPV',
+    'Staff'
+  ];
   String? selectedValueJabatan;
 
-  List<String> dropdownItemsDepartemen = ['Departemen 1', 'Departemen 2'];
+  List<String> dropdownItemsDepartemen = [
+    'Departemen Teknologi',
+    'Departemen Pengelolaan Kualitas & Purna Jual',
+    'Departemen Perencanaa dan Pengendalian \nProduksi',
+    'Departemen Produksi Elektrik',
+    'Departemen Produksi Mekanik',
+    'Departemen Produksi Proyek'
+  ];
   String? selectedValueDepartemen;
 
-  List<String> dropdownItemsUnitKerja = ['Unit Kerja 1', 'Unit Kerja 2'];
+  List<String> dropdownItemsUnitKerja = [
+    'Bagian Engineering & EIM',
+    'Bagian Design & Eletrical Quality Engineering',
+    'Bagian Design & Mechanical Engineering',
+    'Bagian Pengelolaan Kualitas Incoming & \nInspeksi InProcess',
+    'Bagian Inspeksi Final & Purna Jual',
+    'Bagian Perencanaan Produksi',
+    'Bagian Pengendalian & Monitoring Produksi',
+    'Bagian Produksi Part 1',
+    'Bagian Produksi Part 2',
+    'Bagian Produksi Part 3',
+    'Bagian Fabrikasi',
+    'Bagian Mechanical Component',
+    'Bagian Cutting & Harness',
+    'Bagian Assembly Component'
+  ];
   String? selectedValueUnitKerja;
 
-  List<String> dropdownItemsDivisi = ['Divisi 1', 'Divisi 2'];
+  List<String> dropdownItemsDivisi = [
+    'Divisi Teknologi & Pengelolaan Kualitas',
+    'Divisi Operasi'
+  ];
   String? selectedValueDivisi;
 
-  List<String> dropdownItemsStatus = ['Aktif', 'Non Aktif'];
+  List<String> dropdownItemsStatus = ['Aktif', 'Non Aktif        '];
   String? selectedValueStatus;
 
   String hashPassword(String password) {
@@ -434,7 +466,7 @@ class _TambahStaffState extends State<TambahStaff> {
                                   width: 400,
                                   decoration: BoxDecoration(
                                       border: Border.all(color: Colors.black54),
-                                      borderRadius: BorderRadius.circular(5)),
+                                      borderRadius: BorderRadius.circular(3)),
                                   child: Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 10),
@@ -503,7 +535,7 @@ class _TambahStaffState extends State<TambahStaff> {
                                         EdgeInsets.symmetric(horizontal: 10),
                                     child: DropdownButton<String>(
                                       alignment: Alignment.center,
-                                      hint: Text('--Pilih Unit Kerja--'),
+                                      hint: Text('--Pilih Unit/Bagian Kerja--'),
                                       underline: SizedBox(),
                                       value: selectedValueUnitKerja,
                                       items: dropdownItemsUnitKerja
