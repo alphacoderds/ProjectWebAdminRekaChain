@@ -242,6 +242,7 @@ class _ProfileState extends State<Profile> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EditProfile(
+                                        savedPassword: provider.savedPassword,
                                         data: provider.dataModel,
                                         nip: widget.nip),
                                   ),
@@ -350,7 +351,7 @@ class _ProfileState extends State<Profile> {
             _buildDivider(),
             Consumer<UserProvider>(builder: (context, provider, child) {
               return _buildTextView(' Password :',
-                  text: provider.dataModel.password);
+                  text: provider.savedPassword);
             }),
             _buildDivider(),
             Consumer<UserProvider>(builder: (context, provider, child) {

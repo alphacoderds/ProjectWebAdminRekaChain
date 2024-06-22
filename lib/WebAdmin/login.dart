@@ -115,7 +115,9 @@ class _LoginPageState extends State<LoginPage> {
       var jsonData = json.decode(response.body);
       dynamic data = (jsonData as Map<String, dynamic>);
       String role = data['role'];
-      context.read<UserProvider>().saveNip(nipController.text.toString());
+      context
+          .read<UserProvider>()
+          .saveNip(nipController.text.toString(), passwordController.text);
 
       if (role == 'admin') {
         Navigator.pushReplacement(
@@ -171,7 +173,10 @@ class _LoginPageState extends State<LoginPage> {
       var data = jsonDecode(response.body);
       if (data['status'] == "Success") {
         String role = data['role']; // Mengambil peran pengguna dari respons
-        context.read<UserProvider>().saveNip(nipController.text.toString());
+        context
+            .read<UserProvider>()
+            .saveNip(nipController.text.toString(), passwordController.text);
+
         if (role == 'admin') {
           Navigator.pushReplacement(
             context,

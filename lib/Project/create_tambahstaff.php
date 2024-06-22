@@ -24,7 +24,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $konfirmasi_password = $_POST["konfirmasi_password"];
     $role = $_POST["role"];
 
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
     $sql = "INSERT INTO tbl_tambahstaff (no, kode_staff, nama, jabatan, unit_kerja, departemen, divisi, email, no_telp, nip, status, password, konfirmasi_password) 
             VALUES ('$no', '$kode_staff', '$nama', '$jabatan', '$unit_kerja', '$departemen', '$divisi', '$email', '$no_telp', '$nip', '$status', '$password', '$konfirmasi_password')";

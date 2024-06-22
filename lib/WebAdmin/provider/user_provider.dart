@@ -5,6 +5,7 @@ import 'dart:convert';
 
 class UserProvider extends ChangeNotifier {
   String nip = '';
+  String savedPassword = '';
   DataModel dataModel = DataModel(
       kode_staff: '',
       nama: '',
@@ -20,8 +21,9 @@ class UserProvider extends ChangeNotifier {
       konfirmasi_password: '',
       profile: '');
 
-  void saveNip(String newNip) {
+  void saveNip(String newNip, String pass) {
     nip = newNip;
+    savedPassword = pass;
     print(nip);
   }
 
