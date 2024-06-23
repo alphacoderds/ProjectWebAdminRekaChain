@@ -32,6 +32,8 @@ class _ListStaffState extends State<ListStaff> {
   bool isViewVisible = false;
   late double screenWidth = MediaQuery.of(context).size.width;
   late double screenHeight = MediaQuery.of(context).size.height;
+  ScrollController _horizontalController = ScrollController();
+  ScrollController _verticalController = ScrollController();
 
   List _listdata = [];
   bool _isloading = true;
@@ -42,6 +44,13 @@ class _ListStaffState extends State<ListStaff> {
     setState(() {
       _searchQuery = query;
     });
+  }
+
+  @override
+  void dispose() {
+    _horizontalController.dispose();
+    _verticalController.dispose();
+    super.dispose();
   }
 
   Future<void> _getdata() async {
@@ -242,232 +251,260 @@ class _ListStaffState extends State<ListStaff> {
       return kode_staff.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           nama.toLowerCase().contains(_searchQuery.toLowerCase());
     }).toList();
+
     return Container(
       alignment: Alignment.center,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height - 50,
-          ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columnSpacing: 120.0,
-              horizontalMargin: 70.0,
-              columns: [
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'No',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
+      child: Scrollbar(
+        controller: _horizontalController,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          controller: _horizontalController,
+          child: Scrollbar(
+            controller: _verticalController,
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              controller: _verticalController,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: MediaQuery.of(context).size.width,
+                  minHeight: MediaQuery.of(context).size.height - 50,
                 ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Kode Staff',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Nama Lengkap',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Jabatan',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Unit Kerja',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Divisi',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'Status',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-                DataColumn(
-                  label: Center(
-                    child: Text(
-                      'View',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                    ),
-                  ),
-                ),
-              ],
-              rows: filteredData
-                  .asMap()
-                  .map(
-                    (index, data) => MapEntry(
-                      index,
-                      DataRow(cells: [
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text((index + 1).toString()),
-                            ),
-                          ),
+                child: DataTable(
+                  columnSpacing: 130.0,
+                  horizontalMargin: 30.0,
+                  columns: [
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'No',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['kode_staff'] ?? ''),
-                            ),
-                          ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Kode Staff',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['nama'] ?? ''),
-                            ),
-                          ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Nama Lengkap',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['jabatan'] ?? ''),
-                            ),
-                          ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Jabatan',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['unit_kerja'] ?? ''),
-                            ),
-                          ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Unit Kerja',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['divisi'] ?? ''),
-                            ),
-                          ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Divisi',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['status'] ?? ''),
-                            ),
-                          ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Status',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Center(
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.visibility),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EditStaff(
-                                            nip: widget.nip,
-                                            data: widget.data,
-                                            selectedStaff: {
-                                              "no": filteredData[index]['no'],
-                                              "kode_staff": filteredData[index]
-                                                  ['kode_staff'],
-                                              "nama": filteredData[index]
-                                                  ['nama'],
-                                              "jabatan": filteredData[index]
-                                                  ['jabatan'],
-                                              "unit_kerja": filteredData[index]
-                                                  ['unit_kerja'],
-                                              "departemen": filteredData[index]
-                                                  ['departemen'],
-                                              "divisi": filteredData[index]
-                                                  ['divisi'],
-                                              "email": filteredData[index]
-                                                  ['email'],
-                                              "no_telp": filteredData[index]
-                                                  ['no_telp'],
-                                              "nip": filteredData[index]['nip'],
-                                              "status": filteredData[index]
-                                                  ['status'],
-                                              "password": filteredData[index]
-                                                  ['password'],
-                                              "konfirmasi_password":
-                                                  filteredData[index]
-                                                      ['konfirmasi_password'],
-                                            },
-                                          ),
-                                        ),
-                                      ).then((result) {
-                                        if (result != null && result) {
-                                          updateData();
-                                        }
-                                      });
-                                    },
-                                  ),
-                                  SizedBox(width: 10),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      _showDeleteDialog(filteredData[index]
-                                              ['kode_staff']
-                                          .toString());
-                                    },
-                                  ),
-                                ],
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'View',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                  rows: filteredData
+                      .asMap()
+                      .map(
+                        (index, data) => MapEntry(
+                          index,
+                          DataRow(cells: [
+                            DataCell(
+                              Container(
+                                alignment: Alignment.center,
+                                child: Text((index + 1).toString()),
                               ),
                             ),
-                          ),
+                            DataCell(
+                              Container(
+                                alignment: Alignment.center,
+                                child: Text(data['kode_staff'] ?? ''),
+                              ),
+                            ),
+                            DataCell(
+                              Container(
+                                alignment: Alignment.center,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 170.0, // Sesuaikan lebar kolom
+                                  ),
+                                  child: Wrap(
+                                    children: [
+                                      Text(data['nama'] ?? ''),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Container(
+                                alignment: Alignment.center,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 120.0, // Sesuaikan lebar kolom
+                                  ),
+                                  child: Wrap(
+                                    children: [
+                                      Text(data['jabatan'] ?? ''),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Container(
+                                alignment: Alignment.center,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 170.0, // Sesuaikan lebar kolom
+                                  ),
+                                  child: Wrap(
+                                    children: [
+                                      Text(data['unit_kerja'] ?? ''),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Container(
+                                alignment: Alignment.center,
+                                child: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 170.0, // Sesuaikan lebar kolom
+                                  ),
+                                  child: Wrap(
+                                    children: [
+                                      Text(data['divisi'] ?? ''),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Container(
+                                alignment: Alignment.center,
+                                child: Text(data['status'] ?? ''),
+                              ),
+                            ),
+                            DataCell(
+                              Center(
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.visibility),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => EditStaff(
+                                              nip: widget.nip,
+                                              data: widget.data,
+                                              selectedStaff: {
+                                                "no": filteredData[index]['no'],
+                                                "kode_staff":
+                                                    filteredData[index]
+                                                        ['kode_staff'],
+                                                "nama": filteredData[index]
+                                                    ['nama'],
+                                                "jabatan": filteredData[index]
+                                                    ['jabatan'],
+                                                "unit_kerja":
+                                                    filteredData[index]
+                                                        ['unit_kerja'],
+                                                "departemen":
+                                                    filteredData[index]
+                                                        ['departemen'],
+                                                "divisi": filteredData[index]
+                                                    ['divisi'],
+                                                "email": filteredData[index]
+                                                    ['email'],
+                                                "no_telp": filteredData[index]
+                                                    ['no_telp'],
+                                                "nip": filteredData[index]
+                                                    ['nip'],
+                                                "status": filteredData[index]
+                                                    ['status'],
+                                                "password": filteredData[index]
+                                                    ['password'],
+                                                "konfirmasi_password":
+                                                    filteredData[index]
+                                                        ['konfirmasi_password'],
+                                              },
+                                            ),
+                                          ),
+                                        ).then((result) {
+                                          if (result != null && result) {
+                                            updateData();
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    SizedBox(width: 10),
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () {
+                                        _showDeleteDialog(filteredData[index]
+                                                ['kode_staff']
+                                            .toString());
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ]),
                         ),
-                      ]),
-                    ),
-                  )
-                  .values
-                  .toList(),
+                      )
+                      .values
+                      .toList(),
+                ),
+              ),
             ),
           ),
         ),
