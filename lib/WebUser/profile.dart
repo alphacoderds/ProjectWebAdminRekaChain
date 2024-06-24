@@ -77,7 +77,7 @@ class _ProfileState extends State<Profile> {
       map['nip'] = widget.nip;
       final response = await http.post(
         Uri.parse(
-            'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'),
+            'http://192.168.1.5/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           "Accept": "application/json",
@@ -420,7 +420,7 @@ class _ProfileState extends State<Profile> {
                 fit: BoxFit.cover,
                 alignment: Alignment.center,
                 image: NetworkImage(
-                    'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/server_image.php?path=' +
+                    'http://192.168.1.5/ProjectWebAdminRekaChain/lib/Project/server_image.php?path=' +
                         Uri.encodeComponent(data.profile)),
               ),
       ),

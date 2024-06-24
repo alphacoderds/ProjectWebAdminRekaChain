@@ -47,7 +47,7 @@ class _NotifikasiState extends State<Notifikasi> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.1.5/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {

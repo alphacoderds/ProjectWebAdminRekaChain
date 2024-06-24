@@ -137,7 +137,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/read_notifproduk.php?kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.1.5/ProjectWebAdminRekaChain/lib/Project/read_notifproduk.php?kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -159,7 +159,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/read_notifmaterial.php?kodeLot=$kodeLot',
+          'http://192.168.1.5/ProjectWebAdminRekaChain/lib/Project/read_notifmaterial.php?kodeLot=$kodeLot',
         ),
       );
 
