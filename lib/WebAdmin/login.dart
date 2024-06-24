@@ -262,10 +262,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Image.asset(
                 'assets/images/gudang.png',
-                width: screenWidth * 0.4,
+                width: screenWidth * 0.45,
               ),
               SizedBox(
-                width: screenWidth * 0.08,
+                width: screenWidth * 0.15,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
