@@ -57,7 +57,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
+          'http://192.168.9.31/ProjectWebAdminRekaChain/lib/Project/readstaff.php',
         ),
       );
       if (response.statusCode == 200) {
@@ -91,7 +91,7 @@ class _ListStaffState extends State<ListStaff> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.10.102/ProjectWebAdminRekaChain/lib/Project/hapus_tambahstaff.php',
+          'http://192.168.9.31/ProjectWebAdminRekaChain/lib/Project/hapus_tambahstaff.php',
         ),
         body: {
           "kode_staff": id,
