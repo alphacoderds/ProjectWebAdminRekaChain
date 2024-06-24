@@ -1,14 +1,15 @@
+import 'dart:html';
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:RekaChain/WebUser/profile.dart';
+import 'package:RekaChain/WebAdmin/provider/user_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:html';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:RekaChain/WebAdmin/data_model.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker_web/image_picker_web.dart';
 import 'package:uuid/uuid.dart';
@@ -16,8 +17,13 @@ import 'package:mime/mime.dart';
 
 class EditProfile extends StatefulWidget {
   final String nip;
+  final String savedPassword;
   final DataModel data;
-  const EditProfile({Key? key, required this.nip, required this.data})
+  const EditProfile(
+      {Key? key,
+      required this.nip,
+      required this.data,
+      required this.savedPassword})
       : super(key: key);
 
   @override
@@ -48,9 +54,9 @@ class _EditProfileState extends State<EditProfile> {
   late TextEditingController statusController =
       TextEditingController(text: widget.data.status);
   late TextEditingController passwordController =
-      TextEditingController(text: widget.data.password);
+      TextEditingController(text: widget.savedPassword);
   late TextEditingController konfirmasiPasswordController =
-      TextEditingController(text: widget.data.konfirmasi_password);
+      TextEditingController(text: widget.savedPassword);
   late TextEditingController profileController =
       TextEditingController(text: widget.data.profile);
 
@@ -60,6 +66,7 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
+    _loadProfileImage();
     _getdata();
     fetchData();
   }
@@ -126,7 +133,7 @@ class _EditProfileState extends State<EditProfile> {
   Future _getdata() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://192.168.9.138/crudflutter/flutter_crud/lib/readdataprofile.php'));
+          'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/readdataprofile.php'));
       if (response.statusCode == 200) {
         try {
           final data = jsonDecode(response.body);
@@ -139,8 +146,10 @@ class _EditProfileState extends State<EditProfile> {
             divisiController.text = data['divisi'] ?? '';
             noTelpController.text = data['no_telp'] ?? '';
             nipController.text = data['nip'] ?? '';
-            passwordController.text = data['password'] ?? '';
+            passwordController.text =
+                context.read<UserProvider>().savedPassword;
             statusController.text = data['status'] ?? '';
+            // profileController.text = data['profile'] ?? '';
             _saveProfileImage(data['profile'] ?? '');
           });
         } catch (e) {
@@ -224,9 +233,9 @@ class _EditProfileState extends State<EditProfile> {
           divisiController.text = data.divisi;
           noTelpController.text = data.noTelp;
           nipController.text = data.nip.toString();
-          passwordController.text = data.password;
+          passwordController.text = widget.savedPassword;
           statusController.text = data.status;
-          passwordController.text = data.profile;
+          profileController.text = data.profile;
         });
       }
     }
@@ -252,7 +261,7 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> _update() async {
     final response = await http.post(
       Uri.parse(
-          'http://192.168.9.138/ProjectScanner/lib/tbl_tambahstaff/create_tambahstaff.php'),
+          'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/create_tambahstaff.php'),
       body: {
         "nama": namaController.text,
         "jabatan": jabatanController.text,
@@ -263,6 +272,7 @@ class _EditProfileState extends State<EditProfile> {
         "nip": nipController.text,
         "password": passwordController.text,
         "status": statusController.text,
+        "profile": profileController.text
       },
     );
     if (response.statusCode == 200) {
@@ -282,8 +292,10 @@ class _EditProfileState extends State<EditProfile> {
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(
-              builder: (context) =>
-                  EditProfile(nip: widget.nip, data: widget.data),
+              builder: (context) => EditProfile(
+                  nip: widget.nip,
+                  data: widget.data,
+                  savedPassword: widget.savedPassword),
             );
           default:
             return null;
@@ -316,29 +328,8 @@ class _EditProfileState extends State<EditProfile> {
                     child: Container(
                       margin: const EdgeInsets.only(top: 20),
                       child: ElevatedButton(
-                        onPressed: () async {
-                          await http.post(
-                              body: {
-                                'nama': namaController.text,
-                                'jabatan': jabatanController.text,
-                                'unit_kerja': unitKerjaController.text,
-                                'departemen': departemenController.text,
-                                'divisi': divisiController.text,
-                                'email': emailController.text,
-                                'no_telp': noTelpController.text,
-                                'nip': nipController.text,
-                                'status': statusController.text,
-                              },
-                              Uri.parse(
-                                  "http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/edit_profile.php"));
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  Profile(nip: widget.nip, data: widget.data),
-                            ),
-                          );
-                        },
+                        onPressed:
+                            _simpan, // Panggil metode _simpan saat tombol ditekan
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
                           backgroundColor: const Color.fromRGBO(43, 56, 86, 1),
@@ -360,7 +351,6 @@ class _EditProfileState extends State<EditProfile> {
                 ],
               ),
             ),
-            // Main content
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
@@ -426,12 +416,12 @@ class _EditProfileState extends State<EditProfile> {
                 text: '',
                 controller: noTelpController),
             _buildTextView(
-                isEnable: false,
+                isEnable: true,
                 label: ' NIP',
                 text: '',
                 controller: nipController),
             _buildTextView(
-                isEnable: false,
+                isEnable: true,
                 label: ' Password',
                 text: '',
                 controller: passwordController),
