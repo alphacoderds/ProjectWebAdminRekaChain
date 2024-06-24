@@ -94,7 +94,7 @@ class _ListStaffState extends State<ListStaff> {
           'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/hapus_tambahstaff.php',
         ),
         body: {
-          "kode_staff": id,
+          "no": id,
         },
       );
 
@@ -386,7 +386,7 @@ class _ListStaffState extends State<ListStaff> {
                                 alignment: Alignment.center,
                                 child: ConstrainedBox(
                                   constraints: BoxConstraints(
-                                    maxWidth: 120.0, // Sesuaikan lebar kolom
+                                    maxWidth: 170.0, // Sesuaikan lebar kolom
                                   ),
                                   child: Wrap(
                                     children: [
@@ -489,8 +489,7 @@ class _ListStaffState extends State<ListStaff> {
                                     IconButton(
                                       icon: Icon(Icons.delete),
                                       onPressed: () {
-                                        _showDeleteDialog(filteredData[index]
-                                                ['kode_staff']
+                                        _hapusData(filteredData[index]['no']
                                             .toString());
                                       },
                                     ),
