@@ -41,6 +41,9 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
   List _listdata = [];
   bool _isloading = true;
 
+  ScrollController _horizontalController = ScrollController();
+  ScrollController _verticalController = ScrollController();
+
   TextEditingController namaProjectcontroller = TextEditingController();
   TextEditingController kodeLotcontroller = TextEditingController();
   TextEditingController noProdukcontroller = TextEditingController();
@@ -460,103 +463,120 @@ class _ViewAfterSalesState extends State<ViewAfterSales> {
   }
 
   Widget _buildMainTable() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height - 200,
-        ),
+    return Container(
+      alignment: Alignment.center,
+      child: Scrollbar(
+        controller: _horizontalController,
+        thumbVisibility: true,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 150.0,
-            horizontalMargin: 70.0,
-            columns: [
-              DataColumn(
-                label: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 1.0),
-                  child: Text(
-                    'No.',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
+          controller: _horizontalController,
+          child: Scrollbar(
+            controller: _verticalController,
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              controller: _verticalController,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - 200,
                 ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Detail Kerusakan',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columnSpacing: 150.0,
+                    horizontalMargin: 70.0,
+                    columns: [
+                      DataColumn(
+                        label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 1.0),
+                          child: Text(
+                            'No.',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Detail Kerusakan',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Item',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      DataColumn(
+                        label: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Row(
+                            children: [
+                              Text(
+                                'Keterangan',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
+                    rows: List<DataRow>.generate(
+                      _listdata.length,
+                      (index) {
+                        final item = _listdata[index];
+                        return DataRow(
+                          cells: [
+                            DataCell(
+                              Text(
+                                '${index + 1}',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            DataCell(
+                              Text(
+                                item['detail_kerusakan'] ?? 'N/A',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            DataCell(
+                              Text(
+                                item['item'] ?? 'N/A',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            DataCell(
+                              Text(
+                                item['keterangan'] ?? 'N/A',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Item',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        'Keterangan',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-            rows: List<DataRow>.generate(
-              _listdata.length,
-              (index) {
-                final item = _listdata[index];
-                return DataRow(
-                  cells: [
-                    DataCell(
-                      Text(
-                        '${index + 1}',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    DataCell(
-                      Text(
-                        item['detail_kerusakan'] ?? 'N/A',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    DataCell(
-                      Text(
-                        item['item'] ?? 'N/A',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                    DataCell(
-                      Text(
-                        item['keterangan'] ?? 'N/A',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ],
-                );
-              },
             ),
           ),
         ),

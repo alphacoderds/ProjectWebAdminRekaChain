@@ -38,6 +38,9 @@ class _ListProjectState extends State<ListProject> {
 
   String _searchQuery = '';
 
+  ScrollController _horizontalController = ScrollController();
+  ScrollController _verticalController = ScrollController();
+
   void _updateSearchQuery(String query) {
     setState(() {
       _searchQuery = query;
@@ -248,136 +251,157 @@ class _ListProjectState extends State<ListProject> {
     }).toList();
     return Container(
       alignment: Alignment.center,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height - 50,
-          ),
-          child: DataTable(
-            columnSpacing: 120.0,
-            horizontalMargin: 70.0,
-            columns: [
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'No',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
+      child: Scrollbar(
+        controller: _horizontalController,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          controller: _horizontalController,
+          child: Scrollbar(
+            controller: _verticalController,
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              controller: _verticalController,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - 50,
                 ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Kode Project',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Nama Project',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Aksi',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-            ],
-            rows: filteredData
-                .asMap()
-                .map(
-                  (index, data) => MapEntry(
-                    index,
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text((index + 1).toString()),
-                            ),
-                          ),
+                child: DataTable(
+                  columnSpacing: 120.0,
+                  horizontalMargin: 70.0,
+                  columns: [
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'No',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['kodeProject'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['namaProject'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Center(
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EditProject(
-                                            nip: widget.nip,
-                                            data: widget.data,
-                                            selectedProject: {
-                                              "no_tambahproject":
-                                                  filteredData[index]
-                                                      ['no_tambahproject'],
-                                              "kodeProject": filteredData[index]
-                                                  ['kodeProject'],
-                                              "namaProject": filteredData[index]
-                                                  ['namaProject'],
-                                            },
-                                          ),
-                                        ),
-                                      ).then((result) {
-                                        if (result != null && result) {
-                                          updateData();
-                                        }
-                                      });
-                                    },
-                                  ),
-                                  SizedBox(width: 10),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      _showDeleteDialog(filteredData[index]
-                                              ['kodeProject']
-                                          .toString());
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                )
-                .values
-                .toList(),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Kode Project',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Nama Project',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Aksi',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                  rows: filteredData
+                      .asMap()
+                      .map(
+                        (index, data) => MapEntry(
+                          index,
+                          DataRow(
+                            cells: [
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text((index + 1).toString()),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['kodeProject'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['namaProject'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Center(
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.edit),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EditProject(
+                                                  nip: widget.nip,
+                                                  data: widget.data,
+                                                  selectedProject: {
+                                                    "no_tambahproject":
+                                                        filteredData[index][
+                                                            'no_tambahproject'],
+                                                    "kodeProject":
+                                                        filteredData[index]
+                                                            ['kodeProject'],
+                                                    "namaProject":
+                                                        filteredData[index]
+                                                            ['namaProject'],
+                                                  },
+                                                ),
+                                              ),
+                                            ).then((result) {
+                                              if (result != null && result) {
+                                                updateData();
+                                              }
+                                            });
+                                          },
+                                        ),
+                                        SizedBox(width: 10),
+                                        IconButton(
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () {
+                                            _showDeleteDialog(
+                                                filteredData[index]
+                                                        ['kodeProject']
+                                                    .toString());
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      .values
+                      .toList(),
+                ),
+              ),
+            ),
           ),
         ),
       ),

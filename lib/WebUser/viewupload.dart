@@ -36,6 +36,8 @@ class _ViewUploadState extends State<ViewUpload> {
   List _listdata = [];
   bool _isloading = true;
 
+  ScrollController _horizontalController = ScrollController();
+  ScrollController _verticalController = ScrollController();
   String _searchQuery = '';
 
   void _updateSearchQuery(String query) {
@@ -312,149 +314,170 @@ class _ViewUploadState extends State<ViewUpload> {
     }).toList();
     return Container(
       alignment: Alignment.center,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height - 50,
-          ),
-          child: DataTable(
-            columnSpacing: 120.0,
-            horizontalMargin: 70.0,
-            columns: [
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'No',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
+      child: Scrollbar(
+        controller: _horizontalController,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          controller: _horizontalController,
+          child: Scrollbar(
+            controller: _verticalController,
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              controller: _verticalController,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - 50,
                 ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Nama Project',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'No Produk',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Nama Dokumen',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Tanggal Upload',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Aksi',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-            ],
-            rows: filteredData
-                .asMap()
-                .map(
-                  (index, data) => MapEntry(
-                    index,
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text((index + 1).toString()),
-                            ),
-                          ),
+                child: DataTable(
+                  columnSpacing: 120.0,
+                  horizontalMargin: 70.0,
+                  columns: [
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'No',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['id_project'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['noProduk'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['file'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['tanggal'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Center(
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.file_download_outlined),
-                                    onPressed: () {
-                                      _downloadFileFromDatabase(
-                                          data, data['file'].split('/').last);
-                                    },
-                                  ),
-                                  SizedBox(width: 10),
-                                  IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () {
-                                      _showDeleteDialog(
-                                          filteredData[index]['no'].toString());
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                )
-                .values
-                .toList(),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Nama Project',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'No Produk',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Nama Dokumen',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Tanggal Upload',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Aksi',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                  rows: filteredData
+                      .asMap()
+                      .map(
+                        (index, data) => MapEntry(
+                          index,
+                          DataRow(
+                            cells: [
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text((index + 1).toString()),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['id_project'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['noProduk'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['file'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['tanggal'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Center(
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(
+                                              Icons.file_download_outlined),
+                                          onPressed: () {
+                                            _downloadFileFromDatabase(data,
+                                                data['file'].split('/').last);
+                                          },
+                                        ),
+                                        SizedBox(width: 10),
+                                        IconButton(
+                                          icon: Icon(Icons.delete),
+                                          onPressed: () {
+                                            _showDeleteDialog(
+                                                filteredData[index]['no']
+                                                    .toString());
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      .values
+                      .toList(),
+                ),
+              ),
+            ),
           ),
         ),
       ),

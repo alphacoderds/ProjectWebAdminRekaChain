@@ -44,6 +44,9 @@ class _VperencanaanState extends State<Vperencanaan> {
     });
   }
 
+  ScrollController _horizontalController = ScrollController();
+  ScrollController _verticalController = ScrollController();
+
   Future<void> _getdata() async {
     try {
       final response = await http.get(
@@ -217,231 +220,286 @@ class _VperencanaanState extends State<Vperencanaan> {
     }).toList();
     return Container(
       alignment: Alignment.center,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height - 50,
-          ),
-          child: DataTable(
-            columnSpacing: 120.0,
-            horizontalMargin: 70.0,
-            columns: [
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'No',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
+      child: Scrollbar(
+        controller: _horizontalController,
+        thumbVisibility: true,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          controller: _horizontalController,
+          child: Scrollbar(
+            controller: _verticalController,
+            thumbVisibility: true,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              controller: _verticalController,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height - 50,
                 ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Nama Project',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Nama Produk',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Kode Lot',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'No Produk',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-              DataColumn(
-                label: Center(
-                  child: Text(
-                    'Aksi',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ),
-              ),
-            ],
-            rows: filteredData
-                .asMap()
-                .map(
-                  (index, data) => MapEntry(
-                    index,
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text((index + 1).toString()),
-                            ),
-                          ),
+                child: DataTable(
+                  columnSpacing: 120.0,
+                  horizontalMargin: 70.0,
+                  columns: [
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'No',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['nama'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['namaProduk'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['kodeLot'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(data['noProduk'] ?? ''),
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Center(
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.local_print_shop),
-                                    onPressed: () async {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              DetailViewPerencanaan(
-                                            nip: widget.nip,
-                                            data: widget.data,
-                                            selectedProject: {
-                                              "id_lot": filteredData[index]
-                                                  ['id_lot'],
-                                              "noProduk": filteredData[index]
-                                                  ['noProduk'],
-                                              "nama": filteredData[index]
-                                                  ['nama'],
-                                              "noIndukProduk":
-                                                  filteredData[index]
-                                                      ['noIndukProduk'],
-                                              "noSeriAwal": filteredData[index]
-                                                  ['noSeriAwal'],
-                                              "targetMulai": filteredData[index]
-                                                  ['targetMulai'],
-                                              "namaProduk": filteredData[index]
-                                                  ['namaProduk'],
-                                              "jumlahLot": filteredData[index]
-                                                  ['jumlahLot'],
-                                              "kodeLot": filteredData[index]
-                                                  ['kodeLot'],
-                                              "noSeriAkhir": filteredData[index]
-                                                  ['noSeriAkhir'],
-                                              "targetSelesai":
-                                                  filteredData[index]
-                                                      ['targetSelesai'],
-                                              "ap1": filteredData[index]['ap1'],
-                                              "kategori1": filteredData[index]
-                                                  ['kategori1'],
-                                              "keterangan1": filteredData[index]
-                                                  ['keterangan1'],
-                                              "ap2": filteredData[index]['ap2'],
-                                              "kategori2": filteredData[index]
-                                                  ['kategori2'],
-                                              "keterangan2": filteredData[index]
-                                                  ['keterangan2'],
-                                              "ap3": filteredData[index]['ap3'],
-                                              "kategori3": filteredData[index]
-                                                  ['kategori3'],
-                                              "keterangan3": filteredData[index]
-                                                  ['keterangan3'],
-                                              "ap4": filteredData[index]['ap4'],
-                                              "kategori4": filteredData[index]
-                                                  ['kategori4'],
-                                              "keterangan4": filteredData[index]
-                                                  ['keterangan4'],
-                                              "ap5": filteredData[index]['ap5'],
-                                              "kategori5": filteredData[index]
-                                                  ['kategori5'],
-                                              "keterangan5": filteredData[index]
-                                                  ['keterangan5'],
-                                              "ap6": filteredData[index]['ap6'],
-                                              "kategori6": filteredData[index]
-                                                  ['kategori6'],
-                                              "keterangan6": filteredData[index]
-                                                  ['keterangan6'],
-                                              "ap7": filteredData[index]['ap7'],
-                                              "kategori7": filteredData[index]
-                                                  ['kategori7'],
-                                              "keterangan7": filteredData[index]
-                                                  ['keterangan7'],
-                                              "ap8": filteredData[index]['ap8'],
-                                              "kategori8": filteredData[index]
-                                                  ['kategori8'],
-                                              "keterangan8": filteredData[index]
-                                                  ['keterangan8'],
-                                              "ap9": filteredData[index]['ap9'],
-                                              "kategori9": filteredData[index]
-                                                  ['kategori9'],
-                                              "keterangan9": filteredData[index]
-                                                  ['keterangan9'],
-                                              "ap10": filteredData[index]
-                                                  ['ap10'],
-                                              "kategori10": filteredData[index]
-                                                  ['kategori10'],
-                                              "keterangan10":
-                                                  filteredData[index]
-                                                      ['keterangan10'],
-                                            },
-                                          ),
-                                        ),
-                                      ).then((result) {
-                                        if (result != null && result) {
-                                          updateData();
-                                        }
-                                      });
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                )
-                .values
-                .toList(),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Nama Project',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Nama Produk',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Kode Lot',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'No Produk',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Center(
+                        child: Text(
+                          'Aksi',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                  rows: filteredData
+                      .asMap()
+                      .map(
+                        (index, data) => MapEntry(
+                          index,
+                          DataRow(
+                            cells: [
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text((index + 1).toString()),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['nama'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['namaProduk'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['kodeLot'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: Text(data['noProduk'] ?? ''),
+                                  ),
+                                ),
+                              ),
+                              DataCell(
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Center(
+                                    child: Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.local_print_shop),
+                                          onPressed: () async {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DetailViewPerencanaan(
+                                                  nip: widget.nip,
+                                                  data: widget.data,
+                                                  selectedProject: {
+                                                    "id_lot":
+                                                        filteredData[index]
+                                                            ['id_lot'],
+                                                    "noProduk":
+                                                        filteredData[index]
+                                                            ['noProduk'],
+                                                    "nama": filteredData[index]
+                                                        ['nama'],
+                                                    "noIndukProduk":
+                                                        filteredData[index]
+                                                            ['noIndukProduk'],
+                                                    "noSeriAwal":
+                                                        filteredData[index]
+                                                            ['noSeriAwal'],
+                                                    "targetMulai":
+                                                        filteredData[index]
+                                                            ['targetMulai'],
+                                                    "namaProduk":
+                                                        filteredData[index]
+                                                            ['namaProduk'],
+                                                    "jumlahLot":
+                                                        filteredData[index]
+                                                            ['jumlahLot'],
+                                                    "kodeLot":
+                                                        filteredData[index]
+                                                            ['kodeLot'],
+                                                    "noSeriAkhir":
+                                                        filteredData[index]
+                                                            ['noSeriAkhir'],
+                                                    "targetSelesai":
+                                                        filteredData[index]
+                                                            ['targetSelesai'],
+                                                    "ap1": filteredData[index]
+                                                        ['ap1'],
+                                                    "kategori1":
+                                                        filteredData[index]
+                                                            ['kategori1'],
+                                                    "keterangan1":
+                                                        filteredData[index]
+                                                            ['keterangan1'],
+                                                    "ap2": filteredData[index]
+                                                        ['ap2'],
+                                                    "kategori2":
+                                                        filteredData[index]
+                                                            ['kategori2'],
+                                                    "keterangan2":
+                                                        filteredData[index]
+                                                            ['keterangan2'],
+                                                    "ap3": filteredData[index]
+                                                        ['ap3'],
+                                                    "kategori3":
+                                                        filteredData[index]
+                                                            ['kategori3'],
+                                                    "keterangan3":
+                                                        filteredData[index]
+                                                            ['keterangan3'],
+                                                    "ap4": filteredData[index]
+                                                        ['ap4'],
+                                                    "kategori4":
+                                                        filteredData[index]
+                                                            ['kategori4'],
+                                                    "keterangan4":
+                                                        filteredData[index]
+                                                            ['keterangan4'],
+                                                    "ap5": filteredData[index]
+                                                        ['ap5'],
+                                                    "kategori5":
+                                                        filteredData[index]
+                                                            ['kategori5'],
+                                                    "keterangan5":
+                                                        filteredData[index]
+                                                            ['keterangan5'],
+                                                    "ap6": filteredData[index]
+                                                        ['ap6'],
+                                                    "kategori6":
+                                                        filteredData[index]
+                                                            ['kategori6'],
+                                                    "keterangan6":
+                                                        filteredData[index]
+                                                            ['keterangan6'],
+                                                    "ap7": filteredData[index]
+                                                        ['ap7'],
+                                                    "kategori7":
+                                                        filteredData[index]
+                                                            ['kategori7'],
+                                                    "keterangan7":
+                                                        filteredData[index]
+                                                            ['keterangan7'],
+                                                    "ap8": filteredData[index]
+                                                        ['ap8'],
+                                                    "kategori8":
+                                                        filteredData[index]
+                                                            ['kategori8'],
+                                                    "keterangan8":
+                                                        filteredData[index]
+                                                            ['keterangan8'],
+                                                    "ap9": filteredData[index]
+                                                        ['ap9'],
+                                                    "kategori9":
+                                                        filteredData[index]
+                                                            ['kategori9'],
+                                                    "keterangan9":
+                                                        filteredData[index]
+                                                            ['keterangan9'],
+                                                    "ap10": filteredData[index]
+                                                        ['ap10'],
+                                                    "kategori10":
+                                                        filteredData[index]
+                                                            ['kategori10'],
+                                                    "keterangan10":
+                                                        filteredData[index]
+                                                            ['keterangan10'],
+                                                  },
+                                                ),
+                                              ),
+                                            ).then((result) {
+                                              if (result != null && result) {
+                                                updateData();
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                      .values
+                      .toList(),
+                ),
+              ),
+            ),
           ),
         ),
       ),
