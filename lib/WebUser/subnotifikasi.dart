@@ -132,7 +132,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
     try {
       final response = await http.get(
         Uri.parse(
-            'http://192.168.9.31/ProjectWebAdminRekaChain/lib/Project/read_notifproduk.php?kodeLot=${widget.selectedProject['kodeLot']}'),
+            'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/read_notifproduk.php?kodeLot=${widget.selectedProject['kodeLot']}'),
       );
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -154,7 +154,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
 
       final response = await http.get(
         Uri.parse(
-          'http://192.168.9.31/ProjectWebAdminRekaChain/lib/Project/read_notifmaterial.php?kodeLot=$kodeLot',
+          'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/read_notifmaterial.php?kodeLot=$kodeLot',
         ),
       );
 
@@ -228,7 +228,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
         text: widget.selectedProject['tanggal_mulai2'] ?? '');
     tanggalSelesai2controller = TextEditingController(
         text: widget.selectedProject['tanggal_selesai2'] ?? '');
-    keteranganProduk1controller = TextEditingController(
+    keteranganProduk2controller = TextEditingController(
         text: widget.selectedProject['keterangan_produk2'] ?? '');
 
     alurProses3controller =
@@ -403,7 +403,7 @@ class _SubnotifikasiState extends State<Subnotifikasi> {
                           IconButton(
                             icon: Icon(
                               Icons.account_circle_rounded,
-                              size: 38,
+                              size: 35,
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),
                             onPressed: () {

@@ -35,8 +35,6 @@ class _VperencanaanState extends State<Vperencanaan> {
   bool _isloading = true;
 
   String _searchQuery = '';
-  ScrollController _horizontalController = ScrollController();
-  ScrollController _verticalController = ScrollController();
 
   void _updateSearchQuery(String query) {
     setState(() {
@@ -44,11 +42,14 @@ class _VperencanaanState extends State<Vperencanaan> {
     });
   }
 
+  ScrollController _horizontalController = ScrollController();
+  ScrollController _verticalController = ScrollController();
+
   Future<void> _getdata() async {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.9.31/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
