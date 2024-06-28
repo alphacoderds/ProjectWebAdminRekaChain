@@ -49,7 +49,7 @@ class _VperencanaanState extends State<Vperencanaan> {
     try {
       final response = await http.get(
         Uri.parse(
-          'http://192.168.9.138/ProjectWebAdminRekaChain/lib/Project/readlot.php',
+          'http://192.168.8.26/ProjectWebAdminRekaChain/lib/Project/readlot.php',
         ),
       );
       if (response.statusCode == 200) {
